@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Expo / Metro
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Native build output
+android/
+ios/
+*.orig.*
+
+# Env
+.env*.local
+.env
+
+# Misc
+.DS_Store
+*.log
+npm-debug.*
+yarn-error.*
+
+# Local archives (design handoff is already unpacked in the repo)
+*.zip
