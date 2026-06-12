@@ -56,5 +56,13 @@ node 22, npm 10, java 20. No global expo — use `npx expo`. Phone: Expo Go (SDK
 ### 2026-06-12
 - Read both source docs (blueprint v1.1 + design handoff). Agreed on plan: frontend-first, mock backend, match designs closely.
 - Set up this CLAUDE.md as knowledge base + logbook with working rules.
-- Discovered Expo Go on the user's phone supports only SDK 54; re-pinning the scaffold from SDK 56 → 54.
-- **Next:** finish SDK 54 scaffold, add Expo Router, build design-system theme + first screens (Splash, Sign-in, Dashboard).
+- Discovered Expo Go on the user's phone supports only SDK 54; re-pinned the scaffold from SDK 56 → 54.
+- **Milestone 1 DONE** (commit `959c3d4`):
+  - Expo SDK 54 + Expo Router + TS app in `mobile/`. Entry = `expo-router/entry`; app.json has scheme `ascend`, typedRoutes, coral splash, android package `com.ascend.app`.
+  - Design system in `mobile/src/theme/`: `colors.ts` (Summit palette + `oklchToHex` so app-identity hues are exact), `typography.ts` (Bricolage + Outfit via @expo-google-fonts), `spacing.ts`.
+  - Components in `mobile/src/components/`: ChevronMark (SVG), Button (5 variants), Card, AppChip, ProgressBar, Wordmark, Placeholder.
+  - Routes: `app/index.tsx` Splash (auto-advance 2.6s → sign-in), `app/sign-in.tsx` (stubbed providers → tabs), `app/(tabs)/` with Dashboard built + Stats/Leaderboard/Settings placeholders.
+  - Mock data in `mobile/src/data/mock.ts`. Verified: `tsc --noEmit` clean + `expo export --platform android` bundles OK.
+  - Fonts: installed with `--legacy-peer-deps` (react-dom peer conflict under npm); `@expo/vector-icons` added (not in blank template).
+- **Break after Milestone 1.** To run: `cd mobile && npx expo start`, scan QR with Expo Go (SDK 54).
+- **Next (Milestone 2):** build the remaining screens on mock data — onboarding (5 steps), full Stats, Leaderboard, Settings (+ Edit Apps / Edit Limits), and the Friction Overlay screens.
