@@ -15,6 +15,12 @@ import {
 } from '@expo-google-fonts/outfit';
 import { colors } from '../src/theme';
 
+// Anchor the stack to the splash so modal routes (friction) present over a base
+// screen instead of becoming the initial route. Documented Expo Router modal pattern.
+export const unstable_settings = {
+  anchor: 'index',
+};
+
 export default function RootLayout() {
   const [loaded] = useFonts({
     BricolageGrotesque_700Bold,
@@ -38,6 +44,7 @@ export default function RootLayout() {
           animation: 'fade',
         }}
       >
+        <Stack.Screen name="index" />
         <Stack.Screen
           name="friction"
           options={{ presentation: 'transparentModal', animation: 'fade' }}
