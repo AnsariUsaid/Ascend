@@ -37,7 +37,12 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.cream },
           animation: 'fade',
         }}
-      />
+      >
+        <Stack.Screen
+          name="friction"
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+      </Stack>
     </SafeAreaProvider>
   );
 }

@@ -8,8 +8,8 @@ export default function SignIn() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  // Auth is stubbed — any provider just enters the app.
-  const enter = () => router.replace('/(tabs)');
+  // Auth is stubbed — any provider just starts onboarding.
+  const enter = () => router.replace('/(onboarding)/usage-access');
 
   return (
     <View style={styles.root}>

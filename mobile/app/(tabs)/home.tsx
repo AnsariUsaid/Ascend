@@ -1,5 +1,7 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import {
@@ -91,6 +93,7 @@ function WeekChart() {
 
 export default function Dashboard() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   return (
     <ScrollView
       style={{ backgroundColor: colors.cream }}
@@ -136,6 +139,12 @@ export default function Dashboard() {
         </View>
         <Text style={styles.timeSavedNum}>{formatDuration(timeSavedThisWeekMinutes)}</Text>
       </Card>
+
+      {/* Dev trigger — replaced by the native usage-limit watcher in Milestone 4. */}
+      <Pressable style={styles.devTrigger} onPress={() => router.push('/friction')}>
+        <Feather name="zap" size={15} color={colors.muted3} />
+        <Text style={styles.devTriggerText}>Simulate limit reached</Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -198,4 +207,14 @@ const styles = StyleSheet.create({
   },
   timeSavedSub: { fontFamily: fonts.regular, fontSize: 13, color: 'rgba(251,244,234,0.55)', marginTop: 4 },
   timeSavedNum: { fontFamily: fonts.displayXBold, fontSize: 30, color: colors.amber },
+
+  devTrigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 22,
+    paddingVertical: 10,
+  },
+  devTriggerText: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted3 },
 });

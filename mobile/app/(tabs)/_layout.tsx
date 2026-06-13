@@ -23,7 +23,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <Feather name="home" size={sizes.navIcon} color={color} />,
