@@ -65,4 +65,15 @@ node 22, npm 10, java 20. No global expo — use `npx expo`. Phone: Expo Go (SDK
   - Mock data in `mobile/src/data/mock.ts`. Verified: `tsc --noEmit` clean + `expo export --platform android` bundles OK.
   - Fonts: installed with `--legacy-peer-deps` (react-dom peer conflict under npm); `@expo/vector-icons` added (not in blank template).
 - **Break after Milestone 1.** To run: `cd mobile && npx expo start`, scan QR with Expo Go (SDK 54).
-- **Next (Milestone 2):** build the remaining screens on mock data — onboarding (5 steps), full Stats, Leaderboard, Settings (+ Edit Apps / Edit Limits), and the Friction Overlay screens.
+- **Milestone 2 DONE** (commits `345380f`, `cf1841e`):
+  - `zustand` store `src/store/useAppStore.ts` = shared editable config (selected apps, per-app limits, question type, grace period, display name, leaderboard opt-in, notifications). App catalog (8 apps) + limit bounds in `src/data/apps.ts`.
+  - Onboarding `(onboarding)/`: usage-access, overlay-permission, select-apps, time-limits, preferences (+ completion). Wired to store with validation.
+  - Settings tab rebuilt + `app/edit-apps.tsx` / `app/edit-limits.tsx` sub-screens (draft-then-save, confirm dialogs for delete/sign-out).
+  - Stats tab (week/month, stacked breakdown w/ tap-to-inspect, per-app delta pills, friction stat cards) + Leaderboard tab (podium, shared-rank list, pinned user row, respects opt-in).
+  - Friction overlay `app/friction.tsx` (transparent modal): math/trivia/logic + typing variant, with correct/wrong/escalate/grace/done states. Placeholder question generator in `src/data/questions.ts` (real bank + ladder = M3).
+  - Dashboard has a "Simulate limit reached" dev trigger → `/friction`.
+  - **Two routing bugs found & fixed (good lessons):**
+    1. *Route collision at `/`* — `app/index.tsx` (splash) and `app/(tabs)/index.tsx` both mapped to `/` (route groups `(tabs)` are invisible in the URL). Renamed Home tab to `app/(tabs)/home.tsx`; dashboard now at `/home`, splash keeps `/`.
+    2. *Modal had no anchor* — declaring `<Stack.Screen name="friction">` as the only explicit child of the root `<Stack>` made the modal the de-facto initial route (a modal with no anchor wipes the base screen). Fixed per Expo's documented modal pattern: declare `<Stack.Screen name="index" />` first + `export const unstable_settings = { anchor: 'index' }` in `app/_layout.tsx`. NOTE: Expo Router does NOT use an `initialRouteName` prop on `<Stack>`; first-route config lives in `unstable_settings` (`anchor` for SDK 54). Confirmed working on device.
+  - Verified: `tsc --noEmit` clean + `expo export --platform android`, no collision warnings, boots to splash on device.
+- **Next (Milestone 3):** real friction-ladder engine + question bank (escalation, skip penalty, per-app level/grace state, midnight reset) in the store; persist state (AsyncStorage). Then M4 native Kotlin module.
