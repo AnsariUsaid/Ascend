@@ -1,57 +1,80 @@
 import { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { AppChip, Button, Wordmark } from '../src/components';
-import { appHues, colors, fonts, radius } from '../src/theme';
+import { colors, fonts, radius } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
-import { generateQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questions';
+import { useFrictionStore } from '../src/store/useFrictionStore';
+import { getQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questionBank';
+import { APP_CATALOG } from '../src/data/apps';
 
 type Phase = 'question' | 'correct' | 'done';
 
 export default function Friction() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ app?: string }>();
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
-  const [level, setLevel] = useState(1);
-  const [phase, setPhase] = useState<Phase>('question');
+  const { ensureToday, answerCorrect, skip, doneForToday } = useFrictionStore();
+
+  // Resolve which app triggered the overlay.
+  const app = APP_CATALOG.find((a) => a.key === params.app) ?? APP_CATALOG[0];
+
+  // Snapshot the starting level once (engine state lives in the store).
+  // Day-reset is handled by the dashboard on open and by the effect below.
+  const [current, setCurrent] = useState(() => {
+    const appState = useFrictionStore.getState().getApp(app.key);
+    return { q: getQuestion(questionType, appState.level), level: appState.level };
+  });
+  const [phase, setPhase] = useState<Phase>(() =>
+    useFrictionStore.getState().getApp(app.key).blockedForToday ? 'done' : 'question',
+  );
   const [input, setInput] = useState('');
   const [wrong, setWrong] = useState(false);
   const [escalated, setEscalated] = useState(false);
-  const [q, setQ] = useState(() => generateQuestion(questionType, 1));
+  const [graceExpiresAt, setGraceExpiresAt] = useState<number | null>(null);
+
+  useEffect(() => {
+    ensureToday();
+  }, []);
 
   const isTyping = questionType === 'typing';
-  const ref = q.reference ?? '';
+  const ref = current.q.reference ?? '';
   const accuracy = useMemo(
     () => (isTyping ? typingAccuracy(input, ref) : 100),
     [input, ref, isTyping],
   );
   const canCheck = isTyping ? input.length >= ref.length : input.trim().length > 0;
 
-  const newQuestion = (lvl: number) => {
-    setQ(generateQuestion(questionType, lvl));
-    setInput('');
-    setWrong(false);
-  };
-
   const check = () => {
-    const ok =
-      isTyping ? input === ref : normalizeAnswer(input) === normalizeAnswer(q.answer);
+    const ok = isTyping
+      ? input === ref
+      : normalizeAnswer(input) === normalizeAnswer(current.q.answer);
     if (ok) {
+      answerCorrect(app.key, grace);
+      setGraceExpiresAt(useFrictionStore.getState().getApp(app.key).graceExpiresAt);
       setPhase('correct');
     } else {
       setWrong(true);
     }
   };
 
-  const skip = () => {
-    const next = level + 1;
-    setLevel(next);
+  const onSkip = () => {
+    skip(app.key);
+    const nextLevel = current.level + 1;
+    setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
+    setInput('');
+    setWrong(false);
     setEscalated(true);
-    newQuestion(next);
+  };
+
+  const onDone = () => {
+    doneForToday(app.key);
+    setPhase('done');
   };
 
   return (
@@ -62,14 +85,14 @@ export default function Friction() {
             <View style={styles.topRow}>
               <Wordmark size={15} />
               <View style={styles.levelChip}>
-                <Text style={styles.levelChipText}>Level {level}</Text>
+                <Text style={styles.levelChipText}>Level {current.level}</Text>
               </View>
             </View>
 
             <View style={styles.blockedRow}>
-              <AppChip hue={appHues.instagram} glyph="I" size={32} />
+              <AppChip hue={app.hue} glyph={app.glyph} size={32} />
               <Text style={styles.blockedText}>
-                You've used <Text style={styles.bold}>Instagram</Text> for 2 hours today.
+                You've reached your limit on <Text style={styles.bold}>{app.name}</Text> today.
               </Text>
             </View>
 
@@ -80,7 +103,7 @@ export default function Friction() {
             {escalated ? (
               <View style={styles.escalatedBanner}>
                 <Feather name="trending-up" size={15} color={colors.cream} />
-                <Text style={styles.escalatedText}>Difficulty escalated to Level {level}</Text>
+                <Text style={styles.escalatedText}>Difficulty escalated to Level {current.level}</Text>
               </View>
             ) : null}
 
@@ -104,7 +127,7 @@ export default function Friction() {
                 <Text
                   style={[
                     styles.accuracy,
-                    { color: accuracy >= 95 ? colors.successText : accuracy >= 80 ? colors.coffee : colors.coffee },
+                    { color: accuracy >= 95 ? colors.successText : colors.coffee },
                   ]}
                 >
                   Accuracy: {accuracy}%
@@ -112,7 +135,7 @@ export default function Friction() {
               </>
             ) : (
               <>
-                <Text style={styles.question}>{q.prompt}</Text>
+                <Text style={styles.question}>{current.q.prompt}</Text>
                 <TextInput
                   value={input}
                   onChangeText={(t) => {
@@ -135,27 +158,29 @@ export default function Friction() {
 
             <View style={styles.linksRow}>
               {wrong ? (
-                <Pressable onPress={skip}>
+                <Pressable onPress={onSkip}>
                   <Text style={styles.link}>Skip question</Text>
                 </Pressable>
               ) : (
                 <View />
               )}
-              <Pressable onPress={() => setPhase('done')}>
+              <Pressable onPress={onDone}>
                 <Text style={styles.link}>I'm done for today</Text>
               </Pressable>
             </View>
           </ScrollView>
         )}
 
-        {phase === 'correct' && <GraceState minutes={grace} onBack={() => router.back()} />}
+        {phase === 'correct' && (
+          <GraceState minutes={grace} expiresAt={graceExpiresAt} onBack={() => router.back()} />
+        )}
 
         {phase === 'done' && (
           <View style={styles.center}>
             <Feather name="moon" size={40} color={colors.cream} />
             <Text style={styles.bigTitle}>Done for today</Text>
             <Text style={styles.bigSub}>
-              Instagram is blocked for the rest of the day. Come back tomorrow with a fresh streak.
+              {app.name} is blocked for the rest of the day. Come back tomorrow with a fresh streak.
             </Text>
             <Button label="Close" variant="google" onPress={() => router.back()} style={{ marginTop: 24, alignSelf: 'stretch' }} />
           </View>
@@ -165,14 +190,23 @@ export default function Friction() {
   );
 }
 
-function GraceState({ minutes, onBack }: { minutes: number; onBack: () => void }) {
-  const [secs, setSecs] = useState(minutes * 60);
+function GraceState({
+  minutes,
+  expiresAt,
+  onBack,
+}: {
+  minutes: number;
+  expiresAt: number | null;
+  onBack: () => void;
+}) {
+  const [now, setNow] = useState(Date.now());
   useEffect(() => {
-    const id = setInterval(() => setSecs((s) => Math.max(0, s - 1)), 1000);
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
-  const mm = Math.floor(secs / 60).toString().padStart(2, '0');
-  const ss = (secs % 60).toString().padStart(2, '0');
+  const remaining = expiresAt ? Math.max(0, Math.floor((expiresAt - now) / 1000)) : minutes * 60;
+  const mm = Math.floor(remaining / 60).toString().padStart(2, '0');
+  const ss = (remaining % 60).toString().padStart(2, '0');
   return (
     <View style={styles.center}>
       <View style={styles.checkCircle}>

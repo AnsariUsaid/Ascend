@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +14,41 @@ import {
   formatDuration,
   MonitoredApp,
 } from '../../src/data/mock';
+import { useFrictionStore } from '../../src/store/useFrictionStore';
+
+/** Live friction status for an app: grace countdown or blocked-for-today. */
+function FrictionStatus({ appKey }: { appKey: string }) {
+  const fr = useFrictionStore((s) => s.byApp[appKey]);
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tick((n) => n + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!fr) return null;
+  if (fr.blockedForToday) {
+    return (
+      <View style={[styles.frPill, { backgroundColor: colors.dangerBg }]}>
+        <Feather name="moon" size={12} color={colors.dangerText} />
+        <Text style={[styles.frPillText, { color: colors.dangerText }]}>Blocked today</Text>
+      </View>
+    );
+  }
+  if (fr.graceExpiresAt && fr.graceExpiresAt > Date.now()) {
+    const secs = Math.floor((fr.graceExpiresAt - Date.now()) / 1000);
+    const mm = Math.floor(secs / 60);
+    const ss = (secs % 60).toString().padStart(2, '0');
+    return (
+      <View style={[styles.frPill, { backgroundColor: colors.successBg }]}>
+        <Feather name="clock" size={12} color={colors.successText} />
+        <Text style={[styles.frPillText, { color: colors.successText }]}>
+          Grace {mm}:{ss}
+        </Text>
+      </View>
+    );
+  }
+  return null;
+}
 
 function greeting(): string {
   const h = new Date().getHours();
@@ -51,9 +87,12 @@ function UsageRow({ app }: { app: MonitoredApp }) {
       </View>
       <View style={{ marginTop: 12 }}>
         <ProgressBar progress={app.usedMinutes / app.limitMinutes} over={over} />
-        <Text style={styles.usageCaption}>
-          {formatDuration(app.usedMinutes)} / {formatDuration(app.limitMinutes)}
-        </Text>
+        <View style={styles.captionRow}>
+          <Text style={styles.usageCaption}>
+            {formatDuration(app.usedMinutes)} / {formatDuration(app.limitMinutes)}
+          </Text>
+          <FrictionStatus appKey={app.key} />
+        </View>
       </View>
     </Card>
   );
@@ -94,6 +133,17 @@ function WeekChart() {
 export default function Dashboard() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const ensureToday = useFrictionStore((s) => s.ensureToday);
+  const resetDay = useFrictionStore((s) => s.resetDay);
+
+  // Apply the midnight reset whenever the dashboard opens.
+  useEffect(() => {
+    ensureToday();
+  }, []);
+
+  // Trigger the overlay for the first over-limit app (mock data), else the first app.
+  const triggerApp = todayApps.find((a) => a.usedMinutes > a.limitMinutes) ?? todayApps[0];
+
   return (
     <ScrollView
       style={{ backgroundColor: colors.cream }}
@@ -140,11 +190,20 @@ export default function Dashboard() {
         <Text style={styles.timeSavedNum}>{formatDuration(timeSavedThisWeekMinutes)}</Text>
       </Card>
 
-      {/* Dev trigger — replaced by the native usage-limit watcher in Milestone 4. */}
-      <Pressable style={styles.devTrigger} onPress={() => router.push('/friction')}>
-        <Feather name="zap" size={15} color={colors.muted3} />
-        <Text style={styles.devTriggerText}>Simulate limit reached</Text>
-      </Pressable>
+      {/* Dev tools — replaced by the native usage-limit watcher in Milestone 4. */}
+      <View style={styles.devRow}>
+        <Pressable
+          style={styles.devTrigger}
+          onPress={() => router.push(`/friction?app=${triggerApp.key}`)}
+        >
+          <Feather name="zap" size={15} color={colors.muted3} />
+          <Text style={styles.devTriggerText}>Simulate limit reached</Text>
+        </Pressable>
+        <Pressable style={styles.devTrigger} onPress={resetDay}>
+          <Feather name="rotate-ccw" size={15} color={colors.muted3} />
+          <Text style={styles.devTriggerText}>Reset day</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
@@ -184,7 +243,10 @@ const styles = StyleSheet.create({
   usageHeader: { flexDirection: 'row', alignItems: 'center' },
   appName: { flex: 1, marginLeft: 12, fontFamily: fonts.medium, fontSize: 15.5, color: colors.ink },
   status: { fontFamily: fonts.semibold, fontSize: 13 },
-  usageCaption: { marginTop: 8, fontFamily: fonts.regular, fontSize: 12.5, color: colors.muted2 },
+  captionRow: { marginTop: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  usageCaption: { fontFamily: fonts.regular, fontSize: 12.5, color: colors.muted2 },
+  frPill: { flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 4 },
+  frPillText: { fontFamily: fonts.semibold, fontSize: 11.5 },
 
   cardLabel: {
     fontFamily: fonts.semibold,
@@ -208,12 +270,12 @@ const styles = StyleSheet.create({
   timeSavedSub: { fontFamily: fonts.regular, fontSize: 13, color: 'rgba(251,244,234,0.55)', marginTop: 4 },
   timeSavedNum: { fontFamily: fonts.displayXBold, fontSize: 30, color: colors.amber },
 
+  devRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginTop: 22 },
   devTrigger: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 22,
     paddingVertical: 10,
   },
   devTriggerText: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted3 },

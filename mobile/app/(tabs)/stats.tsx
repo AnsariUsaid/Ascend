@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppChip, Card, Segmented } from '../../src/components';
 import { appChipColors, appHues, colors, fonts, radius, spacing } from '../../src/theme';
 import { statsByRange, formatDuration, PerApp } from '../../src/data/mock';
+import { useFrictionStore } from '../../src/store/useFrictionStore';
 
 const SEG_COLORS = {
   instagram: appChipColors(appHues.instagram).glyph,
@@ -49,6 +50,20 @@ export default function Stats() {
   const totals = data.breakdown.map((d) => d.instagram + d.youtube + d.tiktok);
   const max = Math.max(...totals);
   const sel = selDay != null ? data.breakdown[selDay] : null;
+
+  // Live friction counters from today's ladder, layered on the mock history.
+  const frByApp = useFrictionStore((s) => s.byApp);
+  const live = Object.values(frByApp).reduce(
+    (acc, a) => ({
+      answered: acc.answered + a.answered,
+      maxLevel: Math.max(acc.maxLevel, a.maxLevel),
+      stopped: acc.stopped + a.stopped,
+    }),
+    { answered: 0, maxLevel: 0, stopped: 0 },
+  );
+  const fAnswered = data.friction.answered + live.answered;
+  const fHighest = Math.max(data.friction.highestLevel, live.maxLevel);
+  const fStopped = data.friction.stopped + live.stopped;
 
   return (
     <ScrollView
@@ -143,15 +158,15 @@ export default function Stats() {
       <Text style={[styles.sectionLabel, { marginTop: 24 }]}>FRICTION STATS</Text>
       <View style={styles.frictionGrid}>
         <View style={[styles.frictionCard, { backgroundColor: colors.coral }]}>
-          <Text style={[styles.frictionNum, { color: colors.cream }]}>{data.friction.answered}</Text>
+          <Text style={[styles.frictionNum, { color: colors.cream }]}>{fAnswered}</Text>
           <Text style={[styles.frictionLabel, { color: 'rgba(251,244,234,0.8)' }]}>questions answered</Text>
         </View>
         <View style={[styles.frictionCard, styles.frictionWhite]}>
-          <Text style={styles.frictionNum}>{data.friction.highestLevel}</Text>
+          <Text style={styles.frictionNum}>{fHighest}</Text>
           <Text style={styles.frictionLabel}>highest level</Text>
         </View>
         <View style={[styles.frictionCard, styles.frictionWhite]}>
-          <Text style={styles.frictionNum}>{data.friction.stopped}</Text>
+          <Text style={styles.frictionNum}>{fStopped}</Text>
           <Text style={styles.frictionLabel}>times stopped</Text>
         </View>
       </View>

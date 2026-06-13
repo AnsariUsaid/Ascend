@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   APP_CATALOG,
   DEFAULT_SELECTED,
@@ -20,6 +22,13 @@ type AppState = {
   displayName: string;
   leaderboardOptIn: boolean;
   notifications: boolean;
+
+  /**
+   * Average daily screen-time (minutes) before Ascend — the denominator for the
+   * leaderboard's % reduction. Set ONCE on first launch.
+   * TODO(M4): populate from a past-7-day UsageStatsManager query instead of this mock seed.
+   */
+  baselineMinutes: number;
 
   // Actions
   toggleApp: (key: string) => void;
@@ -45,32 +54,51 @@ const initialLimits: Record<string, number> = Object.fromEntries(
   APP_CATALOG.map((a) => [a.key, DEFAULT_LIMIT]),
 );
 
-export const useAppStore = create<AppState>((set, get) => ({
-  selected: initialSelected,
-  limits: initialLimits,
-  questionType: 'math',
-  gracePeriod: 10,
-  displayName: 'EarlyBird',
-  leaderboardOptIn: true,
-  notifications: true,
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      selected: initialSelected,
+      limits: initialLimits,
+      questionType: 'math',
+      gracePeriod: 10,
+      displayName: 'EarlyBird',
+      leaderboardOptIn: true,
+      notifications: true,
+      baselineMinutes: 320, // mock seed (~5h 20m); replaced by real query in M4
 
-  toggleApp: (key) =>
-    set((s) => ({ selected: { ...s.selected, [key]: !s.selected[key] } })),
-  setSelected: (next) => set({ selected: next }),
-  setLimit: (key, minutes) =>
-    set((s) => ({ limits: { ...s.limits, [key]: clampLimit(minutes) } })),
-  bumpLimit: (key, delta) =>
-    set((s) => ({
-      limits: { ...s.limits, [key]: clampLimit((s.limits[key] ?? DEFAULT_LIMIT) + delta * LIMIT_STEP) },
-    })),
-  setQuestionType: (t) => set({ questionType: t }),
-  setGracePeriod: (g) => set({ gracePeriod: g }),
-  setDisplayName: (name) => set({ displayName: name }),
-  setLeaderboardOptIn: (v) => set({ leaderboardOptIn: v }),
-  setNotifications: (v) => set({ notifications: v }),
+      toggleApp: (key) =>
+        set((s) => ({ selected: { ...s.selected, [key]: !s.selected[key] } })),
+      setSelected: (next) => set({ selected: next }),
+      setLimit: (key, minutes) =>
+        set((s) => ({ limits: { ...s.limits, [key]: clampLimit(minutes) } })),
+      bumpLimit: (key, delta) =>
+        set((s) => ({
+          limits: { ...s.limits, [key]: clampLimit((s.limits[key] ?? DEFAULT_LIMIT) + delta * LIMIT_STEP) },
+        })),
+      setQuestionType: (t) => set({ questionType: t }),
+      setGracePeriod: (g) => set({ gracePeriod: g }),
+      setDisplayName: (name) => set({ displayName: name }),
+      setLeaderboardOptIn: (v) => set({ leaderboardOptIn: v }),
+      setNotifications: (v) => set({ notifications: v }),
 
-  selectedKeys: () => {
-    const { selected } = get();
-    return APP_CATALOG.filter((a) => selected[a.key]).map((a) => a.key);
-  },
-}));
+      selectedKeys: () => {
+        const { selected } = get();
+        return APP_CATALOG.filter((a) => selected[a.key]).map((a) => a.key);
+      },
+    }),
+    {
+      name: 'ascend-config',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (s) => ({
+        selected: s.selected,
+        limits: s.limits,
+        questionType: s.questionType,
+        gracePeriod: s.gracePeriod,
+        displayName: s.displayName,
+        leaderboardOptIn: s.leaderboardOptIn,
+        notifications: s.notifications,
+        baselineMinutes: s.baselineMinutes,
+      }),
+    },
+  ),
+);
