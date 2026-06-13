@@ -76,4 +76,15 @@ node 22, npm 10, java 20. No global expo — use `npx expo`. Phone: Expo Go (SDK
     1. *Route collision at `/`* — `app/index.tsx` (splash) and `app/(tabs)/index.tsx` both mapped to `/` (route groups `(tabs)` are invisible in the URL). Renamed Home tab to `app/(tabs)/home.tsx`; dashboard now at `/home`, splash keeps `/`.
     2. *Modal had no anchor* — declaring `<Stack.Screen name="friction">` as the only explicit child of the root `<Stack>` made the modal the de-facto initial route (a modal with no anchor wipes the base screen). Fixed per Expo's documented modal pattern: declare `<Stack.Screen name="index" />` first + `export const unstable_settings = { anchor: 'index' }` in `app/_layout.tsx`. NOTE: Expo Router does NOT use an `initialRouteName` prop on `<Stack>`; first-route config lives in `unstable_settings` (`anchor` for SDK 54). Confirmed working on device.
   - Verified: `tsc --noEmit` clean + `expo export --platform android`, no collision warnings, boots to splash on device.
-- **Next (Milestone 3):** real friction-ladder engine + question bank (escalation, skip penalty, per-app level/grace state, midnight reset) in the store; persist state (AsyncStorage). Then M4 native Kotlin module.
+- **Milestone 3 DONE** (commit `0920e1d`):
+  - `src/store/useFrictionStore.ts` = the ladder engine. Per-app/per-day state: `level`, `graceExpiresAt`, `blockedForToday`, counters (`answered`/`skipped`/`stopped`/`maxLevel`). Actions: `ensureToday` (midnight reset), `answerCorrect` (grant grace + climb a level), `skip` (+1 level, no grace), `doneForToday`. Persisted via `zustand/persist` + AsyncStorage (`partialize` drops the action fns).
+  - `src/store/useAppStore.ts` now wrapped in `persist` (config survives restarts). Added `baselineMinutes` (seeded mock, `TODO(M4)`: real past-7-day query).
+  - `src/data/questionBank.ts` replaces `questions.ts`: curated trivia/logic/typing levels 1–5 + generated math; `getQuestion()` avoids immediate repeats.
+  - `src/lib/date.ts`: `todayKey()` / `isNewDay()`.
+  - `app/friction.tsx`: rewired to the engine — app via `?app=` route param, real escalation/skip/grace(from stored expiry)/done.
+  - `app/(tabs)/home.tsx`: runs `ensureToday()` on open; per-app live grace-countdown / "Blocked today" pills; trigger targets the over-limit app; added a dev **"Reset day"** button.
+  - `app/(tabs)/stats.tsx`: friction stat cards add live today counters on top of mock history.
+  - Added `@react-native-async-storage/async-storage`.
+  - **Baseline decision:** NO 7-day waiting period (deviates from blueprint). Baseline = past-7-day usage query on first launch (real in M4); mock seed for now. No "Day X of 7" UI.
+  - Verified: `tsc --noEmit` clean + `expo export --platform android`, no warnings. (Device test pending user.)
+- **Next (Milestone 4):** native Kotlin module — `UsageStatsManager` (real per-app usage + past-7-day baseline), `SYSTEM_ALERT_WINDOW` overlay, foreground service. Switch from Expo Go to a dev build (`expo prebuild` + `expo-dev-client`).
