@@ -7,8 +7,9 @@ dist/
 web-build/
 *.tsbuildinfo
 
-# Native build output
-android/
+# Native projects: we COMMIT android/ (we hand-edit its manifest, gradle, and
+# native code for M4). Build artifacts inside it are excluded by mobile/android/.gitignore.
+# ios/ stays ignored — this is an Android-only app.
 ios/
 *.orig.*
 

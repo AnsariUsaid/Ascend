@@ -30,6 +30,9 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# IDE
+.idea/
+
 # local env files
 .env*.local
 
@@ -37,5 +40,7 @@ yarn-error.*
 *.tsbuildinfo
 
 # generated native folders
+# NOTE: /android is intentionally NOT ignored — we commit it (we hand-edit the
+# manifest, gradle, and native code for the M4 native module). Build artifacts
+# inside it are excluded by android/.gitignore.
 /ios
-/android
