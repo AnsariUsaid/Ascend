@@ -87,4 +87,19 @@ node 22, npm 10, java 20. No global expo — use `npx expo`. Phone: Expo Go (SDK
   - Added `@react-native-async-storage/async-storage`.
   - **Baseline decision:** NO 7-day waiting period (deviates from blueprint). Baseline = past-7-day usage query on first launch (real in M4); mock seed for now. No "Day X of 7" UI.
   - Verified: `tsc --noEmit` clean + `expo export --platform android`, no warnings. (Device test pending user.)
-- **Next (Milestone 4):** native Kotlin module — `UsageStatsManager` (real per-app usage + past-7-day baseline), `SYSTEM_ALERT_WINDOW` overlay, foreground service. Switch from Expo Go to a dev build (`expo prebuild` + `expo-dev-client`).
+- Milestone 3 confirmed working on device by the user.
+
+### 2026-06-14 — Milestone 4 (native), Phase A
+- **Phase A DONE** (commit `9a59892`): converted Expo Go → custom **dev build**.
+  - `npx expo install expo-dev-client`; `npx expo prebuild -p android` generated `mobile/android/`.
+  - **We commit `android/`** (bare workflow — hand-edit manifest/gradle/native). Removed `/android` from both root `.gitignore` and `mobile/.gitignore`; build artifacts excluded by `mobile/android/.gitignore`; `ios/` stays ignored; `.idea/` ignored.
+  - Trimmed `reactNativeArchitectures=arm64-v8a` in `mobile/android/gradle.properties` (S23 is 64-bit; faster builds).
+  - **Verified on device:** `BUILD SUCCESSFUL`, `com.ascend.app` installed + running on the Galaxy S23 (model SM-S911B) via Metro over USB. Same JS app as M3; no Kotlin yet — this is the container Phase B plugs into.
+- **Toolchain set up (one-time, persisted in `~/.zshrc`):**
+  - `ANDROID_HOME=$HOME/Library/Android/sdk`, `platform-tools` on PATH (adb).
+  - **JDK 17** via `brew install openjdk@17` → `JAVA_HOME=/opt/homebrew/opt/openjdk@17` on PATH (system had JDK 20/21; RN 0.81 wants 17).
+  - Android **cmdline-tools** (build 14742923) + **NDK 27.1.12297006** installed via `sdkmanager` (the Gradle auto-downloader stalled; sdkmanager is resumable). Licenses accepted.
+- **Build command** (run from `mobile/`): `npx expo run:android` (env above). First clean build ~17 min (downloads NDK ~1GB + Maven deps); incremental rebuilds are far faster. JS edits hot-reload over USB with no rebuild; Kotlin edits need a rebuild.
+- **Device:** Galaxy S23, USB debugging. Must be plugged in + authorized (`adb devices` shows `device`) for builds/installs. Samsung One UI kills background services aggressively — relevant for Phase D/E (battery-opt exemption).
+- **Gotcha learned:** the user is on flaky mobile data (not WiFi); every "stall" today was a dropped download. Big downloads are now cached (~4.7GB); future builds need little internet; the app runs offline (fonts bundled).
+- **Next (Phase B):** `npx create-expo-module@latest --local` → `modules/ascend-native/` (Kotlin). Implement permission checks (`hasUsageAccess`/`openUsageAccessSettings`/`hasOverlayPermission`/`openOverlaySettings`); wire onboarding usage-access + overlay-permission screens to call them and re-verify on focus.
