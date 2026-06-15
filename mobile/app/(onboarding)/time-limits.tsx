@@ -2,7 +2,8 @@ import { Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button, LimitStepperRow, OnboardingShell } from '../../src/components';
 import { colors, fonts } from '../../src/theme';
-import { APP_CATALOG } from '../../src/data/apps';
+import { getInstalledApps } from '../../src/data/installedApps';
+import { DEFAULT_LIMIT } from '../../src/data/apps';
 import { useAppStore } from '../../src/store/useAppStore';
 
 export default function TimeLimits() {
@@ -11,7 +12,7 @@ export default function TimeLimits() {
   const limits = useAppStore((s) => s.limits);
   const bumpLimit = useAppStore((s) => s.bumpLimit);
 
-  const apps = APP_CATALOG.filter((a) => selected[a.key]);
+  const apps = getInstalledApps().filter((a) => selected[a.packageName]);
 
   return (
     <OnboardingShell
@@ -24,10 +25,10 @@ export default function TimeLimits() {
       </Text>
       {apps.map((app) => (
         <LimitStepperRow
-          key={app.key}
+          key={app.packageName}
           app={app}
-          minutes={limits[app.key]}
-          onBump={(delta) => bumpLimit(app.key, delta)}
+          minutes={limits[app.packageName] ?? DEFAULT_LIMIT}
+          onBump={(delta) => bumpLimit(app.packageName, delta)}
         />
       ))}
     </OnboardingShell>

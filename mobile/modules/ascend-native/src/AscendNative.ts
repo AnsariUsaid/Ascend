@@ -13,6 +13,16 @@ export interface AscendNativeModule {
   hasOverlayPermission(): boolean;
   /** Opens the system overlay-permission settings screen. */
   openOverlaySettings(): void;
+
+  /**
+   * Foreground minutes per package for the last `days` days.
+   * Returns `{ [packageName]: number[] }`, each array length `days`,
+   * index 0 = oldest day, last index = today. Zeros if usage access is off.
+   */
+  getUsage(packageNames: string[], days: number): Record<string, number[]>;
+
+  /** Launchable apps installed on the device. */
+  getInstalledApps(): { packageName: string; name: string }[];
 }
 
 // requireNativeModule looks up the module registered as "AscendNative"

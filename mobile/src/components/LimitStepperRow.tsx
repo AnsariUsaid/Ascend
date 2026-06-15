@@ -4,10 +4,11 @@ import { AppChip } from './AppChip';
 import { colors, fonts, radius } from '../theme';
 import { LIMIT_MIN, LIMIT_MAX } from '../data/apps';
 import { formatDuration } from '../data/mock';
-import type { AppCatalogItem } from '../data/apps';
+
+type AppLike = { name: string; glyph: string; hue: number };
 
 type Props = {
-  app: AppCatalogItem;
+  app: AppLike;
   minutes: number;
   onBump: (delta: number) => void;
 };

@@ -2,10 +2,11 @@ import { Pressable, Text, StyleSheet, View } from 'react-native';
 import { AppChip } from './AppChip';
 import { Checkbox } from './Checkbox';
 import { colors, fonts, radius } from '../theme';
-import type { AppCatalogItem } from '../data/apps';
+
+type AppLike = { name: string; glyph: string; hue: number };
 
 type Props = {
-  app: AppCatalogItem;
+  app: AppLike;
   selected: boolean;
   onToggle: () => void;
   /** Caption under the name (e.g. "Currently monitored"). */

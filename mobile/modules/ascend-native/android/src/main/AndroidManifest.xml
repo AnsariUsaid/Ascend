@@ -16,4 +16,14 @@
   <!-- Draw the friction screen over other apps. -->
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+  <!-- See other launchable apps (for the app picker) on Android 11+. This is the
+       Play-Store-friendly alternative to QUERY_ALL_PACKAGES: it only reveals apps
+       that have a launcher icon. -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent>
+  </queries>
+
 </manifest>

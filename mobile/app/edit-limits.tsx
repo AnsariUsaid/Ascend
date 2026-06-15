@@ -3,7 +3,8 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, LimitStepperRow, ScreenHeader } from '../src/components';
 import { colors, fonts, spacing } from '../src/theme';
-import { APP_CATALOG } from '../src/data/apps';
+import { getInstalledApps } from '../src/data/installedApps';
+import { DEFAULT_LIMIT } from '../src/data/apps';
 import { useAppStore } from '../src/store/useAppStore';
 
 export default function EditLimits() {
@@ -13,7 +14,7 @@ export default function EditLimits() {
   const limits = useAppStore((s) => s.limits);
   const bumpLimit = useAppStore((s) => s.bumpLimit);
 
-  const apps = APP_CATALOG.filter((a) => selected[a.key]);
+  const apps = getInstalledApps().filter((a) => selected[a.packageName]);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.cream }}>
@@ -28,10 +29,10 @@ export default function EditLimits() {
         <Text style={styles.note}>Changes take effect immediately.</Text>
         {apps.map((app) => (
           <LimitStepperRow
-            key={app.key}
+            key={app.packageName}
             app={app}
-            minutes={limits[app.key]}
-            onBump={(delta) => bumpLimit(app.key, delta)}
+            minutes={limits[app.packageName] ?? DEFAULT_LIMIT}
+            onBump={(delta) => bumpLimit(app.packageName, delta)}
           />
         ))}
       </ScrollView>

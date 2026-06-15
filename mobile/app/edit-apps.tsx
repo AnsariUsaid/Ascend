@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppSelectRow, Button, ScreenHeader } from '../src/components';
 import { colors, fonts, spacing } from '../src/theme';
-import { APP_CATALOG } from '../src/data/apps';
+import { getInstalledApps } from '../src/data/installedApps';
+import { SUGGESTED_PACKAGES } from '../src/data/appMeta';
 import { useAppStore } from '../src/store/useAppStore';
 
 export default function EditApps() {
@@ -13,9 +14,16 @@ export default function EditApps() {
   const committed = useAppStore((s) => s.selected);
   const setSelected = useAppStore((s) => s.setSelected);
 
+  const apps = useMemo(() => {
+    const all = getInstalledApps();
+    const suggested = all.filter((a) => SUGGESTED_PACKAGES.includes(a.packageName));
+    const rest = all.filter((a) => !SUGGESTED_PACKAGES.includes(a.packageName));
+    return [...suggested, ...rest];
+  }, []);
+
   // Local draft; back discards it.
   const [draft, setDraft] = useState<Record<string, boolean>>({ ...committed });
-  const count = APP_CATALOG.filter((a) => draft[a.key]).length;
+  const count = apps.filter((a) => draft[a.packageName]).length;
 
   const save = () => {
     if (count === 0) return;
@@ -34,13 +42,13 @@ export default function EditApps() {
       >
         <ScreenHeader title="Monitored Apps" rightText={`${count} selected`} />
         {count === 0 ? <Text style={styles.error}>Select at least one app.</Text> : null}
-        {APP_CATALOG.map((app) => (
+        {apps.map((app) => (
           <AppSelectRow
-            key={app.key}
+            key={app.packageName}
             app={app}
-            selected={!!draft[app.key]}
-            caption={committed[app.key] ? 'Currently monitored' : 'Not monitored'}
-            onToggle={() => setDraft((d) => ({ ...d, [app.key]: !d[app.key] }))}
+            selected={!!draft[app.packageName]}
+            caption={committed[app.packageName] ? 'Currently monitored' : 'Not monitored'}
+            onToggle={() => setDraft((d) => ({ ...d, [app.packageName]: !d[app.packageName] }))}
           />
         ))}
       </ScrollView>

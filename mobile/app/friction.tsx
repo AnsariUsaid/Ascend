@@ -8,7 +8,7 @@ import { colors, fonts, radius } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
 import { useFrictionStore } from '../src/store/useFrictionStore';
 import { getQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questionBank';
-import { APP_CATALOG } from '../src/data/apps';
+import { getApp } from '../src/data/installedApps';
 
 type Phase = 'question' | 'correct' | 'done';
 
@@ -22,16 +22,18 @@ export default function Friction() {
   const { ensureToday, answerCorrect, skip, doneForToday } = useFrictionStore();
 
   // Resolve which app triggered the overlay.
-  const app = APP_CATALOG.find((a) => a.key === params.app) ?? APP_CATALOG[0];
+  // `params.app` is a package name (passed by the dashboard / Phase D trigger).
+  const app = getApp(params.app ?? '');
+  const appKey = app.packageName;
 
   // Snapshot the starting level once (engine state lives in the store).
   // Day-reset is handled by the dashboard on open and by the effect below.
   const [current, setCurrent] = useState(() => {
-    const appState = useFrictionStore.getState().getApp(app.key);
+    const appState = useFrictionStore.getState().getApp(appKey);
     return { q: getQuestion(questionType, appState.level), level: appState.level };
   });
   const [phase, setPhase] = useState<Phase>(() =>
-    useFrictionStore.getState().getApp(app.key).blockedForToday ? 'done' : 'question',
+    useFrictionStore.getState().getApp(appKey).blockedForToday ? 'done' : 'question',
   );
   const [input, setInput] = useState('');
   const [wrong, setWrong] = useState(false);
@@ -55,8 +57,8 @@ export default function Friction() {
       ? input === ref
       : normalizeAnswer(input) === normalizeAnswer(current.q.answer);
     if (ok) {
-      answerCorrect(app.key, grace);
-      setGraceExpiresAt(useFrictionStore.getState().getApp(app.key).graceExpiresAt);
+      answerCorrect(appKey, grace);
+      setGraceExpiresAt(useFrictionStore.getState().getApp(appKey).graceExpiresAt);
       setPhase('correct');
     } else {
       setWrong(true);
@@ -64,7 +66,7 @@ export default function Friction() {
   };
 
   const onSkip = () => {
-    skip(app.key);
+    skip(appKey);
     const nextLevel = current.level + 1;
     setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
     setInput('');
@@ -73,7 +75,7 @@ export default function Friction() {
   };
 
   const onDone = () => {
-    doneForToday(app.key);
+    doneForToday(appKey);
     setPhase('done');
   };
 

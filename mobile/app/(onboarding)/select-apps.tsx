@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppSelectRow, Button, OnboardingShell } from '../../src/components';
 import { colors, fonts } from '../../src/theme';
-import { APP_CATALOG } from '../../src/data/apps';
+import { getInstalledApps } from '../../src/data/installedApps';
+import { SUGGESTED_PACKAGES } from '../../src/data/appMeta';
 import { useAppStore } from '../../src/store/useAppStore';
 
 export default function SelectApps() {
@@ -12,8 +13,14 @@ export default function SelectApps() {
   const toggleApp = useAppStore((s) => s.toggleApp);
   const [error, setError] = useState(false);
 
-  const detected = APP_CATALOG.filter((a) => a.detected);
-  const anySelected = detected.some((a) => selected[a.key]);
+  // Real installed apps, with common social apps surfaced first.
+  const apps = useMemo(() => {
+    const all = getInstalledApps();
+    const suggested = all.filter((a) => SUGGESTED_PACKAGES.includes(a.packageName));
+    const rest = all.filter((a) => !SUGGESTED_PACKAGES.includes(a.packageName));
+    return [...suggested, ...rest];
+  }, []);
+  const anySelected = apps.some((a) => selected[a.packageName]);
 
   const onContinue = () => {
     if (!anySelected) {
@@ -24,21 +31,18 @@ export default function SelectApps() {
   };
 
   return (
-    <OnboardingShell
-      step={3}
-      footer={<Button label="Continue" onPress={onContinue} />}
-    >
+    <OnboardingShell step={3} footer={<Button label="Continue" onPress={onContinue} />}>
       <Text style={styles.headline}>Which apps do you want to control?</Text>
       <Text style={styles.sub}>You can change this anytime.</Text>
       {error && !anySelected ? <Text style={styles.error}>Select at least one app.</Text> : null}
-      {detected.map((app) => (
+      {apps.map((app) => (
         <AppSelectRow
-          key={app.key}
+          key={app.packageName}
           app={app}
-          selected={!!selected[app.key]}
+          selected={!!selected[app.packageName]}
           onToggle={() => {
             setError(false);
-            toggleApp(app.key);
+            toggleApp(app.packageName);
           }}
         />
       ))}
