@@ -23,5 +23,10 @@ ios/
 npm-debug.*
 yarn-error.*
 
-# Local archives (design handoff is already unpacked in the repo)
+# Local archives
 *.zip
+
+# Design handoff — local reference only, not part of the codebase (changes
+# frequently and shouldn't clutter commits). Kept on disk, untracked.
+design_handoff_ascend_app 2/
+AGENTS.md
