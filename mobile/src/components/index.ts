@@ -18,3 +18,4 @@ export { Sheet } from './Sheet';
 export { ConfirmDialog } from './ConfirmDialog';
 export { ScreenHeader } from './ScreenHeader';
 export { Segmented } from './Segmented';
+export { PermissionBanner } from './PermissionBanner';

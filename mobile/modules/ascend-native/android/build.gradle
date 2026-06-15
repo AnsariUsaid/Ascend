@@ -1,0 +1,20 @@
+plugins {
+  id 'com.android.library'
+  // Expo's plugin wires in all the boilerplate (compileSdk, Kotlin, the
+  // expo-modules-core dependency, codegen) so this file stays tiny.
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.ascendnative'
+version = '0.1.0'
+
+android {
+  namespace 'expo.modules.ascendnative'
+  defaultConfig {
+    versionCode 1
+    versionName '0.1.0'
+  }
+  lintOptions {
+    abortOnError false
+  }
+}

@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button, Card, OnboardingShell } from '../../src/components';
+import { Button, Card, OnboardingShell, PermissionBanner } from '../../src/components';
 import { colors, fonts } from '../../src/theme';
+import { usePermissionStatus } from '../../src/hooks/usePermissionStatus';
+import AscendNative from '../../modules/ascend-native';
 
 const BULLETS = [
   'Ascend needs usage access to measure time in each app.',
@@ -20,15 +23,30 @@ function Bullet({ text }: { text: string }) {
 
 export default function UsageAccess() {
   const router = useRouter();
+  // Re-checks automatically when we return from the Settings screen.
+  const { granted } = usePermissionStatus(AscendNative.hasUsageAccess);
+  const [attempted, setAttempted] = useState(false);
+
+  const next = () => router.push('/(onboarding)/overlay-permission');
+
   return (
     <OnboardingShell
       step={1}
       footer={
-        <>
-          {/* Real app opens Usage Access settings + re-checks on return. Stubbed → proceed. */}
-          <Button label="Grant Access" onPress={() => router.push('/(onboarding)/overlay-permission')} />
-          <Button label="I'll do this later" variant="text" onPress={() => router.push('/(onboarding)/overlay-permission')} />
-        </>
+        granted ? (
+          <Button label="Continue" onPress={next} />
+        ) : (
+          <>
+            <Button
+              label="Grant Access"
+              onPress={() => {
+                setAttempted(true);
+                AscendNative.openUsageAccessSettings();
+              }}
+            />
+            <Button label="I'll do this later" variant="text" onPress={next} />
+          </>
+        )
       }
     >
       <Card style={styles.illus}>
@@ -39,6 +57,16 @@ export default function UsageAccess() {
         </View>
       </Card>
       <Text style={styles.headline}>See where your time goes</Text>
+
+      {/* Show the live permission state once granted, or after an attempt. */}
+      {(granted || attempted) && (
+        <PermissionBanner
+          granted={granted}
+          grantedText="Usage access granted. You're all set for this step."
+          reminderText="Without usage access, screen-time tracking and interventions won't work. You can continue and grant it later in Settings."
+        />
+      )}
+
       <View style={{ marginTop: 16 }}>
         {BULLETS.map((b) => (
           <Bullet key={b} text={b} />

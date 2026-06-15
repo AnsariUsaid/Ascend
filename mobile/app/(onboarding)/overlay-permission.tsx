@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Button, Card, OnboardingShell } from '../../src/components';
+import { Button, Card, OnboardingShell, PermissionBanner } from '../../src/components';
 import { colors, fonts } from '../../src/theme';
+import { usePermissionStatus } from '../../src/hooks/usePermissionStatus';
+import AscendNative from '../../modules/ascend-native';
 
 const BULLETS = [
   'Intervention screens must draw over the app you are using.',
@@ -21,14 +24,29 @@ function Bullet({ text }: { text: string }) {
 
 export default function OverlayPermission() {
   const router = useRouter();
+  const { granted } = usePermissionStatus(AscendNative.hasOverlayPermission);
+  const [attempted, setAttempted] = useState(false);
+
+  const next = () => router.push('/(onboarding)/select-apps');
+
   return (
     <OnboardingShell
       step={2}
       footer={
-        <>
-          <Button label="Allow Overlay" onPress={() => router.push('/(onboarding)/select-apps')} />
-          <Button label="I'll do this later" variant="text" onPress={() => router.push('/(onboarding)/select-apps')} />
-        </>
+        granted ? (
+          <Button label="Continue" onPress={next} />
+        ) : (
+          <>
+            <Button
+              label="Allow Overlay"
+              onPress={() => {
+                setAttempted(true);
+                AscendNative.openOverlaySettings();
+              }}
+            />
+            <Button label="I'll do this later" variant="text" onPress={next} />
+          </>
+        )
       }
     >
       <Card style={styles.illus}>
@@ -39,6 +57,15 @@ export default function OverlayPermission() {
         </View>
       </Card>
       <Text style={styles.headline}>Draw over other apps</Text>
+
+      {(granted || attempted) && (
+        <PermissionBanner
+          granted={granted}
+          grantedText="Overlay permission granted. Friction screens can appear when needed."
+          reminderText="Without overlay permission, friction challenges can't be shown over other apps. You can continue and grant it later in Settings."
+        />
+      )}
+
       <View style={{ marginTop: 16 }}>
         {BULLETS.map((b) => (
           <Bullet key={b} text={b} />

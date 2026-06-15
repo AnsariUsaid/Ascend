@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+
+  <!--
+    These two permissions are declared here, in the module's manifest, and get
+    MERGED into the app's AndroidManifest at build time. Both are "special":
+    declaring them isn't enough — the user must also flip a switch in Settings
+    (which is what openUsageAccessSettings / openOverlaySettings take them to).
+  -->
+
+  <!-- Read per-app foreground usage time (UsageStatsManager). Lint flags this as
+       a protected permission; tools:ignore silences that since it's intentional. -->
+  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+                   tools:ignore="ProtectedPermissions" />
+
+  <!-- Draw the friction screen over other apps. -->
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+</manifest>
