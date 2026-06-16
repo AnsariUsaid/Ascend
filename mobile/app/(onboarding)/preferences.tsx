@@ -40,7 +40,7 @@ function Completion({ onEnter }: { onEnter: () => void }) {
 
 export default function Preferences() {
   const router = useRouter();
-  const { displayName, questionType, gracePeriod, setDisplayName, setQuestionType, setGracePeriod } =
+  const { displayName, questionType, gracePeriod, setDisplayName, setQuestionType, setGracePeriod, setOnboarded } =
     useAppStore();
   const [name, setName] = useState(displayName);
   const [touched, setTouched] = useState(false);
@@ -52,6 +52,7 @@ export default function Preferences() {
     setTouched(true);
     if (nameError) return;
     setDisplayName(name.trim());
+    setOnboarded(true); // from now on, the splash sends this user straight to the app
     setDone(true);
   };
 

@@ -3,10 +3,13 @@ import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ChevronMark, Wordmark } from '../src/components';
 import { colors, fonts } from '../src/theme';
+import { useAppStore } from '../src/store/useAppStore';
+import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 
 export default function Splash() {
   const router = useRouter();
   const rise = useRef(new Animated.Value(0)).current;
+  useStatusBarStyle('light'); // coral background → white icons
 
   useEffect(() => {
     // Rising-sun loader loop.
@@ -19,8 +22,14 @@ export default function Splash() {
       }),
     ).start();
 
-    // Auto-advance. (Auth is stubbed for now → always go to Sign In.)
-    const t = setTimeout(() => router.replace('/sign-in'), 2600);
+    // Auto-advance. A returning, set-up user skips sign-in + onboarding and lands
+    // straight on the dashboard; a fresh user starts at sign-in. (Auth is stubbed,
+    // so the persisted `onboarded` flag is our "returning user" signal for now.)
+    // We read with getState() at fire time so we see the rehydrated value.
+    const t = setTimeout(() => {
+      const onboarded = useAppStore.getState().onboarded;
+      router.replace(onboarded ? '/(tabs)/home' : '/sign-in');
+    }, 2600);
     return () => clearTimeout(t);
   }, []);
 

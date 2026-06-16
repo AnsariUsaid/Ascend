@@ -26,7 +26,7 @@ export function ProtectionCard() {
     {
       key: 'usage',
       label: 'Usage Access',
-      desc: 'Read your screen time',
+      desc: 'Lets Ascend measure your screen time',
       ok: usageAccess,
       required: true,
       fix: () => AscendNative.openUsageAccessSettings(),
@@ -34,15 +34,15 @@ export function ProtectionCard() {
     {
       key: 'overlay',
       label: 'Display Over Apps',
-      desc: 'Show friction over other apps',
+      desc: 'Lets Ascend show challenges over your apps',
       ok: overlay,
       required: true,
       fix: () => AscendNative.openOverlaySettings(),
     },
     {
       key: 'battery',
-      label: 'Unrestricted Battery',
-      desc: 'Stops the OS killing the watcher',
+      label: 'Background Activity',
+      desc: 'Keeps Ascend running so your limits always work',
       ok: batteryExempt,
       required: false,
       fix: () => AscendNative.openBatteryOptimizationSettings(),
@@ -50,7 +50,7 @@ export function ProtectionCard() {
     {
       key: 'notif',
       label: 'Notifications',
-      desc: 'Shows the guard is running',
+      desc: 'Shows when Ascend is active',
       ok: notifications,
       required: false,
       fix: () => AscendNative.openNotificationSettings(),
@@ -81,8 +81,8 @@ export function ProtectionCard() {
         ))}
       </View>
       <Text style={styles.note}>
-        On Samsung, also add Ascend to “Never sleeping apps” (Settings → Battery → Background
-        usage limits) so it keeps watching.
+        On Samsung phones, also keep Ascend out of “Sleeping apps” (Settings → Battery →
+        Background usage limits) so it keeps running.
       </Text>
     </View>
   );

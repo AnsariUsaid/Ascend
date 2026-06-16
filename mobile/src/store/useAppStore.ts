@@ -26,6 +26,13 @@ type AppState = {
   /** True once the real baseline has been captured (so we don't overwrite it). */
   baselineComputed: boolean;
 
+  /**
+   * True once the user has finished onboarding. Lets the splash skip sign-in +
+   * onboarding for a returning, set-up user (auth is stubbed, so this is our
+   * "returning user" signal for now).
+   */
+  onboarded: boolean;
+
   // Actions
   toggleApp: (key: string) => void;
   setSelected: (next: Record<string, boolean>) => void;
@@ -37,6 +44,7 @@ type AppState = {
   setLeaderboardOptIn: (v: boolean) => void;
   setNotifications: (v: boolean) => void;
   setBaseline: (minutes: number) => void;
+  setOnboarded: (v: boolean) => void;
 
   // Derived helpers
   selectedKeys: () => string[];
@@ -56,6 +64,7 @@ export const useAppStore = create<AppState>()(
       notifications: true,
       baselineMinutes: 320, // fallback until the real past-7-day baseline is computed
       baselineComputed: false,
+      onboarded: false,
 
       toggleApp: (key) =>
         set((s) => ({
@@ -76,6 +85,7 @@ export const useAppStore = create<AppState>()(
       setLeaderboardOptIn: (v) => set({ leaderboardOptIn: v }),
       setNotifications: (v) => set({ notifications: v }),
       setBaseline: (minutes) => set({ baselineMinutes: minutes, baselineComputed: true }),
+      setOnboarded: (v) => set({ onboarded: v }),
 
       selectedKeys: () => {
         const { selected } = get();
@@ -95,6 +105,7 @@ export const useAppStore = create<AppState>()(
         notifications: s.notifications,
         baselineMinutes: s.baselineMinutes,
         baselineComputed: s.baselineComputed,
+        onboarded: s.onboarded,
       }),
     },
   ),

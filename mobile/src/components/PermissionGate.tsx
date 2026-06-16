@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setStatusBarStyle } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
 import { Button } from './Button';
 import { Wordmark } from './Wordmark';
@@ -26,6 +28,13 @@ export function PermissionGate() {
   const isSetUp = useAppStore((s) => s.selectedKeys().length > 0);
 
   const blocked = isSetUp && (!usageAccess || !overlay);
+
+  // The gate's coral background needs white icons; restore dark icons (for the
+  // cream app underneath) the moment it closes.
+  useEffect(() => {
+    setStatusBarStyle(blocked ? 'light' : 'dark');
+  }, [blocked]);
+
   if (!blocked) return null;
 
   return (
@@ -35,29 +44,29 @@ export function PermissionGate() {
           <Feather name="shield-off" size={34} color={colors.coral} />
         </View>
         <Wordmark size={22} style={{ marginTop: 22 }} />
-        <Text style={styles.title}>Ascend can't protect you</Text>
+        <Text style={styles.title}>Let's turn that back on</Text>
         <Text style={styles.sub}>
-          A permission Ascend needs was turned off. Until you turn it back on, your limits
-          aren't being enforced.
+          A permission Ascend needs got switched off, so it's paused for now. Turn it back on
+          and you're good to go.
         </Text>
       </View>
 
       <View style={styles.actions}>
         {!usageAccess && (
           <Button
-            label="Re-grant Usage Access"
+            label="Turn on Usage Access"
             variant="google"
             onPress={() => AscendNative.openUsageAccessSettings()}
           />
         )}
         {!overlay && (
           <Button
-            label="Re-grant Display Over Apps"
+            label="Turn on Display Over Apps"
             variant="google"
             onPress={() => AscendNative.openOverlaySettings()}
           />
         )}
-        <Text style={styles.hint}>This screen closes automatically once it's restored.</Text>
+        <Text style={styles.hint}>This closes on its own once it's back on.</Text>
       </View>
     </View>
   );

@@ -9,12 +9,14 @@ import { useAppStore } from '../src/store/useAppStore';
 import { useFrictionStore } from '../src/store/useFrictionStore';
 import { getQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
+import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 
 type Phase = 'question' | 'correct' | 'done';
 
 export default function Friction() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  useStatusBarStyle('light'); // dark scrim + coral sheet → white icons
   const params = useLocalSearchParams<{ app?: string }>();
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);

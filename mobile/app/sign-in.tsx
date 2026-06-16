@@ -3,10 +3,12 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, ChevronMark, Wordmark } from '../src/components';
 import { colors, fonts, radius, spacing } from '../src/theme';
+import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 
 export default function SignIn() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  useStatusBarStyle('light'); // coral hero → white icons
 
   // Auth is stubbed — any provider just starts onboarding.
   const enter = () => router.replace('/(onboarding)/usage-access');
