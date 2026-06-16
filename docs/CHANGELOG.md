@@ -178,14 +178,39 @@ tcp:8081 tcp:8081` tunnels Metro over USB (`localhost`), immune to IP changes. (
 `onUserLeaveHint` NPE seen while switching is a known dev-client quirk, not app code.)
 Verified on the S23: JS loads clean, the watcher auto-arms, the gate appears/closes on revoke.
 
-**`<pending>` Phase E: permission-revoked gate + Protection card + keep-alive natives**
+**`b88b0f2` Phase E: permission-revoked gate + Protection card + keep-alive natives**
+
+## Milestone 4 · Phase E polish (issue #1)
+
+**A round of UX/behavior cleanup from real-device testing** (tracked + closed as issue #1),
+split into two commits:
+
+- **`76a16cb` (items 1–4):**
+  - *Onboarding re-ran on every launch.* Added a persisted `onboarded` flag (in `useAppStore`
+    `partialize`); the splash now routes a returning, set-up user straight to the tabs, and
+    onboarding flips the flag when it finishes.
+  - *Status-bar icons vanished on coral/dark screens.* Added a `useStatusBarStyle` hook that
+    re-asserts the style **on focus** (expo-status-bar doesn't reset on unmount, so each screen
+    must own its style): light on splash/sign-in/friction/gate, dark on the tab + onboarding
+    groups, plus a fixed cream bar behind the status bar so dark cards scrolling under stay legible.
+  - *Copy.* Reworded the permission gate ("Ascend can't protect you" → "Let's turn that back on")
+    and the Protection card (dropped jargon; "Unrestricted Battery" → "Background Activity").
+- **`232b35f` (items 5–7):**
+  - Aligned the Privacy "Visible as …" caption inside its card.
+  - Replaced the bottom sheets' flat linear Modal slide with a custom **eased** transition
+    (ease-out cubic up + scrim fade + animated exit) — they no longer feel like a cheap slide.
+  - Removed the "Simulate limit reached" + "Reset day" dev buttons from Home (the native
+    auto-trigger replaced them in Phase D), plus their now-unused wiring.
+
+*Verified on the S23.* (Heads-up: a cold-start over `adb` can flash a harmless dev-only
+`expo-keep-awake` "Unable to activate keep awake" LogBox error — not app code, gone in release.)
 
 ---
 
 ## Still to come
 
-- **Polish / improvement pass** — known inconsistencies to iron out; one-tap runtime
-  notification prompt; battery efficiency (poll only while screen is on, adaptive rate);
-  onboarding nudge for battery exemption.
-- **Release APK** — build unplugged-runnable standalone (`expo run:android --variant release`).
+- **Release APK** — build an unplugged-runnable standalone (`expo run:android --variant release`,
+  needs a one-time signing keystore). The next milestone: makes Ascend usable day-to-day.
+- **Improvement pass (deferred)** — one-tap runtime notification prompt; battery efficiency
+  (poll only while screen is on, adaptive rate); onboarding nudge for battery exemption.
 - **M5** — backend + sync and a real leaderboard.
