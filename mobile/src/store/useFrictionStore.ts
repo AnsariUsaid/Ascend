@@ -2,6 +2,17 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { todayKey } from '../lib/date';
+import AscendNative from '../../modules/ascend-native';
+
+// Mirror friction outcomes into the native watcher (Phase D). Wrapped so a
+// missing native module never breaks the JS engine.
+const pushNative = (fn: () => void) => {
+  try {
+    fn();
+  } catch {
+    /* native module unavailable — no-op */
+  }
+};
 
 /** Per-app friction state for the current calendar day. Resets at midnight. */
 export type AppFriction = {
@@ -59,6 +70,8 @@ export const useFrictionStore = create<FrictionStore>()(
         ensureToday: () => {
           if (get().today !== todayKey()) {
             set({ today: todayKey(), byApp: {} });
+            // New day: clear native grace/blocked so the watcher re-enforces.
+            pushNative(() => AscendNative.clearAllFriction());
           }
         },
 
@@ -69,17 +82,21 @@ export const useFrictionStore = create<FrictionStore>()(
           return !!a?.graceExpiresAt && a.graceExpiresAt > Date.now();
         },
 
-        answerCorrect: (key, graceMinutes) =>
+        answerCorrect: (key, graceMinutes) => {
+          const graceExpiresAt = Date.now() + graceMinutes * 60_000;
           update(key, (a) => {
             const nextLevel = a.level + 1;
             return {
               ...a,
               level: nextLevel,
-              graceExpiresAt: Date.now() + graceMinutes * 60_000,
+              graceExpiresAt,
               answered: a.answered + 1,
               maxLevel: Math.max(a.maxLevel, nextLevel),
             };
-          }),
+          });
+          // Native watcher backs off until grace expires.
+          pushNative(() => AscendNative.setGrace(key, graceExpiresAt));
+        },
 
         skip: (key) =>
           update(key, (a) => {
@@ -93,15 +110,21 @@ export const useFrictionStore = create<FrictionStore>()(
             };
           }),
 
-        doneForToday: (key) =>
+        doneForToday: (key) => {
           update(key, (a) => ({
             ...a,
             blockedForToday: true,
             graceExpiresAt: null,
             stopped: a.stopped + 1,
-          })),
+          }));
+          // Native watcher stops re-triggering until midnight.
+          pushNative(() => AscendNative.setBlockedToday(key));
+        },
 
-        resetDay: () => set({ today: todayKey(), byApp: {} }),
+        resetDay: () => {
+          set({ today: todayKey(), byApp: {} });
+          pushNative(() => AscendNative.clearAllFriction());
+        },
       };
     },
     {

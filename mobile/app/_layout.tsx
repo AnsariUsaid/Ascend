@@ -14,6 +14,7 @@ import {
   Outfit_600SemiBold,
 } from '@expo-google-fonts/outfit';
 import { colors } from '../src/theme';
+import { useMonitorSync } from '../src/native/useMonitorSync';
 
 // Anchor the stack to the splash so modal routes (friction) present over a base
 // screen instead of becoming the initial route. Documented Expo Router modal pattern.
@@ -30,6 +31,9 @@ export default function RootLayout() {
     Outfit_500Medium,
     Outfit_600SemiBold,
   });
+
+  // Arm/disarm the native background limit watcher based on perms + config.
+  useMonitorSync();
 
   // While fonts load, hold a coral full-bleed view (matches the splash).
   if (!loaded) return <View style={{ flex: 1, backgroundColor: colors.coral }} />;

@@ -1,23 +1,29 @@
 package expo.modules.ascendnative
 
 import android.app.AppOpsManager
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import java.util.Calendar
+import androidx.core.content.ContextCompat
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.records.Field
+import expo.modules.kotlin.records.Record
 
 /**
  * Native bridge for Ascend. Phase B exposes the two "special" permissions that
  * cannot be granted by a normal popup — the user must toggle them in system
  * Settings, so we expose checkers + openers that JavaScript can call.
  */
+/** One monitored app passed from JS to startWatching: package + its daily limit. */
+class WatchConfig : Record {
+  @Field val packageName: String = ""
+  @Field val limitMinutes: Int = 0
+}
+
 class AscendNativeModule : Module() {
   // `definition()` is the Expo Modules API DSL: it declares the JS-callable
   // surface of this module. The string in Name(...) is how JS finds it.
@@ -33,11 +39,30 @@ class AscendNativeModule : Module() {
     // Per-app foreground minutes for the last `days` days.
     // Returns { packageName: [oldest, ..., today] } (each list length == days).
     Function("getUsage") { packageNames: List<String>, days: Int ->
-      getUsage(packageNames, days)
+      UsageReader.getUsage(context, packageNames, days)
     }
 
     // Installed, launchable apps on the device: [{ packageName, name }, ...].
     Function("getInstalledApps") { getInstalledApps() }
+
+    // --- Phase D: background limit watcher --------------------------------
+    // Arm/disarm the foreground service that auto-launches friction.
+    Function("startWatching") { config: List<WatchConfig> -> startWatching(config) }
+    Function("stopWatching") { stopWatching() }
+    Function("isWatching") { MonitorStore.isEnabled(context) }
+
+    // JS pushes friction outcomes here so the service stays in sync without
+    // needing the JS app running. (untilMs is epoch ms; comes through as Double.)
+    Function("setGrace") { packageName: String, untilMs: Double ->
+      MonitorStore.setGrace(context, packageName, untilMs.toLong())
+    }
+    Function("setBlockedToday") { packageName: String ->
+      MonitorStore.setBlockedToday(context, packageName)
+    }
+    Function("clearFriction") { packageName: String ->
+      MonitorStore.clearFriction(context, packageName)
+    }
+    Function("clearAllFriction") { MonitorStore.clearAllFriction(context) }
   }
 
   // App context provided by Expo. Used to read system services and start intents.
@@ -88,58 +113,20 @@ class AscendNativeModule : Module() {
   }
 
   /**
-   * Foreground time (minutes) per package for the last `days` calendar days,
-   * computed from raw usage EVENTS (each app's resumed→paused intervals). This
-   * matches Digital Wellbeing far better than the aggregate totalTimeInForeground,
-   * which overcounts. If Usage Access isn't granted, queryEvents is empty → zeros.
+   * Arm the background watcher: persist the per-app limits, flip enabled on, and
+   * start the foreground service. (Usage logic itself lives in UsageReader, which
+   * both this module's getUsage and the service share.)
    */
-  private fun getUsage(packageNames: List<String>, days: Int): Map<String, List<Int>> {
-    val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-    val pkgSet = packageNames.toHashSet()
-    val totalsMs = packageNames.associateWith { LongArray(days) } // ms per day per pkg
+  private fun startWatching(config: List<WatchConfig>) {
+    MonitorStore.setConfig(context, config.associate { it.packageName to it.limitMinutes })
+    MonitorStore.setEnabled(context, true)
+    ContextCompat.startForegroundService(context, Intent(context, MonitorService::class.java))
+  }
 
-    val cal = Calendar.getInstance().apply {
-      set(Calendar.HOUR_OF_DAY, 0)
-      set(Calendar.MINUTE, 0)
-      set(Calendar.SECOND, 0)
-      set(Calendar.MILLISECOND, 0)
-    }
-    val startOfToday = cal.timeInMillis
-    val now = System.currentTimeMillis()
-    val rangeStart = startOfToday - (days - 1) * DAY_MS
-
-    // Add a foreground interval, splitting it across day buckets if it crosses midnight.
-    fun addInterval(pkg: String, start: Long, end: Long) {
-      var s = start.coerceAtLeast(rangeStart)
-      while (s < end) {
-        val dayIndex = (((s - rangeStart) / DAY_MS).toInt()).coerceIn(0, days - 1)
-        val nextBoundary = rangeStart + (dayIndex + 1) * DAY_MS
-        val segEnd = minOf(end, nextBoundary)
-        totalsMs[pkg]!![dayIndex] += (segEnd - s)
-        s = segEnd
-      }
-    }
-
-    val events = usm.queryEvents(rangeStart, now)
-    val event = UsageEvents.Event()
-    val resumedAt = HashMap<String, Long>() // pkg → timestamp it last came to foreground
-
-    while (events.hasNextEvent()) {
-      events.getNextEvent(event)
-      val pkg = event.packageName ?: continue
-      if (pkg !in pkgSet) continue
-      when (event.eventType) {
-        UsageEvents.Event.ACTIVITY_RESUMED -> resumedAt[pkg] = event.timeStamp
-        UsageEvents.Event.ACTIVITY_PAUSED -> {
-          val start = resumedAt.remove(pkg)
-          if (start != null && event.timeStamp > start) addInterval(pkg, start, event.timeStamp)
-        }
-      }
-    }
-    // Apps still in the foreground right now (no matching pause yet).
-    resumedAt.forEach { (pkg, start) -> if (now > start) addInterval(pkg, start, now) }
-
-    return totalsMs.mapValues { (_, arr) -> arr.map { (it / 60_000L).toInt() } }
+  /** Disarm: flip enabled off (the service stops itself on its next tick) and stop it now. */
+  private fun stopWatching() {
+    MonitorStore.setEnabled(context, false)
+    context.stopService(Intent(context, MonitorService::class.java))
   }
 
   /** Launchable apps installed on the device (excludes Ascend itself). */
@@ -154,9 +141,5 @@ class AscendNativeModule : Module() {
         mapOf("packageName" to pkg, "name" to ri.loadLabel(pm).toString())
       }
       .sortedBy { it["name"]?.lowercase() }
-  }
-
-  companion object {
-    private const val DAY_MS = 24L * 60L * 60L * 1000L
   }
 }

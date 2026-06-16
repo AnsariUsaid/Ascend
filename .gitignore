@@ -30,3 +30,9 @@ yarn-error.*
 # frequently and shouldn't clutter commits). Kept on disk, untracked.
 design_handoff_ascend_app 2/
 AGENTS.md
+
+# Session notes — local "brain dump" + logbook to spin up a fresh session fast.
+# Kept on disk, untracked (docs/CHANGELOG.md is the committed record).
+# Anchored to root so mobile/CLAUDE.md (the Expo notes stub) stays tracked.
+docs/HANDOFF.md
+/CLAUDE.md

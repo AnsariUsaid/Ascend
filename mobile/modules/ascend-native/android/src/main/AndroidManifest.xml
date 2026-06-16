@@ -13,8 +13,18 @@
   <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
                    tools:ignore="ProtectedPermissions" />
 
-  <!-- Draw the friction screen over other apps. -->
+  <!-- Draw the friction screen over other apps. Also lets the background service
+       launch our activity from the background (Android 10+ restricts that). -->
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+  <!-- Phase D: the background limit watcher runs as a foreground service. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <!-- Android 14+ requires a typed FGS; "special use" fits screen-time enforcement. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+  <!-- Android 13+ gates the ongoing FGS notification behind this runtime permission. -->
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <!-- Re-arm the watcher after a reboot. -->
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
   <!-- See other launchable apps (for the app picker) on Android 11+. This is the
        Play-Store-friendly alternative to QUERY_ALL_PACKAGES: it only reveals apps
@@ -25,5 +35,30 @@
       <category android:name="android.intent.category.LAUNCHER" />
     </intent>
   </queries>
+
+  <!-- This library manifest has no <application> of its own; the merger folds
+       these nodes into the app's <application> at build time. Names are fully
+       qualified because the merge resolves "." against the APP package, not ours. -->
+  <application>
+    <!-- The background watcher. exported=false: only we start it. -->
+    <service
+        android:name="expo.modules.ascendnative.MonitorService"
+        android:foregroundServiceType="specialUse"
+        android:exported="false">
+      <property
+          android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+          android:value="Enforces user-configured per-app screen-time limits by prompting in-app when a limit is exceeded." />
+    </service>
+
+    <!-- Restart the watcher on boot. exported=true is required to receive the
+         system BOOT_COMPLETED broadcast. -->
+    <receiver
+        android:name="expo.modules.ascendnative.BootReceiver"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+  </application>
 
 </manifest>

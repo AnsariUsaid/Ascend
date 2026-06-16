@@ -23,6 +23,28 @@ export interface AscendNativeModule {
 
   /** Launchable apps installed on the device. */
   getInstalledApps(): { packageName: string; name: string }[];
+
+  // --- Phase D: background limit watcher ---
+
+  /**
+   * Arm the foreground service that auto-launches friction when a monitored app
+   * goes over its limit. Persists the config + enabled flag, so it survives
+   * reboot (BootReceiver re-arms it).
+   */
+  startWatching(config: { packageName: string; limitMinutes: number }[]): void;
+  /** Disarm + stop the foreground service. */
+  stopWatching(): void;
+  /** Whether the watcher is currently armed (enabled flag in SharedPreferences). */
+  isWatching(): boolean;
+
+  /** Tell native that `packageName` has grace until `untilMs` (epoch ms). */
+  setGrace(packageName: string, untilMs: number): void;
+  /** Tell native that `packageName` is blocked for the rest of today. */
+  setBlockedToday(packageName: string): void;
+  /** Clear grace + blocked for one app (e.g. answered, or per-app reset). */
+  clearFriction(packageName: string): void;
+  /** Clear all grace + blocked state (midnight reset / dev reset). */
+  clearAllFriction(): void;
 }
 
 // requireNativeModule looks up the module registered as "AscendNative"

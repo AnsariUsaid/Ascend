@@ -120,13 +120,44 @@ Two big fixes driven by on-device testing:
 
 **`4193fa8` docs: log Phase C**
 
+## Milestone 4 · Phase D — background limit watcher (auto-trigger)
+
+**Phase D: the friction screen now appears on its own.**
+Until now the overlay only opened from a dev button. Phase D adds a background
+**foreground service** that watches which app is in front and, when a monitored app
+crosses its daily limit (and you're not in a grace window or blocked for the day),
+relaunches Ascend at `ascend://friction?app=<pkg>` right on top of it.
+
+The split stays clean: **the friction "brain" remains in JS** — native only *watches*
+and *triggers*. They stay in sync through `SharedPreferences`:
+
+- New Kotlin: `UsageReader` (the event-based usage read, now shared by the JS module and
+  the service; adds a **stateful** "current foreground app" that survives long sessions in
+  one app — a naive "last event in 10s" reads as empty when you sit still), `MonitorStore`
+  (the shared state: enabled flag, per-app limits, and **self-expiring** grace timestamps /
+  blocked-day strings, so the service stays correct even with the JS app closed),
+  `MonitorService` (the foreground service — polls every 3s, 5s cooldown), `BootReceiver`
+  (re-arms after a reboot).
+- The native module gained `startWatching`/`stopWatching`/`isWatching` and the sync setters
+  `setGrace`/`setBlockedToday`/`clearFriction`/`clearAllFriction`.
+- JS: a `useMonitorSync` hook arms the watcher exactly when both permissions are granted and
+  at least one app is monitored (and disarms otherwise); the friction store mirrors each
+  outcome to native. The dev button is kept for quick testing.
+
+*What we learned:* (1) in a **library** manifest the service/receiver names must be
+**fully qualified** — a leading `.` resolves against the app's package and silently breaks
+the merge; (2) Android 14+ needs a **typed** foreground service — we use `specialUse` with a
+written justification; (3) if the laptop sleeps mid-build the Gradle daemon hangs — stop the
+daemons and rerun. Verified on the S23: the service runs as a special-use FGS and a low limit
+auto-triggers friction within seconds.
+
+**`<pending>` Phase D: foreground service + auto overlay trigger + boot receiver**
+
 ---
 
 ## Still to come
 
-- **Phase D** — a foreground service that watches usage in the background and
-  automatically launches the friction screen when a limit is crossed (replacing the
-  current "Simulate limit reached" dev button), plus a boot receiver.
 - **Phase E** — hardening (permission-revoked screen, battery-optimization exemption,
-  Samsung/OEM background-kill quirks).
+  request POST_NOTIFICATIONS, Samsung/OEM background-kill quirks), then a release APK to
+  run unplugged.
 - **M5** — backend + sync and a real leaderboard.
