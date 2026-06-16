@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -63,6 +65,14 @@ class AscendNativeModule : Module() {
       MonitorStore.clearFriction(context, packageName)
     }
     Function("clearAllFriction") { MonitorStore.clearAllFriction(context) }
+
+    // --- Phase E: keep-alive / reliability --------------------------------
+    // Battery-optimization exemption keeps the watcher from being killed; the
+    // notification permission lets its foreground notification show.
+    Function("isIgnoringBatteryOptimizations") { isIgnoringBatteryOptimizations() }
+    Function("openBatteryOptimizationSettings") { openBatteryOptimizationSettings() }
+    Function("hasNotificationPermission") { hasNotificationPermission() }
+    Function("openNotificationSettings") { openNotificationSettings() }
   }
 
   // App context provided by Expo. Used to read system services and start intents.
@@ -109,6 +119,38 @@ class AscendNativeModule : Module() {
       Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
       Uri.parse("package:${context.packageName}"),
     ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
+  }
+
+  /**
+   * Phase E: is Ascend exempt from battery optimization? When it's NOT, Android
+   * — Samsung One UI especially — may kill the background MonitorService.
+   */
+  private fun isIgnoringBatteryOptimizations(): Boolean {
+    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    return pm.isIgnoringBatteryOptimizations(context.packageName)
+  }
+
+  /**
+   * Open the system battery-optimization list (Play-safe: ACTION_IGNORE_BATTERY_
+   * OPTIMIZATION_SETTINGS needs no special permission, unlike the direct-prompt
+   * intent which Play restricts). The user finds Ascend → "Don't optimize".
+   */
+  private fun openBatteryOptimizationSettings() {
+    val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
+  }
+
+  /** Phase E: are notifications enabled? Android 13+ gates the FGS notification. */
+  private fun hasNotificationPermission(): Boolean =
+    NotificationManagerCompat.from(context).areNotificationsEnabled()
+
+  /** Open Ascend's notification settings so the user can switch them on. */
+  private fun openNotificationSettings() {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+      .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(intent)
   }
 

@@ -45,6 +45,17 @@ export interface AscendNativeModule {
   clearFriction(packageName: string): void;
   /** Clear all grace + blocked state (midnight reset / dev reset). */
   clearAllFriction(): void;
+
+  // --- Phase E: keep-alive / reliability ---
+
+  /** True if Ascend is exempt from battery optimization (won't be force-killed). */
+  isIgnoringBatteryOptimizations(): boolean;
+  /** Open the system battery-optimization list so the user can exempt Ascend. */
+  openBatteryOptimizationSettings(): void;
+  /** True if notifications are enabled (Android 13+ gates the FGS notification). */
+  hasNotificationPermission(): boolean;
+  /** Open Ascend's notification settings so the user can enable them. */
+  openNotificationSettings(): void;
 }
 
 // requireNativeModule looks up the module registered as "AscendNative"

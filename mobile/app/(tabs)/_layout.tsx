@@ -1,10 +1,13 @@
 import { Tabs } from 'expo-router';
+import { View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, fonts, sizes } from '../../src/theme';
+import { PermissionGate } from '../../src/components';
 
 export default function TabsLayout() {
   return (
-    <Tabs
+    <View style={{ flex: 1 }}>
+      <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.coral,
@@ -54,6 +57,8 @@ export default function TabsLayout() {
           ),
         }}
       />
-    </Tabs>
+      </Tabs>
+      <PermissionGate />
+    </View>
   );
 }

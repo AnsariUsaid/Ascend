@@ -6,6 +6,7 @@ import {
   Button,
   ChoiceChips,
   ConfirmDialog,
+  ProtectionCard,
   SettingsRow,
   Sheet,
   Toggle,
@@ -69,6 +70,9 @@ export default function Settings() {
             <Text style={styles.streakPillText}>7-day streak</Text>
           </View>
         </View>
+
+        {/* Phase E: live permission/reliability status + one-tap fixes. */}
+        <ProtectionCard />
 
         <Section label="APP CONTROLS">
           <SettingsRow label="Monitored Apps" value={`${count} apps`} onPress={() => router.push('/edit-apps')} />

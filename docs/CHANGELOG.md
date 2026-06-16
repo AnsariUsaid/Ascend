@@ -151,13 +151,41 @@ written justification; (3) if the laptop sleeps mid-build the Gradle daemon hang
 daemons and rerun. Verified on the S23: the service runs as a special-use FGS and a low limit
 auto-triggers friction within seconds.
 
-**`<pending>` Phase D: foreground service + auto overlay trigger + boot receiver**
+**`f4469c5` Phase D: foreground service + auto overlay trigger + boot receiver**
+
+## Milestone 4 · Phase E — hardening (survive the real world)
+
+**Phase E: the watcher now survives revoked permissions and OEM battery-killing.**
+Phase D works, but it quietly assumed permissions stay granted and Android keeps the
+service alive — neither is true on a real phone (Samsung especially). Phase E plugs those:
+
+- **Permission-revoked gate.** If you turn off Usage Access or "Display over other apps"
+  while set up, Ascend goes silently useless. Now a full-screen block (`PermissionGate`,
+  mounted in the tabs layout) covers the app with a re-grant button, and auto-closes once
+  you restore it. Only the two *hard* requirements gate; battery/notifications don't.
+- **Settings → Protection card** (`ProtectionCard`): live On/Off for all four needs
+  (Usage Access, Overlay, Unrestricted Battery, Notifications) with one-tap fixes and a
+  Samsung "Never sleeping apps" tip.
+- **Native (Play-safe):** `isIgnoringBatteryOptimizations` + `openBatteryOptimizationSettings`
+  and `hasNotificationPermission` + `openNotificationSettings`. We use the system *settings*
+  intents (no special permission) rather than the Play-restricted one-tap battery prompt.
+- `useProtectionStatus` bundles the four checks and re-checks on every foreground; every
+  native call is wrapped so it degrades gracefully on an older build.
+
+*What we learned:* over flaky mobile data the laptop's LAN IP changes between builds, so the
+dev client can't reach Metro and the dev launcher reports a "crash." Fix: `adb reverse
+tcp:8081 tcp:8081` tunnels Metro over USB (`localhost`), immune to IP changes. (The
+`onUserLeaveHint` NPE seen while switching is a known dev-client quirk, not app code.)
+Verified on the S23: JS loads clean, the watcher auto-arms, the gate appears/closes on revoke.
+
+**`<pending>` Phase E: permission-revoked gate + Protection card + keep-alive natives**
 
 ---
 
 ## Still to come
 
-- **Phase E** — hardening (permission-revoked screen, battery-optimization exemption,
-  request POST_NOTIFICATIONS, Samsung/OEM background-kill quirks), then a release APK to
-  run unplugged.
+- **Polish / improvement pass** — known inconsistencies to iron out; one-tap runtime
+  notification prompt; battery efficiency (poll only while screen is on, adaptive rate);
+  onboarding nudge for battery exemption.
+- **Release APK** — build unplugged-runnable standalone (`expo run:android --variant release`).
 - **M5** — backend + sync and a real leaderboard.
