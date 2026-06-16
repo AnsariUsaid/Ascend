@@ -205,7 +205,14 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     overflow: 'hidden',
   },
-  caption: { fontFamily: fonts.regular, fontSize: 12.5, color: colors.muted3, marginTop: 8, paddingHorizontal: 4 },
+  caption: {
+    fontFamily: fonts.regular,
+    fontSize: 12.5,
+    lineHeight: 17,
+    color: colors.muted3,
+    paddingHorizontal: 16,
+    paddingBottom: 14,
+  },
   footer: { fontFamily: fonts.regular, fontSize: 12.5, color: colors.faint, textAlign: 'center', marginTop: 28 },
   input: {
     height: 54,

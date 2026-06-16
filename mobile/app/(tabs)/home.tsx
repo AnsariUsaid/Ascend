@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
@@ -117,9 +116,7 @@ function WeekChart({ totals, labels }: { totals: number[]; labels: string[] }) {
 
 export default function Dashboard() {
   const insets = useSafeAreaInsets();
-  const router = useRouter();
   const ensureToday = useFrictionStore((s) => s.ensureToday);
-  const resetDay = useFrictionStore((s) => s.resetDay);
   const displayName = useAppStore((s) => s.displayName);
 
   const usage = useUsage();
@@ -129,9 +126,6 @@ export default function Dashboard() {
     ensureToday();
     usage.refresh();
   }, []);
-
-  // Trigger the overlay for the first over-limit app, else the first monitored app.
-  const triggerApp = usage.apps.find((a) => a.today > a.limit) ?? usage.apps[0];
 
   return (
     <ScrollView
@@ -192,21 +186,6 @@ export default function Dashboard() {
         </View>
         <Text style={styles.timeSavedNum}>{formatDuration(usage.timeSavedWeek)}</Text>
       </Card>
-
-      {/* Dev tools — replaced by the native usage-limit watcher in Phase D. */}
-      <View style={styles.devRow}>
-        <Pressable
-          style={styles.devTrigger}
-          onPress={() => router.push(`/friction?app=${triggerApp?.key ?? 'com.instagram.android'}`)}
-        >
-          <Feather name="zap" size={15} color={colors.muted3} />
-          <Text style={styles.devTriggerText}>Simulate limit reached</Text>
-        </Pressable>
-        <Pressable style={styles.devTrigger} onPress={resetDay}>
-          <Feather name="rotate-ccw" size={15} color={colors.muted3} />
-          <Text style={styles.devTriggerText}>Reset day</Text>
-        </Pressable>
-      </View>
     </ScrollView>
   );
 }
@@ -279,8 +258,4 @@ const styles = StyleSheet.create({
   },
   timeSavedSub: { fontFamily: fonts.regular, fontSize: 13, color: 'rgba(251,244,234,0.55)', marginTop: 4 },
   timeSavedNum: { fontFamily: fonts.displayXBold, fontSize: 30, color: colors.amber },
-
-  devRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginTop: 22 },
-  devTrigger: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 10 },
-  devTriggerText: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted3 },
 });
