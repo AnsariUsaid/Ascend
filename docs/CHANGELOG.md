@@ -205,12 +205,34 @@ split into two commits:
 *Verified on the S23.* (Heads-up: a cold-start over `adb` can flash a harmless dev-only
 `expo-keep-awake` "Unable to activate keep awake" LogBox error — not app code, gone in release.)
 
+## Standalone release APK — Ascend runs on its own now
+
+**The app no longer needs the laptop.** Up to here it was a *dev build* that streamed its JS
+from Metro over USB; now we produce a **signed release APK** that **bundles the JS inside**, so
+it installs and runs like any shipped app — unplugged, across reboots.
+
+What this took (the committed part is just two files; the secrets stay local):
+- **A release keystore** (`keytool` → `ascend-release.jks`, alias `ascend`) — your app's permanent
+  signing identity. Android won't install an unsigned release, and this key is *irreplaceable* for
+  future Play updates, so it's **gitignored and backed up**, never committed.
+- **`android/keystore.properties`** (gitignored) holds the keystore path + passwords; **`build.gradle`**
+  loads them into a `signingConfigs.release` and uses it for the release build type (falling back to
+  debug signing if the file is absent, so a keyless clone still builds). **`.gitignore`** excludes
+  `*.jks` + `keystore.properties`.
+- **Build:** `npx expo run:android --variant release` (~11 min first time) → `app-release.apk` (~41 MB).
+
+*What we learned:* switching the phone from the debug-signed dev build to the release key throws
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE: signatures do not match` — Android refuses to "update" an app
+signed by a different key (a security guarantee). Fix: `adb uninstall com.ascend.app` (wipes data →
+re-onboard once) then `adb install`. Also: on Samsung, set the app's battery mode to **Unrestricted**
+so One UI doesn't sleep the background watcher.
+
+**`<pending>` build: signed release APK (standalone signing config)**
+
 ---
 
 ## Still to come
 
-- **Release APK** — build an unplugged-runnable standalone (`expo run:android --variant release`,
-  needs a one-time signing keystore). The next milestone: makes Ascend usable day-to-day.
 - **Improvement pass (deferred)** — one-tap runtime notification prompt; battery efficiency
   (poll only while screen is on, adaptive rate); onboarding nudge for battery exemption.
 - **M5** — backend + sync and a real leaderboard.

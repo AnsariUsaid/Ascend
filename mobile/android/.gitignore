@@ -14,3 +14,7 @@ local.properties
 
 # Bundle artifacts
 *.jsbundle
+
+# Release signing — keep the keystore + its passwords OUT of git
+*.jks
+keystore.properties
