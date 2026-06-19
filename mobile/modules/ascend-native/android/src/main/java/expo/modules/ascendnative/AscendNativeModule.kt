@@ -1,5 +1,6 @@
 package expo.modules.ascendnative
 
+import android.Manifest
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import expo.modules.kotlin.modules.Module
@@ -73,6 +75,8 @@ class AscendNativeModule : Module() {
     Function("openBatteryOptimizationSettings") { openBatteryOptimizationSettings() }
     Function("hasNotificationPermission") { hasNotificationPermission() }
     Function("openNotificationSettings") { openNotificationSettings() }
+    // One-tap runtime prompt for POST_NOTIFICATIONS (Android 13+).
+    Function("requestNotificationPermission") { requestNotificationPermission() }
   }
 
   // App context provided by Expo. Used to read system services and start intents.
@@ -152,6 +156,17 @@ class AscendNativeModule : Module() {
       .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(intent)
+  }
+
+  /**
+   * Fire the one-tap system "Allow notifications?" dialog (Android 13+). Pre-13
+   * there's no runtime notification permission, so this is a no-op. We don't need
+   * the result here — `hasNotificationPermission()` re-checks on the next foreground.
+   */
+  private fun requestNotificationPermission() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+    val activity = appContext.currentActivity ?: return
+    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
   }
 
   /**

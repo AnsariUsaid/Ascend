@@ -56,6 +56,8 @@ export interface AscendNativeModule {
   hasNotificationPermission(): boolean;
   /** Open Ascend's notification settings so the user can enable them. */
   openNotificationSettings(): void;
+  /** Fire the one-tap "Allow notifications?" system dialog (Android 13+; no-op before). */
+  requestNotificationPermission(): void;
 }
 
 // requireNativeModule looks up the module registered as "AscendNative"

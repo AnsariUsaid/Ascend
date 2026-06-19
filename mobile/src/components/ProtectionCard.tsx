@@ -20,7 +20,7 @@ type Row = {
 };
 
 export function ProtectionCard() {
-  const { usageAccess, overlay, batteryExempt, notifications } = useProtectionStatus();
+  const { usageAccess, overlay, batteryExempt, notifications, recheck } = useProtectionStatus();
 
   const rows: Row[] = [
     {
@@ -53,7 +53,12 @@ export function ProtectionCard() {
       desc: 'Shows when Ascend is active',
       ok: notifications,
       required: false,
-      fix: () => AscendNative.openNotificationSettings(),
+      fix: () => {
+        // One-tap system "Allow notifications?" dialog; the pill updates on the
+        // re-check below (or on the next foreground).
+        AscendNative.requestNotificationPermission();
+        setTimeout(recheck, 2500);
+      },
     },
   ];
 

@@ -8,6 +8,7 @@ import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
 import { useAppStore } from '../../src/store/useAppStore';
 import { useUsage, AppUsage } from '../../src/usage/useUsage';
+import { usePermissionStatus } from '../../src/hooks/usePermissionStatus';
 import AscendNative from '../../modules/ascend-native';
 
 /** Live friction status for an app: grace countdown or blocked-for-today. */
@@ -120,6 +121,7 @@ export default function Dashboard() {
   const displayName = useAppStore((s) => s.displayName);
 
   const usage = useUsage();
+  const { granted: batteryExempt } = usePermissionStatus(AscendNative.isIgnoringBatteryOptimizations);
 
   // Apply the midnight reset + refresh usage whenever the dashboard opens.
   useEffect(() => {
@@ -152,6 +154,17 @@ export default function Dashboard() {
           <Feather name="alert-triangle" size={16} color="#9a6a1f" />
           <Text style={styles.accessText}>
             Grant Usage Access to see your real screen time. Tap to open Settings.
+          </Text>
+        </Pressable>
+      )}
+
+      {/* Battery nudge: the watcher can be killed unless Ascend is set "Unrestricted". */}
+      {usage.hasAccess && usage.apps.length > 0 && !batteryExempt && (
+        <Pressable style={styles.accessBanner} onPress={() => AscendNative.openBatteryOptimizationSettings()}>
+          <Feather name="battery-charging" size={16} color="#9a6a1f" />
+          <Text style={styles.accessText}>
+            Keep Ascend running in the background so it's always there when you need it — set
+            its battery to “Unrestricted”. Tap to enable.
           </Text>
         </Pressable>
       )}
