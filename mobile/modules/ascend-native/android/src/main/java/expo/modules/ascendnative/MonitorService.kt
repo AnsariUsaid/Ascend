@@ -5,12 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 
 /**
  * The "muscle": a foreground service that polls every few seconds and, when the
@@ -28,12 +33,33 @@ class MonitorService : Service() {
   // activity is coming to the foreground).
   private val lastLaunch = HashMap<String, Long>()
 
+  // Whether the screen is on. When it's off, nobody can be using an app, so the
+  // poll loop idles to save battery; SCREEN_ON wakes it immediately.
+  @Volatile private var screenOn = true
+  private val screenReceiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+      when (intent.action) {
+        Intent.ACTION_SCREEN_OFF -> screenOn = false
+        Intent.ACTION_SCREEN_ON -> {
+          screenOn = true
+          worker?.interrupt() // wake the idling loop to poll right away
+        }
+      }
+    }
+  }
+
   override fun onBind(intent: Intent?): IBinder? = null
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     startInForeground()
     if (!running) {
       running = true
+      screenOn = (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
+      val filter = IntentFilter().apply {
+        addAction(Intent.ACTION_SCREEN_ON)
+        addAction(Intent.ACTION_SCREEN_OFF)
+      }
+      ContextCompat.registerReceiver(this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
       worker = Thread { loop() }.also { it.start() }
     }
     return START_STICKY
@@ -42,22 +68,33 @@ class MonitorService : Service() {
   override fun onDestroy() {
     running = false
     worker?.interrupt()
+    try {
+      unregisterReceiver(screenReceiver)
+    } catch (e: Exception) {
+      // wasn't registered (service never fully started) — ignore
+    }
     super.onDestroy()
   }
 
   private fun loop() {
     while (running) {
       try {
+        if (!screenOn) {
+          // Screen off → nobody can be using an app. Idle cheaply instead of
+          // waking every few seconds; SCREEN_ON interrupts this to resume at once.
+          Thread.sleep(IDLE_MS)
+          continue
+        }
         tick()
         Thread.sleep(POLL_MS)
       } catch (e: InterruptedException) {
-        break
+        if (!running) break // stopping; otherwise woken by SCREEN_ON → re-loop
       } catch (e: Exception) {
         // Never let a single bad read kill the watcher.
         try {
           Thread.sleep(POLL_MS)
         } catch (ie: InterruptedException) {
-          break
+          if (!running) break
         }
       }
     }
@@ -138,6 +175,7 @@ class MonitorService : Service() {
     private const val NOTIF_ID = 4201
     private const val CHANNEL_ID = "ascend_monitor"
     private const val POLL_MS = 3_000L
+    private const val IDLE_MS = 60_000L // screen-off idle between safety re-checks
     private const val LAUNCH_COOLDOWN_MS = 5_000L
   }
 }
