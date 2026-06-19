@@ -45,6 +45,8 @@ type AppState = {
   setNotifications: (v: boolean) => void;
   setBaseline: (minutes: number) => void;
   setOnboarded: (v: boolean) => void;
+  /** Wipe all config back to defaults (Delete Account → fresh start). */
+  reset: () => void;
 
   // Derived helpers
   selectedKeys: () => string[];
@@ -52,19 +54,24 @@ type AppState = {
 
 const clampLimit = (m: number) => Math.max(LIMIT_MIN, Math.min(LIMIT_MAX, m));
 
+// Initial config — also what `reset()` restores on Delete Account.
+const initialData = {
+  selected: {} as Record<string, boolean>,
+  limits: {} as Record<string, number>,
+  questionType: 'math' as QuestionType,
+  gracePeriod: 10 as GracePeriod,
+  displayName: 'EarlyBird',
+  leaderboardOptIn: true,
+  notifications: true,
+  baselineMinutes: 320, // fallback until the real past-7-day baseline is computed
+  baselineComputed: false,
+  onboarded: false,
+};
+
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
-      selected: {},
-      limits: {},
-      questionType: 'math',
-      gracePeriod: 10,
-      displayName: 'EarlyBird',
-      leaderboardOptIn: true,
-      notifications: true,
-      baselineMinutes: 320, // fallback until the real past-7-day baseline is computed
-      baselineComputed: false,
-      onboarded: false,
+      ...initialData,
 
       toggleApp: (key) =>
         set((s) => ({
@@ -86,6 +93,7 @@ export const useAppStore = create<AppState>()(
       setNotifications: (v) => set({ notifications: v }),
       setBaseline: (minutes) => set({ baselineMinutes: minutes, baselineComputed: true }),
       setOnboarded: (v) => set({ onboarded: v }),
+      reset: () => set({ ...initialData }),
 
       selectedKeys: () => {
         const { selected } = get();

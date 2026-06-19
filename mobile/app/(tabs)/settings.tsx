@@ -13,6 +13,8 @@ import {
 } from '../../src/components';
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import { useAppStore, QuestionType, GracePeriod } from '../../src/store/useAppStore';
+import { useFrictionStore } from '../../src/store/useFrictionStore';
+import AscendNative from '../../modules/ascend-native';
 
 const QUESTION_TYPES: { label: string; value: QuestionType }[] = [
   { label: 'Math', value: 'math' },
@@ -150,7 +152,14 @@ export default function Settings() {
         message="This permanently erases your usage history, limits, streak and leaderboard standing from this device. This cannot be undone."
         confirmLabel="Delete"
         onCancel={() => setConfirm(null)}
-        onConfirm={() => { setConfirm(null); router.replace('/sign-in'); }}
+        onConfirm={() => {
+          setConfirm(null);
+          // No accounts yet — Delete Account is a full local wipe / fresh start.
+          useFrictionStore.getState().resetDay(); // clears friction + native grace/blocked
+          try { AscendNative.stopWatching(); } catch {} // disarm the background watcher
+          s.reset(); // reset all config (onboarded → false → reopen lands on sign-in)
+          router.replace('/sign-in');
+        }}
       />
       <ConfirmDialog
         visible={confirm === 'signout'}
