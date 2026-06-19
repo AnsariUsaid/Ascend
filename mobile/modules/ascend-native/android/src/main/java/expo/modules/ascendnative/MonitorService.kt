@@ -109,9 +109,16 @@ class MonitorService : Service() {
     val fg = UsageReader.currentForegroundApp(this) ?: return
     if (fg == packageName) return // our own friction screen is showing
     val limit = MonitorStore.limitFor(this, fg) ?: return // not a monitored app
-    if (UsageReader.todayMinutes(this, fg) < limit) return // still under the limit
-    if (MonitorStore.isInGrace(this, fg)) return // earned time still ticking
-    if (MonitorStore.isBlockedToday(this, fg)) return // "done for today" already handled
+
+    // "Done for today" is a hard block → re-show the wall every time the app is
+    // opened, until midnight. Otherwise wall only once over the limit and not
+    // during an earned grace window.
+    val shouldWall = if (MonitorStore.isBlockedToday(this, fg)) {
+      true
+    } else {
+      UsageReader.todayMinutes(this, fg) >= limit && !MonitorStore.isInGrace(this, fg)
+    }
+    if (!shouldWall) return
 
     val now = System.currentTimeMillis()
     if (now - (lastLaunch[fg] ?: 0L) < LAUNCH_COOLDOWN_MS) return
