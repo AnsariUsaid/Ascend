@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ChevronMark, Wordmark } from '../src/components';
 import { colors, fonts } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
@@ -11,8 +11,8 @@ export default function Splash() {
   const rise = useRef(new Animated.Value(0)).current;
   useStatusBarStyle('light'); // coral background → white icons
 
+  // Rising-sun loader loop (visual only — safe to run on mount).
   useEffect(() => {
-    // Rising-sun loader loop.
     Animated.loop(
       Animated.timing(rise, {
         toValue: 1,
@@ -21,17 +21,29 @@ export default function Splash() {
         useNativeDriver: true,
       }),
     ).start();
-
-    // Auto-advance. A returning, set-up user skips sign-in + onboarding and lands
-    // straight on the dashboard; a fresh user starts at sign-in. (Auth is stubbed,
-    // so the persisted `onboarded` flag is our "returning user" signal for now.)
-    // We read with getState() at fire time so we see the rehydrated value.
-    const t = setTimeout(() => {
-      const onboarded = useAppStore.getState().onboarded;
-      router.replace(onboarded ? '/(tabs)/home' : '/sign-in');
-    }, 2600);
-    return () => clearTimeout(t);
   }, []);
+
+  // Auto-advance — but ONLY while the splash is the focused screen. A returning,
+  // set-up user skips sign-in + onboarding and lands on the dashboard; a fresh user
+  // starts at sign-in. (Auth is stubbed, so the persisted `onboarded` flag is our
+  // "returning user" signal for now; read via getState() at fire time so we see the
+  // rehydrated value.)
+  //
+  // Why useFocusEffect, not useEffect: when the app cold-starts straight into the
+  // friction overlay (the native watcher's ascend://friction deep link), the splash
+  // still mounts underneath the modal but isn't focused. A plain timer would fire
+  // anyway and yank the user off friction to the dashboard (issue #4). Tying it to
+  // focus means it stays quiet under friction, and only advances once friction is
+  // dismissed and the splash actually regains focus.
+  useFocusEffect(
+    useCallback(() => {
+      const t = setTimeout(() => {
+        const onboarded = useAppStore.getState().onboarded;
+        router.replace(onboarded ? '/(tabs)/home' : '/sign-in');
+      }, 2600);
+      return () => clearTimeout(t);
+    }, []),
+  );
 
   const translateY = rise.interpolate({ inputRange: [0, 1], outputRange: [18, -2] });
   const opacity = rise.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.2, 1, 0.2] });
