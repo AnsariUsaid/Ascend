@@ -95,19 +95,6 @@ export default function Settings() {
           />
         </Section>
 
-        <Section label="PRIVACY">
-          <SettingsRow
-            label="Show me on Leaderboard"
-            right={<Toggle value={s.leaderboardOptIn} onChange={s.setLeaderboardOptIn} />}
-            last
-          />
-          <Text style={styles.caption}>
-            {s.leaderboardOptIn
-              ? `Visible as ${s.displayName} in weekly rankings`
-              : 'Hidden from public rankings'}
-          </Text>
-        </Section>
-
         <Section label="ACCOUNT">
           <SettingsRow label="Notifications" right={<Toggle value={s.notifications} onChange={s.setNotifications} />} />
           <SettingsRow label="Delete Account" danger onPress={() => setConfirm('delete')} />
@@ -149,7 +136,7 @@ export default function Settings() {
       <ConfirmDialog
         visible={confirm === 'delete'}
         title="Delete account?"
-        message="This permanently erases your usage history, limits, streak and leaderboard standing from this device. This cannot be undone."
+        message="This permanently erases your usage history, limits and streak from this device. This cannot be undone."
         confirmLabel="Delete"
         onCancel={() => setConfirm(null)}
         onConfirm={() => {

@@ -14,12 +14,11 @@ type AppState = {
   questionType: QuestionType;
   gracePeriod: GracePeriod;
   displayName: string;
-  leaderboardOptIn: boolean;
   notifications: boolean;
 
   /**
    * Average daily screen-time (minutes) of monitored apps before Ascend — the
-   * denominator for the leaderboard's % reduction. Set ONCE on first launch,
+   * baseline we measure your reduction against. Set ONCE on first launch,
    * computed from the past-7-day UsageStatsManager query (see useUsage).
    */
   baselineMinutes: number;
@@ -41,7 +40,6 @@ type AppState = {
   setQuestionType: (t: QuestionType) => void;
   setGracePeriod: (g: GracePeriod) => void;
   setDisplayName: (name: string) => void;
-  setLeaderboardOptIn: (v: boolean) => void;
   setNotifications: (v: boolean) => void;
   setBaseline: (minutes: number) => void;
   setOnboarded: (v: boolean) => void;
@@ -61,7 +59,6 @@ const initialData = {
   questionType: 'math' as QuestionType,
   gracePeriod: 10 as GracePeriod,
   displayName: 'EarlyBird',
-  leaderboardOptIn: true,
   notifications: true,
   baselineMinutes: 320, // fallback until the real past-7-day baseline is computed
   baselineComputed: false,
@@ -89,7 +86,6 @@ export const useAppStore = create<AppState>()(
       setQuestionType: (t) => set({ questionType: t }),
       setGracePeriod: (g) => set({ gracePeriod: g }),
       setDisplayName: (name) => set({ displayName: name }),
-      setLeaderboardOptIn: (v) => set({ leaderboardOptIn: v }),
       setNotifications: (v) => set({ notifications: v }),
       setBaseline: (minutes) => set({ baselineMinutes: minutes, baselineComputed: true }),
       setOnboarded: (v) => set({ onboarded: v }),
@@ -109,7 +105,6 @@ export const useAppStore = create<AppState>()(
         questionType: s.questionType,
         gracePeriod: s.gracePeriod,
         displayName: s.displayName,
-        leaderboardOptIn: s.leaderboardOptIn,
         notifications: s.notifications,
         baselineMinutes: s.baselineMinutes,
         baselineComputed: s.baselineComputed,

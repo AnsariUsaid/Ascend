@@ -93,20 +93,3 @@ export const statsByRange: Record<'week' | 'month', StatsRange> = {
     friction: { answered: 148, highestLevel: 6, stopped: 41 },
   },
 };
-
-// ---- Leaderboard ----
-
-export type LeaderRow = { rank: number; name: string; savedMinutes: number; reductionPct: number; isYou?: boolean };
-
-export const leaderboardResetIn = '2d 14h';
-
-export const leaderboard: LeaderRow[] = [
-  { rank: 1, name: 'Nova', savedMinutes: 540, reductionPct: -31 },
-  { rank: 2, name: 'Kestrel', savedMinutes: 470, reductionPct: -27 },
-  { rank: 3, name: 'Pinecone', savedMinutes: 430, reductionPct: -24 },
-  { rank: 4, name: 'RiverFox', savedMinutes: 360, reductionPct: -19 },
-  { rank: 4, name: 'Summit22', savedMinutes: 340, reductionPct: -19 },
-  { rank: 6, name: 'Wander', savedMinutes: 300, reductionPct: -16 },
-  { rank: 7, name: 'EarlyBird', savedMinutes: 220, reductionPct: -14, isYou: true },
-  { rank: 8, name: 'Dawnlight', savedMinutes: 180, reductionPct: -11 },
-];

@@ -46,13 +46,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="leaderboard"
-        options={{
-          title: 'Leaderboard',
-          tabBarIcon: ({ color }) => <Feather name="award" size={sizes.navIcon} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
