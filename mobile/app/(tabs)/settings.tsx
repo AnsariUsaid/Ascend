@@ -45,7 +45,7 @@ export default function Settings() {
   const count = s.selectedKeys().length;
 
   const [sheet, setSheet] = useState<null | 'question' | 'grace' | 'name'>(null);
-  const [confirm, setConfirm] = useState<null | 'delete' | 'signout'>(null);
+  const [confirm, setConfirm] = useState<null | 'delete'>(null);
   const [nameDraft, setNameDraft] = useState(s.displayName);
 
   return (
@@ -66,7 +66,7 @@ export default function Settings() {
           </View>
           <View style={{ flex: 1, marginLeft: 14 }}>
             <Text style={styles.name}>{s.displayName}</Text>
-            <Text style={styles.email}>usaidanzer@gmail.com</Text>
+            <Text style={styles.email}>Keep climbing</Text>
           </View>
           <View style={styles.streakPill}>
             <Text style={styles.streakPillText}>7-day streak</Text>
@@ -95,10 +95,9 @@ export default function Settings() {
           />
         </Section>
 
-        <Section label="ACCOUNT">
+        <Section label="GENERAL">
           <SettingsRow label="Notifications" right={<Toggle value={s.notifications} onChange={s.setNotifications} />} />
-          <SettingsRow label="Delete Account" danger onPress={() => setConfirm('delete')} />
-          <SettingsRow label="Sign Out" danger onPress={() => setConfirm('signout')} last />
+          <SettingsRow label="Clear all data" danger onPress={() => setConfirm('delete')} last />
         </Section>
 
         <Text style={styles.footer}>Ascend 1.0 · data stays on this device</Text>
@@ -135,26 +134,18 @@ export default function Settings() {
       {/* Destructive confirmations */}
       <ConfirmDialog
         visible={confirm === 'delete'}
-        title="Delete account?"
+        title="Clear all data?"
         message="This permanently erases your usage history, limits and streak from this device. This cannot be undone."
-        confirmLabel="Delete"
+        confirmLabel="Clear"
         onCancel={() => setConfirm(null)}
         onConfirm={() => {
           setConfirm(null);
-          // No accounts yet — Delete Account is a full local wipe / fresh start.
+          // v1 is fully local — this is a full local wipe / fresh start.
           useFrictionStore.getState().resetDay(); // clears friction + native grace/blocked
           try { AscendNative.stopWatching(); } catch {} // disarm the background watcher
-          s.reset(); // reset all config (onboarded → false → reopen lands on sign-in)
+          s.reset(); // reset all config (onboarded → false → reopen lands on welcome)
           router.replace('/sign-in');
         }}
-      />
-      <ConfirmDialog
-        visible={confirm === 'signout'}
-        title="Sign out?"
-        message="You'll need to sign in again to sync your data and access the leaderboard."
-        confirmLabel="Sign Out"
-        onCancel={() => setConfirm(null)}
-        onConfirm={() => { setConfirm(null); router.replace('/sign-in'); }}
       />
     </View>
   );
