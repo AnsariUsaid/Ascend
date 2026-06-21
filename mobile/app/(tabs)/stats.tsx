@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppChip, Card, Segmented } from '../../src/components';
-import { appChipColors, appHues, colors, fonts, radius, spacing } from '../../src/theme';
-import { statsByRange, formatDuration } from '../../src/data/mock';
+import { AppChip, Card } from '../../src/components';
+import { appChipColors, colors, fonts, radius, spacing } from '../../src/theme';
+import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
 import { useAppStore } from '../../src/store/useAppStore';
 import { useUsage } from '../../src/usage/useUsage';
 
 type Segment = { key: string; hue: number; minutes: number };
 type DayBar = { label: string; segments: Segment[] };
-type PerApp = { key: string; name: string; glyph: string; hue: number; total: number; delta?: number };
+type PerApp = { key: string; name: string; glyph: string; hue: number; total: number };
 type StatsView = {
-  real: boolean;
   improvement: number; // % reduction (positive number)
   days: DayBar[];
   perApp: PerApp[];
@@ -21,20 +20,8 @@ type StatsView = {
 
 const segColor = (hue: number) => appChipColors(hue).glyph;
 
-function DeltaPill({ pct }: { pct: number }) {
-  const down = pct < 0;
-  return (
-    <View style={[styles.delta, { backgroundColor: down ? colors.successBg : colors.dangerBg }]}>
-      <Text style={[styles.deltaText, { color: down ? colors.successText : colors.dangerText }]}>
-        {down ? '↓' : '↑'} {Math.abs(pct)}%
-      </Text>
-    </View>
-  );
-}
-
 export default function Stats() {
   const insets = useSafeAreaInsets();
-  const [range, setRange] = useState<'week' | 'month'>('week');
   const [selDay, setSelDay] = useState<number | null>(null);
 
   const usage = useUsage();
@@ -49,37 +36,18 @@ export default function Stats() {
     { answered: 0, highest: 0, stopped: 0 },
   );
 
-  // Build the view for the selected range.
-  let view: StatsView;
-  if (range === 'week') {
-    const avg = usage.weekDailyTotals.reduce((s, n) => s + n, 0) / Math.max(1, usage.weekDailyTotals.length);
-    view = {
-      real: true,
-      improvement: baseline > 0 ? Math.max(0, Math.round(((baseline - avg) / baseline) * 100)) : 0,
-      days: usage.weekLabels.map((label, i) => ({
-        label,
-        segments: usage.apps.map((a) => ({ key: a.key, hue: a.hue, minutes: a.daily[i] ?? 0 })),
-      })),
-      perApp: usage.apps.map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, total: a.weekTotal })),
-      friction: live,
-    };
-  } else {
-    const m = statsByRange.month;
-    view = {
-      real: false,
-      improvement: Math.abs(m.improvementPct),
-      days: m.breakdown.map((d) => ({
-        label: d.label,
-        segments: [
-          { key: 'instagram', hue: appHues.instagram, minutes: d.instagram },
-          { key: 'youtube', hue: appHues.youtube, minutes: d.youtube },
-          { key: 'tiktok', hue: appHues.tiktok, minutes: d.tiktok },
-        ],
-      })),
-      perApp: m.perApp.map((p) => ({ key: p.key, name: p.name, glyph: p.glyph, hue: p.hue, total: p.totalMinutes, delta: p.deltaPct })),
-      friction: { answered: m.friction.answered, highest: m.friction.highestLevel, stopped: m.friction.stopped },
-    };
-  }
+  // This week, from real usage. (The Month view was removed — Android keeps only
+  // ~7 days of per-app daily history, so a real month can't be built from it.)
+  const avg = usage.weekDailyTotals.reduce((s, n) => s + n, 0) / Math.max(1, usage.weekDailyTotals.length);
+  const view: StatsView = {
+    improvement: baseline > 0 ? Math.max(0, Math.round(((baseline - avg) / baseline) * 100)) : 0,
+    days: usage.weekLabels.map((label, i) => ({
+      label,
+      segments: usage.apps.map((a) => ({ key: a.key, hue: a.hue, minutes: a.daily[i] ?? 0 })),
+    })),
+    perApp: usage.apps.map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, total: a.weekTotal })),
+    friction: live,
+  };
 
   const totals = view.days.map((d) => d.segments.reduce((s, x) => s + x.minutes, 0));
   const max = Math.max(1, ...totals);
@@ -91,29 +59,18 @@ export default function Stats() {
       contentContainerStyle={{ paddingTop: insets.top + 12, paddingHorizontal: spacing.screenH, paddingBottom: 32 }}
     >
       <Text style={styles.title}>Stats</Text>
-      <Segmented
-        options={[
-          { label: 'Week', value: 'week' as const },
-          { label: 'Month', value: 'month' as const },
-        ]}
-        value={range}
-        onChange={(v) => {
-          setRange(v);
-          setSelDay(null);
-        }}
-      />
 
       {/* Improvement summary */}
       <Card dark style={styles.improve}>
         <Text style={styles.improveNum}>↓ {view.improvement}%</Text>
         <Text style={styles.improveLabel}>less screen time</Text>
-        <Text style={styles.improveSub}>vs. your baseline {view.real ? '' : '· sample data'}</Text>
+        <Text style={styles.improveSub}>vs. your baseline</Text>
       </Card>
 
       {/* Daily breakdown */}
       <Card style={{ marginTop: 12 }}>
         <View style={styles.breakdownHeader}>
-          <Text style={styles.cardLabel}>{range === 'week' ? 'DAILY BREAKDOWN' : 'WEEKLY BREAKDOWN'}</Text>
+          <Text style={styles.cardLabel}>DAILY BREAKDOWN</Text>
           <View style={styles.legend}>
             {view.perApp.map((a) => (
               <View key={a.key} style={styles.legendItem}>
@@ -125,7 +82,7 @@ export default function Stats() {
         </View>
 
         {totals.every((t) => t === 0) ? (
-          <Text style={styles.emptyText}>No usage data yet for this range.</Text>
+          <Text style={styles.emptyText}>No usage data yet.</Text>
         ) : (
           <View style={styles.chartRow}>
             {view.days.map((d, i) => {
@@ -177,7 +134,6 @@ export default function Stats() {
                   <Text style={styles.perAppName}>{app.name}</Text>
                   <Text style={styles.perAppTotal}>{formatDuration(app.total)} total</Text>
                 </View>
-                {app.delta != null ? <DeltaPill pct={app.delta} /> : null}
               </View>
               {i < view.perApp.length - 1 ? <View style={styles.hair} /> : null}
             </View>
