@@ -74,7 +74,7 @@ export default function Preferences() {
       {touched && nameError ? (
         <Text style={styles.error}>Use 3–16 characters.</Text>
       ) : (
-        <Text style={styles.hint}>Shown on the leaderboard.</Text>
+        <Text style={styles.hint}>Shown on your profile.</Text>
       )}
 
       <Text style={styles.label}>Challenge type</Text>
