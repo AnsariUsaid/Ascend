@@ -163,8 +163,8 @@ export default function Dashboard() {
         <Pressable style={styles.accessBanner} onPress={() => AscendNative.openBatteryOptimizationSettings()}>
           <Feather name="battery-charging" size={16} color="#9a6a1f" />
           <Text style={styles.accessText}>
-            Keep Ascend running in the background so it's always there when you need it — set
-            its battery to “Unrestricted”. Tap to enable.
+            Let Ascend run in the background so it reliably catches your limits — set its
+            battery to “Unrestricted”. Tap to enable.
           </Text>
         </Pressable>
       )}
