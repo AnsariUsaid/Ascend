@@ -10,7 +10,7 @@ export default function SignIn() {
   const insets = useSafeAreaInsets();
   useStatusBarStyle('light'); // coral hero → white icons
 
-  // Auth is stubbed — any provider just starts onboarding.
+  // v1 is fully local — no accounts. "Get Started" goes straight to onboarding.
   const enter = () => router.replace('/(onboarding)/usage-access');
 
   return (
@@ -21,17 +21,15 @@ export default function SignIn() {
           <ChevronMark size={52} />
           <Wordmark size={20} style={{ marginTop: 12 }} />
           <Text style={styles.headline}>Take back{'\n'}your time.</Text>
-          <Text style={styles.sub}>Sign in to start your journey.</Text>
+          <Text style={styles.sub}>Let's start your journey.</Text>
         </View>
       </View>
 
       {/* Cream sheet */}
       <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
-        <Button label="Continue with Google" variant="google" onPress={enter} />
-        <Button label="Continue with Apple" variant="coffee" onPress={enter} />
-        <Button label="Continue with Email" variant="outline" onPress={enter} />
+        <Button label="Get Started" variant="primary" onPress={enter} />
         <Text style={styles.legal}>
-          By continuing, you agree to our Terms & Privacy Policy
+          No account needed. Everything stays private on your device.
         </Text>
       </View>
     </View>
