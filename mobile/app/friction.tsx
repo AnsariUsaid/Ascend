@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, BackHandler } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -45,6 +45,13 @@ export default function Friction() {
 
   useEffect(() => {
     ensureToday();
+  }, []);
+
+  // Block the hardware Back button — friction can only be left via the on-screen
+  // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => sub.remove();
   }, []);
 
   const isTyping = questionType === 'typing';
