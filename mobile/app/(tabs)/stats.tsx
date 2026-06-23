@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppChip, Card } from '../../src/components';
+import { AppChip, Card, UsageBars } from '../../src/components';
 import { appChipColors, colors, fonts, radius, spacing } from '../../src/theme';
 import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
@@ -50,7 +50,6 @@ export default function Stats() {
   };
 
   const totals = view.days.map((d) => d.segments.reduce((s, x) => s + x.minutes, 0));
-  const max = Math.max(1, ...totals);
   const sel = selDay != null ? view.days[selDay] : null;
 
   return (
@@ -84,32 +83,11 @@ export default function Stats() {
         {totals.every((t) => t === 0) ? (
           <Text style={styles.emptyText}>No usage data yet.</Text>
         ) : (
-          <View style={styles.chartRow}>
-            {view.days.map((d, i) => {
-              const total = totals[i];
-              const dim = selDay != null && selDay !== i;
-              return (
-                <Pressable key={i} style={styles.chartCol} onPress={() => setSelDay(selDay === i ? null : i)}>
-                  <View style={styles.barArea}>
-                    <View style={{ width: 18, opacity: dim ? 0.35 : 1, height: `${(total / max) * 100}%`, justifyContent: 'flex-end' }}>
-                      {d.segments.map((s, si) => (
-                        <View
-                          key={s.key}
-                          style={{
-                            height: total ? `${(s.minutes / total) * 100}%` : '0%',
-                            backgroundColor: segColor(s.hue),
-                            borderTopLeftRadius: si === d.segments.length - 1 ? 5 : 0,
-                            borderTopRightRadius: si === d.segments.length - 1 ? 5 : 0,
-                          }}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                  <Text style={[styles.chartLabel, selDay === i && { color: colors.coral }]}>{d.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          <UsageBars
+            days={view.days}
+            selectedIndex={selDay}
+            onSelectDay={(i) => setSelDay(selDay === i ? null : i)}
+          />
         )}
 
         {sel ? (
@@ -176,10 +154,6 @@ const styles = StyleSheet.create({
   legendDot: { width: 9, height: 9, borderRadius: 3, marginRight: 5 },
   legendText: { fontFamily: fonts.medium, fontSize: 12, color: colors.muted2 },
 
-  chartRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  chartCol: { flex: 1, alignItems: 'center' },
-  barArea: { height: 110, justifyContent: 'flex-end' },
-  chartLabel: { marginTop: 8, fontFamily: fonts.medium, fontSize: 12, color: colors.muted3 },
   dayFooter: { marginTop: 16, fontFamily: fonts.medium, fontSize: 12.5, color: colors.muted, backgroundColor: colors.cream, borderRadius: 10, padding: 10 },
   emptyText: { fontFamily: fonts.regular, fontSize: 14, color: colors.muted2, textAlign: 'center', paddingVertical: 18 },
 
@@ -188,8 +162,6 @@ const styles = StyleSheet.create({
   perAppName: { fontFamily: fonts.medium, fontSize: 15.5, color: colors.ink },
   perAppTotal: { fontFamily: fonts.regular, fontSize: 13, color: colors.muted2, marginTop: 2 },
   hair: { height: 1, backgroundColor: colors.divider, marginVertical: 6 },
-  delta: { borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
-  deltaText: { fontFamily: fonts.semibold, fontSize: 13 },
 
   frictionGrid: { flexDirection: 'row', gap: 10 },
   frictionCard: { flex: 1, borderRadius: radius.cardSm, padding: 14, minHeight: 96, justifyContent: 'space-between' },

@@ -21,3 +21,5 @@ export { Segmented } from './Segmented';
 export { PermissionBanner } from './PermissionBanner';
 export { PermissionGate } from './PermissionGate';
 export { ProtectionCard } from './ProtectionCard';
+export { UsageBars } from './UsageBars';
+export type { BarDay, BarSegment } from './UsageBars';
