@@ -181,8 +181,8 @@ class MonitorService : Service() {
   companion object {
     private const val NOTIF_ID = 4201
     private const val CHANNEL_ID = "ascend_monitor"
-    private const val POLL_MS = 3_000L
+    private const val POLL_MS = 2_000L // screen-on poll (screen-off idles at IDLE_MS)
     private const val IDLE_MS = 60_000L // screen-off idle between safety re-checks
-    private const val LAUNCH_COOLDOWN_MS = 5_000L
+    private const val LAUNCH_COOLDOWN_MS = 1_500L // < POLL_MS so it never adds delay on re-block
   }
 }
