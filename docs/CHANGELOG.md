@@ -227,12 +227,102 @@ signed by a different key (a security guarantee). Fix: `adb uninstall com.ascend
 re-onboard once) then `adb install`. Also: on Samsung, set the app's battery mode to **Unrestricted**
 so One UI doesn't sleep the background watcher.
 
-**`<pending>` build: signed release APK (standalone signing config)**
+**`e17a629` build: configure release signing, keystore loading and standalone APK builds**
+
+## Improvement pass + bug fixes (issues #2, #3)
+
+**A round of reliability fixes and the deferred improvement pass, after daily use of the
+release APK.** Four commits:
+
+- **`07f8999` feat(protection): one-tap notification prompt + battery nudge**
+  Native `requestNotificationPermission()` fires the Android 13+ "Allow notifications?"
+  dialog directly (instead of opening Settings); the Settings → Protection "Notifications"
+  row now uses it. Plus a dashboard banner nudging the user to set battery to "Unrestricted"
+  when set up but not yet exempt. (This was the C+D part of the deferred improvement pass;
+  the **B** adaptive-poll-rate idea remains deliberately skipped.)
+- **`89d3f85` perf(monitor): pause usage polling while the screen is off (closes #3)**
+  The watcher polled every 3s regardless of screen state, but an app can only be used with
+  the screen on. A `SCREEN_ON`/`SCREEN_OFF` receiver now idles the poll loop while the
+  screen is off (60s safety re-check), resuming instantly on `SCREEN_ON`. No UX change.
+- **`dc230ad` fix(monitor): re-wall apps blocked via "I'm done for today" (closes #2)**
+  `tick()` returned early for any blocked app, so after "I'm done for today" the wall never
+  came back and the app stayed freely usable. Blocked apps now re-show the friction wall
+  every time they're foregrounded, until the midnight reset.
+- **`0d187e1` fix(settings): Delete Account fully wipes local state**
+  Delete Account only navigated to sign-in without clearing anything (and `onboarded` stayed
+  true, so reopening dropped you back into the old session). Since there are no accounts yet,
+  it's now a true local reset: resets `useAppStore` (incl. `onboarded`), clears the friction
+  store, disarms the native watcher, then → sign-in. Reopening lands on fresh onboarding.
+  (Sign Out left as-is for now — it has no real meaning without accounts.)
+- **`87e2805` (PR #5, not yet merged) fix(splash): stop auto-advance from interrupting deep-linked friction**
+  Friction overlay redirect loop (issue #4): on a cold-start friction deep link the splash mounted
+  under the modal and its unconditional 2.6s auto-advance timer bounced the user to the dashboard
+  (~50% intermittent). Moved the auto-advance into `useFocusEffect` so it only runs while the splash
+  is focused. JS-only.
+
+*Native fixes (#2, #3) + the notification prompt were **rebuilt onto the S23** (release APK, in-place
+install) — interactive on-device verification still pending. PR #5 (#4): **CodeRabbit approved**
+("no actionable comments"); pending on-device verify + merge.*
+
+---
+
+## v1 pivot — backend-free, no-login, fully on-device (issue #6)
+
+**Strategy change (2026-06-21):** v1 ships with **no sign-in, no accounts, no backend, no analytics** —
+everything stays on-device. A Firebase Auth login was started (console setup + packages) and then
+**fully reverted**; the detailed login plan doc (`docs/RELEASE_PLAN.md`) was deleted. Rationale: privacy
+is a real feature for an anti-addiction app, it removes a lot of native complexity, and it gives the
+simplest Play Store "Data Safety" story. The user will *attempt* the Play Store (rejection acceptable);
+the real review hurdle is the sensitive permissions, not auth. Tracked in issue #6, branch
+`feat/v1-local-only`. Three planned commits:
+
+- **`878cd71` refactor: remove leaderboard tab and related state (#6)**
+  The leaderboard needs identity + a backend, so it's removed for v1 (returns at M5). Deleted the screen,
+  the tab, the mock data (`leaderboard`/`leaderboardResetIn`/`LeaderRow`), the `leaderboardOptIn` store
+  state (type/action/default/setter/persistence), the Settings "PRIVACY" section, and the onboarding hint.
+  Tabs are now **Home · Stats · Settings**.
+- **`dceac6b` feat(welcome)** — `sign-in.tsx` becomes a single **"Get Started"** entry (the three stub
+  provider buttons gone), with a privacy-reassurance line. PR #7 merged the three #6 commits.
+- **`eb85777` refactor(settings) (closes #6)** — removed **"Sign Out"**, renamed **"Delete Account" →
+  "Clear all data"**, dropped the hardcoded profile email, renamed the `ACCOUNT` section → `GENERAL`.
+
+---
+
+## App icon + Stats overhaul (v1 polish)
+
+**`6305f7b` feat(icon): the Ascend chevron app icon (PR #8)**
+Replaced the default Expo placeholder launcher icon with the brand chevron mark (cream doubled chevron on
+Summit coral). Regenerated all 5 Android launcher densities from a single master with `sharp` — no
+`expo prebuild` (bare workflow would clobber the hand-edited gradle/manifest).
+
+Then a **diagnosis pass** found several Stats/UX issues; fixed across these commits:
+
+- **`6fecaed` fix(settings): real streak** — the Settings "7-day streak" pill was hardcoded; now reads the
+  real `usage.streak` (same value the Dashboard shows).
+- **`95bffdd` fix(home): battery banner copy** — reworded to explain the *reliability* benefit instead of the
+  vague "so it's always there".
+- **`9b3d54d` refactor(stats): remove the mock Month tab** — the Month view was entirely fake (hardcoded
+  Instagram/YouTube/TikTok). Android only keeps ~7 days of per-app daily history, so a real month can't be
+  built from it. Stats is now **Week-only and all-real**. (A real Month returns later via local
+  daily-history accumulation from install day.)
+- **`ba0782a` feat(stats): reusable `UsageBars` chart** — redesigned the weekly bars (rounded-top stacked
+  bars on faint gridlines) and extracted them into a shared component.
+- **`4b54120` feat(stats): day breakdown + app detail** — tap a day → a real per-app breakdown for that day
+  (also fixes the old footer that showed package prefixes like "CO…"); tap an app (from Stats or the
+  Dashboard) → a 7-day **app detail page** with its limit and per-app friction stats. New shared
+  `AppStatRow` component.
+- **friction back-to-app** — after earning grace, "Back to app" now calls a new native
+  `returnToPreviousApp()` (`moveTaskToBack`) so the user lands back in the app they were using, not on
+  Ascend's dashboard.
 
 ---
 
 ## Still to come
 
-- **Improvement pass (deferred)** — one-tap runtime notification prompt; battery efficiency
-  (poll only while screen is on, adaptive rate); onboarding nudge for battery exemption.
-- **M5** — backend + sync and a real leaderboard.
+- **Battery efficiency (option B, deferred)** — adaptive poll rate (skipped on purpose; only
+  cost was a ~7s slower wall when switching *into* a monitored app).
+- **`currentForegroundApp()` cold-start blind spot** — noticed but unconfirmed: on a fresh
+  service/process start while an app is already foreground, the 10s look-back can miss it and
+  delay the first trigger. Fix sketched (seed from start-of-day), not yet applied.
+- **M5** — backend + sync and a real leaderboard (Cloudflare Workers + D1 + Hono + Firebase Auth);
+  real Stats "Month" (local history); real per-app icons.

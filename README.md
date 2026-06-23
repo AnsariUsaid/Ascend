@@ -6,7 +6,7 @@ Ascend is an Android app that helps you reduce screen time **without** the cold-
 
 The core insight from the product blueprint: *addiction can't be removed instantly — sudden hard blocks cause frustration and app deletion.* So Ascend replaces the hard block with a **Cognitive Friction Ladder**.
 
-> ⚠️ **Status: work in progress.** The app is being built milestone by milestone (see [Roadmap](#roadmap)). It currently runs as an Expo **development build** on a real Android device.
+> ⚠️ **Status: work in progress.** Built milestone by milestone (see [Roadmap](#roadmap)). A signed **release APK** already runs standalone on a real Android device. **v1 is fully on-device and account-free** — no sign-in, no servers, nothing leaves your phone.
 
 ---
 
@@ -19,7 +19,7 @@ The core insight from the product blueprint: *addiction can't be removed instant
 5. Each subsequent round the **difficulty climbs** and never resets until midnight.
 6. A wrong answer → retry, or **skip** (penalty: +1 level, no grace). Or tap **"I'm done for today"** to block the app for the rest of the day.
 
-There's also a **baseline** (your average usage over the *past* 7 days, computed once on first launch), a **Dashboard**, **Stats**, a **Leaderboard** (% screen-time reduction), and **Settings**.
+There's also a **baseline** (your average usage over the *past* 7 days, computed once on first launch), a **Dashboard**, **Stats**, and **Settings**. Everything runs **on-device** — no account, no sign-in, no servers. (A leaderboard is planned for a future release once there's a backend.)
 
 ---
 
@@ -40,7 +40,7 @@ Ascend is a React Native (Expo) app with a small **Kotlin native module**. The s
   │  • read per-app usage (UsageStatsManager)    │
   │  • list installed apps (PackageManager)      │
   │  • check/open special permissions            │
-  │  • (Phase D) overlay trigger + bg service    │
+  │  • overlay trigger + background service       │
   └─────────────────────────────────────────────┘
 ```
 
@@ -58,7 +58,7 @@ Everything that *can* be done in JavaScript **is** — only the three things JS 
 | Native module | **Kotlin** via the **Expo Modules API** (`modules/ascend-native`) |
 | Usage data | Android `UsageStatsManager` (event-based) |
 | Design system | "Summit" palette, Bricolage Grotesque + Outfit fonts |
-| Backend | *Deferred* — everything runs on-device for now (Node/Express + Postgres + Firebase planned) |
+| Backend | **None in v1** — fully on-device, account-free. A backend (Cloudflare Workers + D1 + Hono + Firebase Auth) returns later for cross-device sync + the leaderboard. |
 
 ---
 
@@ -74,9 +74,9 @@ Ascend/
 └── mobile/                ← the Expo app
     ├── app/               ← screens (Expo Router file-based routes)
     │   ├── index.tsx              splash
-    │   ├── sign-in.tsx            sign-in (stubbed)
+    │   ├── sign-in.tsx            welcome ("Get Started" — no account)
     │   ├── (onboarding)/          5-step onboarding
-    │   ├── (tabs)/                Home · Stats · Leaderboard · Settings
+    │   ├── (tabs)/                Home · Stats · Settings
     │   ├── friction.tsx           the friction overlay (modal)
     │   └── edit-apps / edit-limits
     ├── src/
@@ -84,7 +84,7 @@ Ascend/
     │   ├── theme/         colors / typography / spacing tokens
     │   ├── store/         useAppStore (config), useFrictionStore (ladder engine)
     │   ├── usage/         useUsage (reads real screen time)
-    │   ├── data/          installed apps, question bank, mock leaderboard
+    │   ├── data/          installed apps, question bank, sample stats
     │   └── hooks/         usePermissionStatus
     ├── modules/
     │   └── ascend-native/ ← the Kotlin native module
@@ -130,10 +130,11 @@ To grant the two special permissions, follow the in-app onboarding (Usage Access
 | Installed apps / app picker | ✅ **Real** (from the device) |
 | Friction ladder (levels, skip, grace, midnight reset) | ✅ Real engine, persisted |
 | Permissions (Usage Access, Overlay) | ✅ Real native checks |
-| Background service + automatic overlay trigger | 🔜 **Phase D** (today it's a "Simulate limit reached" dev button) |
+| Background service + automatic overlay trigger | ✅ **Real** (foreground service auto-launches friction; survives reboot) |
+| Permission-revoked hard block + Protection hub | ✅ **Real** (Phase E) |
 | Stats *Month* view | 🟡 Sample data (Android keeps ~7 days of per-app daily history) |
-| Leaderboard | 🟡 Mock (needs a backend) |
-| Sign-in / accounts / sync | 🟡 Stubbed (backend deferred) |
+| Leaderboard | ❌ Removed for v1 (returns with a future backend) |
+| Sign-in / accounts / sync | ❌ None — v1 is account-free and fully on-device |
 
 ---
 
@@ -145,8 +146,10 @@ To grant the two special permissions, follow the in-app onboarding (Usage Access
 - [x] **M4 · Phase A** — convert to a custom dev build (leave Expo Go)
 - [x] **M4 · Phase B** — native permissions module + wired onboarding
 - [x] **M4 · Phase C** — real usage data + dynamic installed apps
-- [ ] **M4 · Phase D** — foreground service + automatic overlay trigger + boot receiver
-- [ ] **M4 · Phase E** — hardening (permission-revoked screen, battery-optimization, OEM quirks)
-- [ ] **M5** — backend + sync (Node/Express + Postgres + Firebase), real leaderboard
+- [x] **M4 · Phase D** — foreground service + automatic overlay trigger + boot receiver
+- [x] **M4 · Phase E** — hardening (permission-revoked screen, battery-optimization, OEM quirks)
+- [x] **Release APK** — signed standalone build, runs unplugged
+- [ ] **v1 release** — backend-free, no-login, fully on-device (leaderboard removed); finalize + Play Store attempt
+- [ ] **M5** — backend + sync (Cloudflare Workers + D1 + Hono + Firebase Auth), real leaderboard
 
 See **[docs/CHANGELOG.md](docs/CHANGELOG.md)** for a commit-by-commit account of how each piece was built, and **[CLAUDE.md](CLAUDE.md)** for the working logbook.

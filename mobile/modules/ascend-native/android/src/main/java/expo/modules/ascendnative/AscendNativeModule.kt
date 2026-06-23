@@ -77,6 +77,13 @@ class AscendNativeModule : Module() {
     Function("openNotificationSettings") { openNotificationSettings() }
     // One-tap runtime prompt for POST_NOTIFICATIONS (Android 13+).
     Function("requestNotificationPermission") { requestNotificationPermission() }
+
+    // Send Ascend to the background so the user returns to the app they were in
+    // (e.g. after earning grace on the friction screen). No-op if no activity.
+    Function("returnToPreviousApp") {
+      appContext.currentActivity?.moveTaskToBack(true)
+      Unit
+    }
   }
 
   // App context provided by Expo. Used to read system services and start intents.
