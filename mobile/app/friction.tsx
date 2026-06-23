@@ -10,6 +10,7 @@ import { useFrictionStore } from '../src/store/useFrictionStore';
 import { getQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
+import AscendNative from '../modules/ascend-native';
 
 type Phase = 'question' | 'correct' | 'done';
 
@@ -79,6 +80,16 @@ export default function Friction() {
   const onDone = () => {
     doneForToday(appKey);
     setPhase('done');
+  };
+
+  // After earning grace, send Ascend to the background so the user lands back in
+  // the app they were using (not on Ascend's dashboard). Falls back to a normal
+  // dismiss if the native call is unavailable (older build).
+  const backToApp = () => {
+    try {
+      AscendNative.returnToPreviousApp();
+    } catch {}
+    router.back();
   };
 
   return (
@@ -176,7 +187,7 @@ export default function Friction() {
         )}
 
         {phase === 'correct' && (
-          <GraceState minutes={grace} expiresAt={graceExpiresAt} onBack={() => router.back()} />
+          <GraceState minutes={grace} expiresAt={graceExpiresAt} onBack={backToApp} />
         )}
 
         {phase === 'done' && (

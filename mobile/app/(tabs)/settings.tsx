@@ -14,6 +14,7 @@ import {
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import { useAppStore, QuestionType, GracePeriod } from '../../src/store/useAppStore';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
+import { useUsage } from '../../src/usage/useUsage';
 import AscendNative from '../../modules/ascend-native';
 
 const QUESTION_TYPES: { label: string; value: QuestionType }[] = [
@@ -43,6 +44,7 @@ export default function Settings() {
   const insets = useSafeAreaInsets();
   const s = useAppStore();
   const count = s.selectedKeys().length;
+  const { streak } = useUsage();
 
   const [sheet, setSheet] = useState<null | 'question' | 'grace' | 'name'>(null);
   const [confirm, setConfirm] = useState<null | 'delete'>(null);
@@ -69,7 +71,7 @@ export default function Settings() {
             <Text style={styles.email}>Keep climbing</Text>
           </View>
           <View style={styles.streakPill}>
-            <Text style={styles.streakPillText}>7-day streak</Text>
+            <Text style={styles.streakPillText}>{streak}-day streak</Text>
           </View>
         </View>
 

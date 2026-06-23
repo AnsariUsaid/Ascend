@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppChip, Card, Segmented } from '../../src/components';
-import { appChipColors, appHues, colors, fonts, radius, spacing } from '../../src/theme';
-import { statsByRange, formatDuration } from '../../src/data/mock';
+import { AppStatRow, Card, UsageBars } from '../../src/components';
+import { appChipColors, colors, fonts, radius, spacing } from '../../src/theme';
+import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
 import { useAppStore } from '../../src/store/useAppStore';
 import { useUsage } from '../../src/usage/useUsage';
 
 type Segment = { key: string; hue: number; minutes: number };
 type DayBar = { label: string; segments: Segment[] };
-type PerApp = { key: string; name: string; glyph: string; hue: number; total: number; delta?: number };
+type PerApp = { key: string; name: string; glyph: string; hue: number; total: number };
 type StatsView = {
-  real: boolean;
   improvement: number; // % reduction (positive number)
   days: DayBar[];
   perApp: PerApp[];
@@ -21,20 +21,9 @@ type StatsView = {
 
 const segColor = (hue: number) => appChipColors(hue).glyph;
 
-function DeltaPill({ pct }: { pct: number }) {
-  const down = pct < 0;
-  return (
-    <View style={[styles.delta, { backgroundColor: down ? colors.successBg : colors.dangerBg }]}>
-      <Text style={[styles.deltaText, { color: down ? colors.successText : colors.dangerText }]}>
-        {down ? '↓' : '↑'} {Math.abs(pct)}%
-      </Text>
-    </View>
-  );
-}
-
 export default function Stats() {
   const insets = useSafeAreaInsets();
-  const [range, setRange] = useState<'week' | 'month'>('week');
+  const router = useRouter();
   const [selDay, setSelDay] = useState<number | null>(null);
 
   const usage = useUsage();
@@ -49,41 +38,29 @@ export default function Stats() {
     { answered: 0, highest: 0, stopped: 0 },
   );
 
-  // Build the view for the selected range.
-  let view: StatsView;
-  if (range === 'week') {
-    const avg = usage.weekDailyTotals.reduce((s, n) => s + n, 0) / Math.max(1, usage.weekDailyTotals.length);
-    view = {
-      real: true,
-      improvement: baseline > 0 ? Math.max(0, Math.round(((baseline - avg) / baseline) * 100)) : 0,
-      days: usage.weekLabels.map((label, i) => ({
-        label,
-        segments: usage.apps.map((a) => ({ key: a.key, hue: a.hue, minutes: a.daily[i] ?? 0 })),
-      })),
-      perApp: usage.apps.map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, total: a.weekTotal })),
-      friction: live,
-    };
-  } else {
-    const m = statsByRange.month;
-    view = {
-      real: false,
-      improvement: Math.abs(m.improvementPct),
-      days: m.breakdown.map((d) => ({
-        label: d.label,
-        segments: [
-          { key: 'instagram', hue: appHues.instagram, minutes: d.instagram },
-          { key: 'youtube', hue: appHues.youtube, minutes: d.youtube },
-          { key: 'tiktok', hue: appHues.tiktok, minutes: d.tiktok },
-        ],
-      })),
-      perApp: m.perApp.map((p) => ({ key: p.key, name: p.name, glyph: p.glyph, hue: p.hue, total: p.totalMinutes, delta: p.deltaPct })),
-      friction: { answered: m.friction.answered, highest: m.friction.highestLevel, stopped: m.friction.stopped },
-    };
-  }
+  // This week, from real usage. (The Month view was removed — Android keeps only
+  // ~7 days of per-app daily history, so a real month can't be built from it.)
+  const avg = usage.weekDailyTotals.reduce((s, n) => s + n, 0) / Math.max(1, usage.weekDailyTotals.length);
+  const view: StatsView = {
+    improvement: baseline > 0 ? Math.max(0, Math.round(((baseline - avg) / baseline) * 100)) : 0,
+    days: usage.weekLabels.map((label, i) => ({
+      label,
+      segments: usage.apps.map((a) => ({ key: a.key, hue: a.hue, minutes: a.daily[i] ?? 0 })),
+    })),
+    perApp: usage.apps.map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, total: a.weekTotal })),
+    friction: live,
+  };
 
   const totals = view.days.map((d) => d.segments.reduce((s, x) => s + x.minutes, 0));
-  const max = Math.max(1, ...totals);
-  const sel = selDay != null ? view.days[selDay] : null;
+
+  // Selected day for the breakdown — defaults to today, tap a bar to change it.
+  const todayIdx = view.days.length - 1;
+  const selIdx = selDay ?? todayIdx;
+  const selLabel = view.days[selIdx]?.label ?? '';
+  const dayApps = usage.apps
+    .map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, mins: a.daily[selIdx] ?? 0 }))
+    .sort((x, y) => y.mins - x.mins);
+  const dayTotal = dayApps.reduce((s, a) => s + a.mins, 0);
 
   return (
     <ScrollView
@@ -91,29 +68,18 @@ export default function Stats() {
       contentContainerStyle={{ paddingTop: insets.top + 12, paddingHorizontal: spacing.screenH, paddingBottom: 32 }}
     >
       <Text style={styles.title}>Stats</Text>
-      <Segmented
-        options={[
-          { label: 'Week', value: 'week' as const },
-          { label: 'Month', value: 'month' as const },
-        ]}
-        value={range}
-        onChange={(v) => {
-          setRange(v);
-          setSelDay(null);
-        }}
-      />
 
       {/* Improvement summary */}
       <Card dark style={styles.improve}>
         <Text style={styles.improveNum}>↓ {view.improvement}%</Text>
         <Text style={styles.improveLabel}>less screen time</Text>
-        <Text style={styles.improveSub}>vs. your baseline {view.real ? '' : '· sample data'}</Text>
+        <Text style={styles.improveSub}>vs. your baseline</Text>
       </Card>
 
       {/* Daily breakdown */}
       <Card style={{ marginTop: 12 }}>
         <View style={styles.breakdownHeader}>
-          <Text style={styles.cardLabel}>{range === 'week' ? 'DAILY BREAKDOWN' : 'WEEKLY BREAKDOWN'}</Text>
+          <Text style={styles.cardLabel}>DAILY BREAKDOWN</Text>
           <View style={styles.legend}>
             {view.perApp.map((a) => (
               <View key={a.key} style={styles.legendItem}>
@@ -125,41 +91,26 @@ export default function Stats() {
         </View>
 
         {totals.every((t) => t === 0) ? (
-          <Text style={styles.emptyText}>No usage data yet for this range.</Text>
+          <Text style={styles.emptyText}>No usage data yet.</Text>
         ) : (
-          <View style={styles.chartRow}>
-            {view.days.map((d, i) => {
-              const total = totals[i];
-              const dim = selDay != null && selDay !== i;
-              return (
-                <Pressable key={i} style={styles.chartCol} onPress={() => setSelDay(selDay === i ? null : i)}>
-                  <View style={styles.barArea}>
-                    <View style={{ width: 18, opacity: dim ? 0.35 : 1, height: `${(total / max) * 100}%`, justifyContent: 'flex-end' }}>
-                      {d.segments.map((s, si) => (
-                        <View
-                          key={s.key}
-                          style={{
-                            height: total ? `${(s.minutes / total) * 100}%` : '0%',
-                            backgroundColor: segColor(s.hue),
-                            borderTopLeftRadius: si === d.segments.length - 1 ? 5 : 0,
-                            borderTopRightRadius: si === d.segments.length - 1 ? 5 : 0,
-                          }}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                  <Text style={[styles.chartLabel, selDay === i && { color: colors.coral }]}>{d.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          <UsageBars days={view.days} selectedIndex={selIdx} onSelectDay={setSelDay} />
         )}
 
-        {sel ? (
-          <Text style={styles.dayFooter}>
-            {sel.label} · {formatDuration(sel.segments.reduce((s, x) => s + x.minutes, 0))}
-            {sel.segments.map((s) => ` · ${s.key.slice(0, 2).toUpperCase()} ${formatDuration(s.minutes)}`).join('')}
-          </Text>
+        {usage.apps.length > 0 ? (
+          <View style={styles.dayBreak}>
+            <Text style={styles.dayBreakHeader}>
+              {selLabel} · {formatDuration(dayTotal)}
+            </Text>
+            {dayApps.map((a) => (
+              <AppStatRow
+                key={a.key}
+                hue={a.hue}
+                glyph={a.glyph}
+                name={a.name}
+                right={<Text style={styles.dayMins}>{formatDuration(a.mins)}</Text>}
+              />
+            ))}
+          </View>
         ) : null}
       </Card>
 
@@ -171,14 +122,13 @@ export default function Stats() {
         ) : (
           view.perApp.map((app, i) => (
             <View key={app.key}>
-              <View style={styles.perAppRow}>
-                <AppChip hue={app.hue} glyph={app.glyph} size={36} />
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                  <Text style={styles.perAppName}>{app.name}</Text>
-                  <Text style={styles.perAppTotal}>{formatDuration(app.total)} total</Text>
-                </View>
-                {app.delta != null ? <DeltaPill pct={app.delta} /> : null}
-              </View>
+              <AppStatRow
+                hue={app.hue}
+                glyph={app.glyph}
+                name={app.name}
+                sub={`${formatDuration(app.total)} total`}
+                onPress={() => router.push({ pathname: '/app-detail', params: { app: app.key } })}
+              />
               {i < view.perApp.length - 1 ? <View style={styles.hair} /> : null}
             </View>
           ))
@@ -220,20 +170,14 @@ const styles = StyleSheet.create({
   legendDot: { width: 9, height: 9, borderRadius: 3, marginRight: 5 },
   legendText: { fontFamily: fonts.medium, fontSize: 12, color: colors.muted2 },
 
-  chartRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  chartCol: { flex: 1, alignItems: 'center' },
-  barArea: { height: 110, justifyContent: 'flex-end' },
-  chartLabel: { marginTop: 8, fontFamily: fonts.medium, fontSize: 12, color: colors.muted3 },
-  dayFooter: { marginTop: 16, fontFamily: fonts.medium, fontSize: 12.5, color: colors.muted, backgroundColor: colors.cream, borderRadius: 10, padding: 10 },
   emptyText: { fontFamily: fonts.regular, fontSize: 14, color: colors.muted2, textAlign: 'center', paddingVertical: 18 },
 
+  dayBreak: { marginTop: 16, borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: 6 },
+  dayBreakHeader: { fontFamily: fonts.semibold, fontSize: 13.5, color: colors.muted, marginTop: 8, marginBottom: 2 },
+  dayMins: { fontFamily: fonts.semibold, fontSize: 14, color: colors.ink },
+
   sectionLabel: { fontFamily: fonts.semibold, fontSize: 12.5, letterSpacing: 0.14 * 12.5, color: colors.muted2, marginBottom: 10 },
-  perAppRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
-  perAppName: { fontFamily: fonts.medium, fontSize: 15.5, color: colors.ink },
-  perAppTotal: { fontFamily: fonts.regular, fontSize: 13, color: colors.muted2, marginTop: 2 },
   hair: { height: 1, backgroundColor: colors.divider, marginVertical: 6 },
-  delta: { borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
-  deltaText: { fontFamily: fonts.semibold, fontSize: 13 },
 
   frictionGrid: { flexDirection: 'row', gap: 10 },
   frictionCard: { flex: 1, borderRadius: radius.cardSm, padding: 14, minHeight: 96, justifyContent: 'space-between' },
