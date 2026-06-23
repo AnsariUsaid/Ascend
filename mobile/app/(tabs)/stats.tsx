@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppChip, Card, UsageBars } from '../../src/components';
+import { AppStatRow, Card, UsageBars } from '../../src/components';
 import { appChipColors, colors, fonts, radius, spacing } from '../../src/theme';
 import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
@@ -22,6 +23,7 @@ const segColor = (hue: number) => appChipColors(hue).glyph;
 
 export default function Stats() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [selDay, setSelDay] = useState<number | null>(null);
 
   const usage = useUsage();
@@ -50,7 +52,15 @@ export default function Stats() {
   };
 
   const totals = view.days.map((d) => d.segments.reduce((s, x) => s + x.minutes, 0));
-  const sel = selDay != null ? view.days[selDay] : null;
+
+  // Selected day for the breakdown — defaults to today, tap a bar to change it.
+  const todayIdx = view.days.length - 1;
+  const selIdx = selDay ?? todayIdx;
+  const selLabel = view.days[selIdx]?.label ?? '';
+  const dayApps = usage.apps
+    .map((a) => ({ key: a.key, name: a.name, glyph: a.glyph, hue: a.hue, mins: a.daily[selIdx] ?? 0 }))
+    .sort((x, y) => y.mins - x.mins);
+  const dayTotal = dayApps.reduce((s, a) => s + a.mins, 0);
 
   return (
     <ScrollView
@@ -83,18 +93,24 @@ export default function Stats() {
         {totals.every((t) => t === 0) ? (
           <Text style={styles.emptyText}>No usage data yet.</Text>
         ) : (
-          <UsageBars
-            days={view.days}
-            selectedIndex={selDay}
-            onSelectDay={(i) => setSelDay(selDay === i ? null : i)}
-          />
+          <UsageBars days={view.days} selectedIndex={selIdx} onSelectDay={setSelDay} />
         )}
 
-        {sel ? (
-          <Text style={styles.dayFooter}>
-            {sel.label} · {formatDuration(sel.segments.reduce((s, x) => s + x.minutes, 0))}
-            {sel.segments.map((s) => ` · ${s.key.slice(0, 2).toUpperCase()} ${formatDuration(s.minutes)}`).join('')}
-          </Text>
+        {usage.apps.length > 0 ? (
+          <View style={styles.dayBreak}>
+            <Text style={styles.dayBreakHeader}>
+              {selLabel} · {formatDuration(dayTotal)}
+            </Text>
+            {dayApps.map((a) => (
+              <AppStatRow
+                key={a.key}
+                hue={a.hue}
+                glyph={a.glyph}
+                name={a.name}
+                right={<Text style={styles.dayMins}>{formatDuration(a.mins)}</Text>}
+              />
+            ))}
+          </View>
         ) : null}
       </Card>
 
@@ -106,13 +122,13 @@ export default function Stats() {
         ) : (
           view.perApp.map((app, i) => (
             <View key={app.key}>
-              <View style={styles.perAppRow}>
-                <AppChip hue={app.hue} glyph={app.glyph} size={36} />
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                  <Text style={styles.perAppName}>{app.name}</Text>
-                  <Text style={styles.perAppTotal}>{formatDuration(app.total)} total</Text>
-                </View>
-              </View>
+              <AppStatRow
+                hue={app.hue}
+                glyph={app.glyph}
+                name={app.name}
+                sub={`${formatDuration(app.total)} total`}
+                onPress={() => router.push({ pathname: '/app-detail', params: { app: app.key } })}
+              />
               {i < view.perApp.length - 1 ? <View style={styles.hair} /> : null}
             </View>
           ))
@@ -154,13 +170,13 @@ const styles = StyleSheet.create({
   legendDot: { width: 9, height: 9, borderRadius: 3, marginRight: 5 },
   legendText: { fontFamily: fonts.medium, fontSize: 12, color: colors.muted2 },
 
-  dayFooter: { marginTop: 16, fontFamily: fonts.medium, fontSize: 12.5, color: colors.muted, backgroundColor: colors.cream, borderRadius: 10, padding: 10 },
   emptyText: { fontFamily: fonts.regular, fontSize: 14, color: colors.muted2, textAlign: 'center', paddingVertical: 18 },
 
+  dayBreak: { marginTop: 16, borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: 6 },
+  dayBreakHeader: { fontFamily: fonts.semibold, fontSize: 13.5, color: colors.muted, marginTop: 8, marginBottom: 2 },
+  dayMins: { fontFamily: fonts.semibold, fontSize: 14, color: colors.ink },
+
   sectionLabel: { fontFamily: fonts.semibold, fontSize: 12.5, letterSpacing: 0.14 * 12.5, color: colors.muted2, marginBottom: 10 },
-  perAppRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
-  perAppName: { fontFamily: fonts.medium, fontSize: 15.5, color: colors.ink },
-  perAppTotal: { fontFamily: fonts.regular, fontSize: 13, color: colors.muted2, marginTop: 2 },
   hair: { height: 1, backgroundColor: colors.divider, marginVertical: 6 },
 
   frictionGrid: { flexDirection: 'row', gap: 10 },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
@@ -61,9 +62,11 @@ function Avatar({ initials, size = 46 }: { initials: string; size?: number }) {
 }
 
 function UsageRow({ app }: { app: AppUsage }) {
+  const router = useRouter();
   const over = app.today > app.limit;
   const diff = Math.abs(app.today - app.limit);
   return (
+    <Pressable onPress={() => router.push({ pathname: '/app-detail', params: { app: app.key } })}>
     <Card style={styles.usageCard} borderColor={over ? 'rgba(190,64,44,0.45)' : undefined}>
       <View style={styles.usageHeader}>
         <AppChip hue={app.hue} glyph={app.glyph} size={36} />
@@ -82,6 +85,7 @@ function UsageRow({ app }: { app: AppUsage }) {
         </View>
       </View>
     </Card>
+    </Pressable>
   );
 }
 
