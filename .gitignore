@@ -35,3 +35,6 @@ AGENTS.md
 # on disk, untracked (CLAUDE.md + docs/CHANGELOG.md are the committed record).
 docs/HANDOFF.md
 CLAUDE.md
+
+# Release status / checklist — local working notes for shipping (untracked).
+docs/RELEASE_STATUS.md

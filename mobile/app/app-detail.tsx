@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +14,7 @@ export default function AppDetail() {
   const { app: pkg } = useLocalSearchParams<{ app?: string }>();
 
   const usage = useUsage();
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const data = usage.apps.find((a) => a.key === pkg);
   const meta = getApp(pkg ?? '');
   const fr = useFrictionStore((s) => s.byApp[pkg ?? '']);
@@ -50,6 +52,9 @@ export default function AppDetail() {
     };
   });
   const todayIdx = days.length - 1;
+  const activeDay = selectedDay ?? todayIdx;
+  const activeMins = data.daily[activeDay] ?? 0;
+  const activeOver = activeMins > data.limit;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.cream }}>
@@ -73,8 +78,14 @@ export default function AppDetail() {
         {/* Last 7 days */}
         <Card style={{ marginTop: 12 }}>
           <Text style={styles.cardLabel}>LAST 7 DAYS</Text>
-          <UsageBars days={days} selectedIndex={todayIdx} />
-          <Text style={styles.caption}>{formatDuration(data.weekTotal)} this week · red = over limit</Text>
+          <UsageBars days={days} selectedIndex={activeDay} onSelectDay={setSelectedDay} />
+          <View style={styles.readoutRow}>
+            <Text style={styles.readoutDay}>{dayName(activeDay, todayIdx)}</Text>
+            <Text style={[styles.readoutTime, { color: activeOver ? colors.dangerText : colors.ink }]}>
+              {formatDuration(activeMins)}
+            </Text>
+          </View>
+          <Text style={styles.caption}>Tap a bar to see that day · {formatDuration(data.weekTotal)} this week</Text>
         </Card>
 
         {/* Friction for this app */}
@@ -99,6 +110,16 @@ function Stat({ value, label, highlight }: { value: number; label: string; highl
   );
 }
 
+/** Friendly name for the bar at `idx` (oldest→today), e.g. Today / Yesterday / Saturday. */
+function dayName(idx: number, todayIdx: number): string {
+  const daysAgo = todayIdx - idx;
+  if (daysAgo === 0) return 'Today';
+  if (daysAgo === 1) return 'Yesterday';
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toLocaleDateString(undefined, { weekday: 'long' });
+}
+
 const pad = (top: number) => ({
   paddingTop: top + 12,
   paddingHorizontal: spacing.screenH,
@@ -112,6 +133,10 @@ const styles = StyleSheet.create({
   todayNum: { fontFamily: fonts.displayXBold, fontSize: 30, color: colors.ink },
   todayStatus: { fontFamily: fonts.semibold, fontSize: 14 },
   caption: { fontFamily: fonts.regular, fontSize: 12.5, color: colors.muted2, marginTop: 12 },
+
+  readoutRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 16 },
+  readoutDay: { fontFamily: fonts.semibold, fontSize: 15, color: colors.ink },
+  readoutTime: { fontFamily: fonts.displayXBold, fontSize: 20 },
 
   cardLabel: { fontFamily: fonts.semibold, fontSize: 12.5, letterSpacing: 0.14 * 12.5, color: colors.muted2, marginBottom: 16 },
   sectionLabel: { fontFamily: fonts.semibold, fontSize: 12.5, letterSpacing: 0.14 * 12.5, color: colors.muted2, marginTop: 24, marginBottom: 10 },
