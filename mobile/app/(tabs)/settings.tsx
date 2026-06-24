@@ -6,6 +6,7 @@ import {
   Button,
   ChoiceChips,
   ConfirmDialog,
+  MotivationDialog,
   ProtectionCard,
   SettingsRow,
   Sheet,
@@ -47,7 +48,7 @@ export default function Settings() {
   const { streak } = useUsage();
 
   const [sheet, setSheet] = useState<null | 'question' | 'grace' | 'name'>(null);
-  const [confirm, setConfirm] = useState<null | 'delete'>(null);
+  const [confirm, setConfirm] = useState<null | 'motivate' | 'delete'>(null);
   const [nameDraft, setNameDraft] = useState(s.displayName);
 
   return (
@@ -99,7 +100,7 @@ export default function Settings() {
 
         <Section label="GENERAL">
           <SettingsRow label="Notifications" right={<Toggle value={s.notifications} onChange={s.setNotifications} />} />
-          <SettingsRow label="Clear all data" danger onPress={() => setConfirm('delete')} last />
+          <SettingsRow label="Clear all data" danger onPress={() => setConfirm('motivate')} last />
         </Section>
 
         <Text style={styles.footer}>Ascend 1.0 · data stays on this device</Text>
@@ -133,7 +134,18 @@ export default function Settings() {
         />
       </Sheet>
 
-      {/* Destructive confirmations */}
+      {/* Step 1 — a warm nudge before the destructive confirm. */}
+      <MotivationDialog
+        visible={confirm === 'motivate'}
+        title="Start over?"
+        message="If you're frustrated right now, that's the friction doing its job — not a reason to quit on yourself. The hard part passes faster than the urge says it will."
+        stayLabel="Keep my progress"
+        continueLabel="Continue anyway"
+        onStay={() => setConfirm(null)}
+        onContinue={() => setConfirm('delete')}
+      />
+
+      {/* Step 2 — the default destructive confirmation. */}
       <ConfirmDialog
         visible={confirm === 'delete'}
         title="Clear all data?"

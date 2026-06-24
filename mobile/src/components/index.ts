@@ -16,6 +16,7 @@ export { ChoiceChips } from './ChoiceChips';
 export { SettingsRow } from './SettingsRow';
 export { Sheet } from './Sheet';
 export { ConfirmDialog } from './ConfirmDialog';
+export { MotivationDialog } from './MotivationDialog';
 export { ScreenHeader } from './ScreenHeader';
 export { Segmented } from './Segmented';
 export { PermissionBanner } from './PermissionBanner';
