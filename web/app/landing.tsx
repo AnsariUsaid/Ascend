@@ -627,7 +627,10 @@ export default function Landing() {
           <span style={{ fontFamily: POP, fontWeight: 700, letterSpacing: ".28em", fontSize: 13, color: "#F7ECE1" }}>ASCEND</span>
         </div>
         <span style={{ fontSize: 13 }}>Break the Scroll. Earn Your Feed.</span>
-        <span style={{ fontSize: 13 }}>© 2026 · Made for focus</span>
+        <span style={{ fontSize: 13, display: "flex", gap: 14, alignItems: "center" }}>
+          <a href="/privacy" style={{ color: "rgba(247,236,225,.78)", textDecoration: "none" }}>Privacy</a>
+          <span style={{ opacity: 0.5 }}>© 2026 · Made for focus</span>
+        </span>
       </footer>
     </div>
   );
