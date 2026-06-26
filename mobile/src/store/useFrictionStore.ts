@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { todayKey } from '../lib/date';
+import { MAX_LEVEL } from '../data/questionBank';
 import AscendNative from '../../modules/ascend-native';
 
 // Mirror friction outcomes into the native watcher (Phase D). Wrapped so a
@@ -85,7 +86,8 @@ export const useFrictionStore = create<FrictionStore>()(
         answerCorrect: (key, graceMinutes) => {
           const graceExpiresAt = Date.now() + graceMinutes * 60_000;
           update(key, (a) => {
-            const nextLevel = a.level + 1;
+            // Climb a level, but never past the cap — grace is still granted at the top.
+            const nextLevel = Math.min(MAX_LEVEL, a.level + 1);
             return {
               ...a,
               level: nextLevel,
@@ -100,7 +102,8 @@ export const useFrictionStore = create<FrictionStore>()(
 
         skip: (key) =>
           update(key, (a) => {
-            const nextLevel = a.level + 1;
+            // Skip penalty climbs a level, capped — at the top it re-serves level MAX_LEVEL.
+            const nextLevel = Math.min(MAX_LEVEL, a.level + 1);
             return {
               ...a,
               level: nextLevel,

@@ -7,7 +7,7 @@ import { AppChip, Button, Wordmark } from '../src/components';
 import { colors, fonts, radius } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
 import { useFrictionStore } from '../src/store/useFrictionStore';
-import { getQuestion, normalizeAnswer, typingAccuracy } from '../src/data/questionBank';
+import { getQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 import AscendNative from '../modules/ascend-native';
@@ -39,6 +39,7 @@ export default function Friction() {
     useFrictionStore.getState().getApp(appKey).blockedForToday ? 'done' : 'question',
   );
   const [input, setInput] = useState('');
+  const [selected, setSelected] = useState<string | null>(null); // chosen multiple-choice option
   const [wrong, setWrong] = useState(false);
   const [escalated, setEscalated] = useState(false);
   const [graceExpiresAt, setGraceExpiresAt] = useState<number | null>(null);
@@ -56,16 +57,30 @@ export default function Friction() {
 
   const isTyping = questionType === 'typing';
   const ref = current.q.reference ?? '';
+  // Multiple-choice questions (logic) carry an `options` array; the rest are typed.
+  const options = current.q.options;
+  const isMcq = !isTyping && !!options?.length;
   const accuracy = useMemo(
     () => (isTyping ? typingAccuracy(input, ref) : 100),
     [input, ref, isTyping],
   );
-  const canCheck = isTyping ? input.length >= ref.length : input.trim().length > 0;
+  // Per-level character-accuracy bar a typing answer must clear (85% at L1 → 95% at L5).
+  const threshold = isTyping ? typingThreshold(current.level) : 100;
+  // Must type the whole passage before checking, so a short correct prefix can't pass.
+  const canCheck = isTyping
+    ? input.length >= ref.length
+    : isMcq
+    ? selected !== null
+    : input.trim().length > 0;
 
   const check = () => {
     const ok = isTyping
-      ? input === ref
-      : normalizeAnswer(input) === normalizeAnswer(current.q.answer);
+      ? accuracy >= threshold
+      : isMcq
+      ? selected === current.q.answer
+      : questionType === 'trivia'
+      ? fuzzyMatches(input, current.q) // typed trivia (L4-5): lenient match
+      : normalizeMath(input) === normalizeMath(current.q.answer); // math: numeric-exact
     if (ok) {
       answerCorrect(appKey, grace);
       setGraceExpiresAt(useFrictionStore.getState().getApp(appKey).graceExpiresAt);
@@ -77,11 +92,12 @@ export default function Friction() {
 
   const onSkip = () => {
     skip(appKey);
-    const nextLevel = current.level + 1;
+    const nextLevel = Math.min(MAX_LEVEL, current.level + 1);
     setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
     setInput('');
+    setSelected(null);
     setWrong(false);
-    setEscalated(true);
+    setEscalated(nextLevel > current.level); // at the cap it re-serves L5 without escalating
   };
 
   const onDone = () => {
@@ -149,11 +165,35 @@ export default function Friction() {
                 <Text
                   style={[
                     styles.accuracy,
-                    { color: accuracy >= 95 ? colors.successText : colors.coffee },
+                    { color: accuracy >= threshold ? colors.successText : colors.coffee },
                   ]}
                 >
-                  Accuracy: {accuracy}%
+                  Accuracy: {accuracy}% · need {threshold}%
                 </Text>
+              </>
+            ) : isMcq ? (
+              <>
+                <Text style={styles.mcqPrompt}>{current.q.prompt}</Text>
+                <View style={styles.optionsWrap}>
+                  {options!.map((opt) => {
+                    const sel = selected === opt;
+                    return (
+                      <Pressable
+                        key={opt}
+                        onPress={() => {
+                          setSelected(opt);
+                          setWrong(false);
+                        }}
+                        style={[styles.option, sel && styles.optionSelected]}
+                      >
+                        <View style={[styles.radio, sel && styles.radioSelected]}>
+                          {sel ? <Feather name="check" size={13} color={colors.coral} /> : null}
+                        </View>
+                        <Text style={[styles.optionText, sel && styles.optionTextSelected]}>{opt}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
               </>
             ) : (
               <>
@@ -266,6 +306,35 @@ const styles = StyleSheet.create({
   escalatedText: { fontFamily: fonts.medium, fontSize: 13, color: colors.cream },
 
   question: { marginTop: 26, fontFamily: fonts.display, fontSize: 26, lineHeight: 34, color: colors.cream },
+
+  // Multiple-choice (logic): smaller prompt for longer text + tappable option cards.
+  mcqPrompt: { marginTop: 24, fontFamily: fonts.display, fontSize: 18.5, lineHeight: 26, color: colors.cream },
+  optionsWrap: { marginTop: 18, gap: 10 },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: 'rgba(251,244,234,0.12)',
+    borderRadius: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 14,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+  },
+  optionSelected: { backgroundColor: colors.cream, borderColor: colors.cream },
+  optionText: { flex: 1, fontFamily: fonts.medium, fontSize: 15, lineHeight: 21, color: colors.cream },
+  optionTextSelected: { fontFamily: fonts.semibold, color: colors.ink },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: 'rgba(251,244,234,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioSelected: { backgroundColor: colors.cream, borderColor: colors.cream },
+
   label: { marginTop: 24, fontFamily: fonts.medium, fontSize: 14, color: 'rgba(251,244,234,0.9)' },
   refCard: { marginTop: 12, backgroundColor: 'rgba(251,244,234,0.12)', borderRadius: 14, padding: 14 },
   refText: { fontFamily: fonts.medium, fontSize: 16, lineHeight: 24, color: colors.cream },
