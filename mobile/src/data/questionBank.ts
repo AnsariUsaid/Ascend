@@ -687,10 +687,6 @@ export function getQuestion(type: QuestionType, level: number, excludeId?: strin
   }
 }
 
-export function normalizeAnswer(s: string) {
-  return s.trim().toLowerCase();
-}
-
 /** Compare a typed math answer, ignoring currency symbols, commas, and spaces. */
 export function normalizeMath(s: string): string {
   return s.replace(/[^0-9.\-]/g, '');
@@ -753,11 +749,14 @@ function fuzzyOne(input: string, candidate: string): boolean {
   // Forgive a typo or two, scaled to the answer's length.
   const tol = nc.length <= 3 ? 0 : nc.length <= 6 ? 1 : 2;
   if (levenshtein(ni, nc) <= tol) return true;
-  // Allow extra/missing words ("vincent van gogh" vs "van gogh", "civil war").
   if (nc.length >= 4) {
     const ti = ni.split(' ');
     const tc = nc.split(' ');
-    if (tokensContain(ti, tc) || tokensContain(tc, ti)) return true;
+    // Input wraps the full answer in extra words ("vincent van gogh" -> "van gogh").
+    if (tokensContain(ti, tc)) return true;
+    // Input is a shorter sub-phrase of the answer ("civil war" -> "american civil war"),
+    // but require >=2 words so a lone generic word ("ocean", "war") can't clear it.
+    if (ti.length >= 2 && tokensContain(tc, ti)) return true;
   }
   return false;
 }
