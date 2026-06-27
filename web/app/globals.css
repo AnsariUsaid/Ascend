@@ -48,11 +48,18 @@ body {
 .btn-gold:hover { filter: brightness(1.06); }
 .btn-ghost:hover { border-color: rgba(247,236,225,.4) !important; }
 
-/* ===== responsive stacking for the desktop-first layout ===== */
+/* ===== desktop / mobile layout switch =====
+   Desktop choreography holds at >= 861px (verified on devices down to iPad Mini);
+   below that the static mobile layout takes over. */
+.mob-only { display: none; }
 @media (max-width: 860px) {
-  .hero-grid { grid-template-columns: 1fr !important; }
-  .how-grid { grid-template-columns: 1fr !important; }
+  .dsk-only { display: none; }
+  .mob-only { display: block; }
 }
+
+/* hide scrollbar on the mobile how-it-works carousel track */
+.hide-sb { scrollbar-width: none; -ms-overflow-style: none; }
+.hide-sb::-webkit-scrollbar { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }

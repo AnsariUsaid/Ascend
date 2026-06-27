@@ -38,6 +38,9 @@ const STEPS = [
 
 const BAR_HEIGHTS = [34, 44, 53, 62, 72, 84, 100];
 
+// Step screenshots for the mobile how-it-works, in STEPS order.
+const STEP_IMG = ["/img/select-apps.jpg", "/img/limits.jpg", "/img/friction.jpg", "/img/stats.jpg"];
+
 export default function Landing() {
   // ---- interactive state ----
   const [step, setStep] = useState(0);
@@ -65,6 +68,18 @@ export default function Landing() {
   const badgeRef = useRef<HTMLDivElement | null>(null);
   const stepRef = useRef(0);
 
+  // ---- mobile how-it-works carousel ----
+  const howTrackRef = useRef<HTMLDivElement | null>(null);
+  const [howSlide, setHowSlide] = useState(0);
+  const onHowScroll = () => {
+    const el = howTrackRef.current;
+    if (el) setHowSlide(Math.round(el.scrollLeft / el.clientWidth));
+  };
+  const goSlide = (i: number) => {
+    const el = howTrackRef.current;
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
+
   useEffect(() => {
     const frame = () => {
       const a = anchorARef.current;
@@ -72,6 +87,7 @@ export default function Landing() {
       const fly = flyRef.current;
       const how = howRef.current;
       if (!a || !b || !fly || !how) return;
+      if (window.innerWidth <= 860) return; // mobile uses the static layout; skip the choreography
       const vh = window.innerHeight;
       const ar = a.getBoundingClientRect();
       const br = b.getBoundingClientRect();
@@ -283,6 +299,8 @@ export default function Landing() {
         </a>
       </nav>
 
+      {/* ===== DESKTOP layout (>= 861px): flying-phone choreography ===== */}
+      <div className="dsk-only">
       {/* ============ FLYING PHONE ============ */}
       <div
         ref={flyRef}
@@ -452,6 +470,101 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </div>
+      {/* ===== /DESKTOP layout ===== */}
+
+      {/* ===== MOBILE layout (<= 860px): static stacked ===== */}
+      <div className="mob-only">
+        {/* mobile hero */}
+        <section style={{ padding: "108px 22px 52px", textAlign: "center" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(195,90,65,.1)", border: "1px solid rgba(195,90,65,.22)", padding: "7px 14px", borderRadius: 100, marginBottom: 22 }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#1F7A4D", boxShadow: "0 0 0 3px rgba(31,122,77,.18)" }} />
+            <span style={{ fontFamily: POP, fontWeight: 600, fontSize: 12, letterSpacing: ".03em", color: "#A8472F" }}>No account needed · 100% on-device</span>
+          </div>
+          <h1 style={{ fontFamily: POP, fontWeight: 800, fontSize: "clamp(34px,9.5vw,50px)", lineHeight: 1.02, letterSpacing: "-.02em", color: "#2A211A" }}>
+            Break the scroll.<br />
+            <span style={{ color: "#C35A41" }}>Reclaim your focus.</span>
+          </h1>
+          <p style={{ margin: "18px auto 0", maxWidth: 400, fontSize: 16, lineHeight: 1.55, color: "#6B5C50" }}>
+            ASCEND turns your daily limits into a challenge. Go over your time on an app and a puzzle stands between you and the next scroll — so you actually pause.
+          </p>
+          <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+            <a href="#get" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#F7ECE1", background: "#C35A41", padding: "15px 38px", borderRadius: 100, boxShadow: "0 12px 30px rgba(195,90,65,.32)" }}>Get Started</a>
+            <a href="#how-m" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 15, color: "#2A211A" }}>See how it works</a>
+          </div>
+          <div style={{ marginTop: 40 }}>
+            <PhoneShot src="/img/home.jpg" alt="Ascend home" width="min(74vw, 280px)" />
+          </div>
+          <div style={{ marginTop: 38, display: "flex", gap: 26, justifyContent: "center", alignItems: "center" }}>
+            <div>
+              <div style={{ fontFamily: POP, fontWeight: 800, fontSize: 28, color: "#2A211A" }}>37%</div>
+              <div style={{ fontSize: 12.5, color: "#8A7868", marginTop: 2 }}>less screen time</div>
+            </div>
+            <div style={{ width: 1, alignSelf: "stretch", background: "rgba(42,33,26,.12)" }} />
+            <div>
+              <div style={{ fontFamily: POP, fontWeight: 800, fontSize: 28, color: "#2A211A" }}>7-day</div>
+              <div style={{ fontSize: 12.5, color: "#8A7868", marginTop: 2 }}>streaks built</div>
+            </div>
+          </div>
+        </section>
+
+        {/* mobile how-it-works */}
+        <section id="how-m" style={{ padding: "44px 0 50px" }}>
+          <div data-reveal style={{ textAlign: "center", marginBottom: 24, padding: "0 22px" }}>
+            <div style={{ width: 40, height: 3, borderRadius: 3, background: "rgba(195,90,65,.55)", margin: "0 auto 18px" }} />
+            <div style={{ fontFamily: POP, fontWeight: 700, fontSize: 12.5, letterSpacing: ".26em", color: "#C35A41", marginBottom: 12 }}>HOW IT WORKS</div>
+            <h2 style={{ fontFamily: POP, fontWeight: 800, fontSize: "clamp(30px,8vw,40px)", lineHeight: 1.05, letterSpacing: "-.02em", color: "#2A211A" }}>Four steps to<br />your time back.</h2>
+          </div>
+
+          {/* carousel: one step per screen, swipe horizontally or tap the dots */}
+          <div
+            ref={howTrackRef}
+            onScroll={onHowScroll}
+            className="hide-sb"
+            style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", height: "min(600px, 78vh)" }}
+          >
+            {STEPS.map((s, i) => (
+              <div key={s.num} style={{ flex: "0 0 100%", scrollSnapAlign: "center", padding: "0 22px", boxSizing: "border-box", display: "flex" }}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    background: "#fff",
+                    border: "1px solid rgba(42,33,26,.07)",
+                    borderRadius: 28,
+                    padding: "32px 22px",
+                    boxShadow: "0 22px 54px -28px rgba(42,18,8,.32)",
+                  }}
+                >
+                  <span style={{ fontFamily: POP, fontWeight: 800, fontSize: 11.5, letterSpacing: ".12em", color: "#C35A41", background: "rgba(195,90,65,.1)", padding: "4px 13px", borderRadius: 99, marginBottom: 14 }}>STEP {s.num}</span>
+                  <h3 style={{ fontFamily: POP, fontWeight: 800, fontSize: "clamp(24px,6.5vw,32px)", lineHeight: 1.08, letterSpacing: "-.02em", color: "#2A211A", maxWidth: 320 }}>{s.title}</h3>
+                  <p style={{ marginTop: 12, fontSize: 14.5, lineHeight: 1.55, color: "#6B5C50", maxWidth: 330 }}>{s.desc}</p>
+                  <div style={{ marginTop: 22 }}>
+                    <PhoneShot src={STEP_IMG[i]} alt={s.title} width="min(52vw, 24vh)" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* dots */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 22 }}>
+            {STEPS.map((s, i) => (
+              <button
+                key={s.num}
+                aria-label={"Go to step " + s.num}
+                onClick={() => goSlide(i)}
+                style={{ width: i === howSlide ? 24 : 8, height: 8, borderRadius: 99, border: "none", padding: 0, cursor: "pointer", background: i === howSlide ? "#C35A41" : "rgba(42,33,26,.18)", transition: "width .3s ease, background .3s ease" }}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
+      {/* ===== /MOBILE layout ===== */}
 
       {/* ============ MECHANICS ============ */}
       <section id="mechanics" style={{ position: "relative", background: "#2A211A", color: "#F7ECE1", padding: "clamp(80px,11vw,150px) clamp(20px,5vw,64px)", overflow: "hidden" }}>
@@ -669,6 +782,19 @@ function marqueeFill(): React.CSSProperties {
     whiteSpace: "nowrap",
     color: "rgba(42,33,26,.045)",
   };
+}
+
+// Static framed phone screenshot for the mobile layout (no choreography).
+function PhoneShot({ src, alt, width }: { src: string; alt: string; width: string }) {
+  return (
+    <div style={{ width, margin: "0 auto" }}>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "738/1536", background: "#1c1712", borderRadius: 40, padding: 9, boxShadow: "0 30px 60px -18px rgba(42,18,8,.45),0 0 0 1px rgba(0,0,0,.4)" }}>
+        <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: 32, overflow: "hidden", background: "#F7ECE1" }}>
+          <img src={src} alt={alt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const cardStyle: React.CSSProperties = {
