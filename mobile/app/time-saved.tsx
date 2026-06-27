@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppStatRow, Card, ScreenHeader, UsageBars } from '../src/components';
+import { AppStatRow, Card, ScreenHeader, StatusBarCap, UsageBars } from '../src/components';
 import { colors, fonts, spacing } from '../src/theme';
 import { formatDuration } from '../src/data/mock';
 import { useUsage } from '../src/usage/useUsage';
@@ -23,7 +23,7 @@ export default function TimeSavedDetail() {
         key: `d${i}`,
         hue: 0,
         minutes: usage.apps.reduce((s, a) => s + savedOn(a.limit, a.daily[i] ?? 0), 0),
-        color: i === todayIdx ? colors.amber : 'rgba(230,161,92,0.45)',
+        color: i === todayIdx ? colors.amber : 'rgba(230,161,92,0.7)',
       },
     ],
   }));
@@ -52,10 +52,10 @@ export default function TimeSavedDetail() {
           <Text style={styles.cardLabel}>SAVED EACH DAY</Text>
           {hasData ? (
             <>
-              <UsageBars days={days} selectedIndex={todayIdx} />
+              <UsageBars days={days} selectedIndex={todayIdx} showScale />
               <Text style={styles.caption}>
-                Each bar is how far under your limits you stayed that day. Today is in full colour;
-                it’s still filling in, so its number settles as the day goes on.
+                Each bar is how far under your limits you stayed that day, on the time scale at left.
+                Today is in full colour; it’s still filling in, so its number settles as the day goes on.
               </Text>
             </>
           ) : (
@@ -101,6 +101,7 @@ export default function TimeSavedDetail() {
           </Text>
         </Card>
       </ScrollView>
+      <StatusBarCap />
     </View>
   );
 }

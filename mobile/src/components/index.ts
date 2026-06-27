@@ -18,6 +18,7 @@ export { Sheet } from './Sheet';
 export { ConfirmDialog } from './ConfirmDialog';
 export { MotivationDialog } from './MotivationDialog';
 export { ScreenHeader } from './ScreenHeader';
+export { StatusBarCap } from './StatusBarCap';
 export { Segmented } from './Segmented';
 export { PermissionBanner } from './PermissionBanner';
 export { PermissionGate } from './PermissionGate';

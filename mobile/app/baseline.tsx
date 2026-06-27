@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Card, ScreenHeader, UsageBars } from '../src/components';
+import { Card, ScreenHeader, StatusBarCap, UsageBars } from '../src/components';
 import { colors, fonts, spacing } from '../src/theme';
 import { formatDuration } from '../src/data/mock';
 import { useUsage, USAGE_DAYS } from '../src/usage/useUsage';
@@ -105,6 +105,7 @@ export default function BaselineDetail() {
           </Text>
         </Card>
       </ScrollView>
+      <StatusBarCap />
     </View>
   );
 }
