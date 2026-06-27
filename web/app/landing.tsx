@@ -521,7 +521,7 @@ export default function Landing() {
             ref={howTrackRef}
             onScroll={onHowScroll}
             className="hide-sb"
-            style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", height: "min(600px, 78vh)" }}
+            style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", alignItems: "stretch" }}
           >
             {STEPS.map((s, i) => (
               <div key={s.num} style={{ flex: "0 0 100%", scrollSnapAlign: "center", padding: "0 22px", boxSizing: "border-box", display: "flex" }}>
