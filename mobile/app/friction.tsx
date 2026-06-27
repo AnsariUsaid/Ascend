@@ -12,7 +12,7 @@ import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 import AscendNative from '../modules/ascend-native';
 
-type Phase = 'question' | 'correct' | 'done';
+type Phase = 'question' | 'correct' | 'done' | 'exhausted';
 
 export default function Friction() {
   const router = useRouter();
@@ -35,9 +35,13 @@ export default function Friction() {
     const appState = useFrictionStore.getState().getApp(appKey);
     return { q: getQuestion(questionType, appState.level), level: appState.level };
   });
-  const [phase, setPhase] = useState<Phase>(() =>
-    useFrictionStore.getState().getApp(appKey).blockedForToday ? 'done' : 'question',
-  );
+  const [phase, setPhase] = useState<Phase>(() => {
+    const a = useFrictionStore.getState().getApp(appKey);
+    if (a.blockedForToday) return 'done';
+    // Past the top of the ladder → cleared every level today, no more questions.
+    if (a.level > MAX_LEVEL) return 'exhausted';
+    return 'question';
+  });
   const [input, setInput] = useState('');
   const [selected, setSelected] = useState<string | null>(null); // chosen multiple-choice option
   const [wrong, setWrong] = useState(false);
@@ -245,6 +249,26 @@ export default function Friction() {
               {app.name} is blocked for the rest of the day. Come back tomorrow with a fresh streak.
             </Text>
             <Button label="Close" variant="google" onPress={() => router.back()} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+          </View>
+        )}
+
+        {phase === 'exhausted' && (
+          <View style={styles.center}>
+            <Feather name="award" size={40} color={colors.cream} />
+            <Text style={styles.bigTitle}>You've cleared every level</Text>
+            <Text style={styles.bigSub}>
+              That's all the time Ascend will unlock for {app.name} today. Rest up and come back
+              tomorrow with a fresh streak.
+            </Text>
+            <Button
+              label="I'm done for today"
+              variant="google"
+              onPress={() => {
+                doneForToday(appKey);
+                router.back();
+              }}
+              style={{ marginTop: 24, alignSelf: 'stretch' }}
+            />
           </View>
         )}
       </View>

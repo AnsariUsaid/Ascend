@@ -86,14 +86,18 @@ export const useFrictionStore = create<FrictionStore>()(
         answerCorrect: (key, graceMinutes) => {
           const graceExpiresAt = Date.now() + graceMinutes * 60_000;
           update(key, (a) => {
-            // Climb a level, but never past the cap — grace is still granted at the top.
-            const nextLevel = Math.min(MAX_LEVEL, a.level + 1);
+            // Climb a level. We allow ONE step past the top (MAX_LEVEL + 1) as a
+            // sentinel meaning "ladder finished for today" — the overlay reads it and
+            // shows the terminal "done for today" screen instead of another question.
+            // So clearing level 5 is the final earn round; the next trigger ends the day.
+            const nextLevel = Math.min(MAX_LEVEL + 1, a.level + 1);
             return {
               ...a,
               level: nextLevel,
               graceExpiresAt,
               answered: a.answered + 1,
-              maxLevel: Math.max(a.maxLevel, nextLevel),
+              // Stats never show the sentinel — cap the displayed max at MAX_LEVEL.
+              maxLevel: Math.min(MAX_LEVEL, Math.max(a.maxLevel, nextLevel)),
             };
           });
           // Native watcher backs off until grace expires.
