@@ -39,8 +39,6 @@ function dayLabels(days: number): string[] {
 export function useUsage() {
   const selected = useAppStore((s) => s.selected);
   const limits = useAppStore((s) => s.limits);
-  const baselineComputed = useAppStore((s) => s.baselineComputed);
-  const setBaseline = useAppStore((s) => s.setBaseline);
 
   const [apps, setApps] = useState<AppUsage[]>([]);
   const [hasAccess, setHasAccess] = useState(false);
@@ -117,13 +115,22 @@ export function useUsage() {
     return n;
   }, [apps]);
 
-  // Baseline: compute once on the first launch that has usage access + data.
-  useEffect(() => {
-    if (hasAccess && !baselineComputed && apps.length > 0) {
-      const avg = Math.round(weekDailyTotals.reduce((s, n) => s + n, 0) / USAGE_DAYS);
-      if (avg > 0) setBaseline(avg);
-    }
-  }, [hasAccess, baselineComputed, apps.length, weekDailyTotals, setBaseline]);
+  // Rolling baseline: today vs. the average of the 6 days before it. The window
+  // slides forward with the dates (getUsage always returns the trailing 7 days),
+  // so there's nothing to freeze or reset — it's all derived live.
+  //   typicalDay  = avg daily minutes over the previous 6 days (full days)
+  //   todayMinutes = today so far
+  //   improvement = how much below your typical day you are today (signed %)
+  const todayMinutes = weekDailyTotals[USAGE_DAYS - 1] ?? 0;
+  const prevDays = weekDailyTotals.slice(0, USAGE_DAYS - 1); // the 6 days before today
+  const typicalDay = prevDays.length
+    ? Math.round(prevDays.reduce((s, n) => s + n, 0) / prevDays.length)
+    : 0;
+  // Signed: positive = used less than usual today, negative = used more.
+  // Consumers clamp/format (the headline shows reductions only).
+  const improvement = typicalDay > 0
+    ? Math.round(((typicalDay - todayMinutes) / typicalDay) * 100)
+    : 0;
 
   return {
     apps,
@@ -133,5 +140,9 @@ export function useUsage() {
     streak,
     hasAccess,
     refresh,
+    // Rolling-baseline pieces (also feed the baseline detail page).
+    todayMinutes,
+    typicalDay,
+    improvement,
   };
 }

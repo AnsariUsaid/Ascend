@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { AppStatRow, Card, UsageBars } from '../../src/components';
 import { appChipColors, colors, fonts, radius, spacing } from '../../src/theme';
 import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
-import { useAppStore } from '../../src/store/useAppStore';
 import { useUsage } from '../../src/usage/useUsage';
 
 type Segment = { key: string; hue: number; minutes: number };
 type DayBar = { label: string; segments: Segment[] };
 type PerApp = { key: string; name: string; glyph: string; hue: number; total: number };
 type StatsView = {
-  improvement: number; // % reduction (positive number)
   days: DayBar[];
   perApp: PerApp[];
   friction: { answered: number; highest: number; stopped: number };
@@ -27,7 +26,6 @@ export default function Stats() {
   const [selDay, setSelDay] = useState<number | null>(null);
 
   const usage = useUsage();
-  const baseline = useAppStore((s) => s.baselineMinutes);
   const frByApp = useFrictionStore((s) => s.byApp);
   const live = Object.values(frByApp).reduce(
     (a, x) => ({
@@ -38,11 +36,12 @@ export default function Stats() {
     { answered: 0, highest: 0, stopped: 0 },
   );
 
+  // The headline shows reductions only; the signed value lives on the detail page.
+  const reduction = Math.max(0, usage.improvement);
+
   // This week, from real usage. (The Month view was removed — Android keeps only
   // ~7 days of per-app daily history, so a real month can't be built from it.)
-  const avg = usage.weekDailyTotals.reduce((s, n) => s + n, 0) / Math.max(1, usage.weekDailyTotals.length);
   const view: StatsView = {
-    improvement: baseline > 0 ? Math.max(0, Math.round(((baseline - avg) / baseline) * 100)) : 0,
     days: usage.weekLabels.map((label, i) => ({
       label,
       segments: usage.apps.map((a) => ({ key: a.key, hue: a.hue, minutes: a.daily[i] ?? 0 })),
@@ -69,12 +68,17 @@ export default function Stats() {
     >
       <Text style={styles.title}>Stats</Text>
 
-      {/* Improvement summary */}
-      <Card dark style={styles.improve}>
-        <Text style={styles.improveNum}>↓ {view.improvement}%</Text>
-        <Text style={styles.improveLabel}>less screen time</Text>
-        <Text style={styles.improveSub}>vs. your baseline</Text>
-      </Card>
+      {/* Improvement summary — tap for the full baseline breakdown */}
+      <Pressable onPress={() => router.push('/baseline')}>
+        <Card dark style={styles.improve}>
+          <View style={styles.improveTop}>
+            <Text style={styles.improveNum}>↓ {reduction}%</Text>
+            <Feather name="info" size={17} color="rgba(251,244,234,0.5)" />
+          </View>
+          <Text style={styles.improveLabel}>less than your typical day</Text>
+          <Text style={styles.improveSub}>today so far · tap to see how</Text>
+        </Card>
+      </Pressable>
 
       {/* Daily breakdown */}
       <Card style={{ marginTop: 12 }}>
@@ -159,6 +163,7 @@ const styles = StyleSheet.create({
   title: { fontFamily: fonts.displayXBold, fontSize: 27, color: colors.ink, marginBottom: 16 },
 
   improve: { marginTop: 16, alignItems: 'flex-start' },
+  improveTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', alignSelf: 'stretch' },
   improveNum: { fontFamily: fonts.displayXBold, fontSize: 34, color: colors.successBg },
   improveLabel: { fontFamily: fonts.medium, fontSize: 15, color: colors.cream, marginTop: 4 },
   improveSub: { fontFamily: fonts.regular, fontSize: 13, color: 'rgba(251,244,234,0.55)', marginTop: 2 },

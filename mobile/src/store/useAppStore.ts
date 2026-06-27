@@ -17,15 +17,6 @@ type AppState = {
   notifications: boolean;
 
   /**
-   * Average daily screen-time (minutes) of monitored apps before Ascend — the
-   * baseline we measure your reduction against. Set ONCE on first launch,
-   * computed from the past-7-day UsageStatsManager query (see useUsage).
-   */
-  baselineMinutes: number;
-  /** True once the real baseline has been captured (so we don't overwrite it). */
-  baselineComputed: boolean;
-
-  /**
    * True once the user has finished onboarding. Lets the splash skip sign-in +
    * onboarding for a returning, set-up user (auth is stubbed, so this is our
    * "returning user" signal for now).
@@ -41,7 +32,6 @@ type AppState = {
   setGracePeriod: (g: GracePeriod) => void;
   setDisplayName: (name: string) => void;
   setNotifications: (v: boolean) => void;
-  setBaseline: (minutes: number) => void;
   setOnboarded: (v: boolean) => void;
   /** Wipe all config back to defaults (Delete Account → fresh start). */
   reset: () => void;
@@ -60,8 +50,6 @@ const initialData = {
   gracePeriod: 10 as GracePeriod,
   displayName: 'EarlyBird',
   notifications: true,
-  baselineMinutes: 320, // fallback until the real past-7-day baseline is computed
-  baselineComputed: false,
   onboarded: false,
 };
 
@@ -87,7 +75,6 @@ export const useAppStore = create<AppState>()(
       setGracePeriod: (g) => set({ gracePeriod: g }),
       setDisplayName: (name) => set({ displayName: name }),
       setNotifications: (v) => set({ notifications: v }),
-      setBaseline: (minutes) => set({ baselineMinutes: minutes, baselineComputed: true }),
       setOnboarded: (v) => set({ onboarded: v }),
       reset: () => set({ ...initialData }),
 
@@ -106,8 +93,6 @@ export const useAppStore = create<AppState>()(
         gracePeriod: s.gracePeriod,
         displayName: s.displayName,
         notifications: s.notifications,
-        baselineMinutes: s.baselineMinutes,
-        baselineComputed: s.baselineComputed,
         onboarded: s.onboarded,
       }),
     },
