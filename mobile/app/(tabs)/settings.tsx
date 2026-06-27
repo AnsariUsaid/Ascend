@@ -10,7 +10,6 @@ import {
   ProtectionCard,
   SettingsRow,
   Sheet,
-  Toggle,
 } from '../../src/components';
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import { useAppStore, QuestionType, GracePeriod } from '../../src/store/useAppStore';
@@ -99,7 +98,6 @@ export default function Settings() {
         </Section>
 
         <Section label="GENERAL">
-          <SettingsRow label="Notifications" right={<Toggle value={s.notifications} onChange={s.setNotifications} />} />
           <SettingsRow label="Clear all data" danger onPress={() => setConfirm('motivate')} last />
         </Section>
 

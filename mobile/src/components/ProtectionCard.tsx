@@ -54,9 +54,11 @@ export function ProtectionCard() {
       ok: notifications,
       required: false,
       fix: () => {
-        // One-tap system "Allow notifications?" dialog; the pill updates on the
-        // re-check below (or on the next foreground).
-        AscendNative.requestNotificationPermission();
+        // Off → one-tap "Allow notifications?" dialog (Android only shows it the
+        // first time). Already on → open the app's notification settings so it can
+        // be reviewed or switched off; otherwise re-tapping would be a dead no-op.
+        if (notifications) AscendNative.openNotificationSettings();
+        else AscendNative.requestNotificationPermission();
         setTimeout(recheck, 2500);
       },
     },

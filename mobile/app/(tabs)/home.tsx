@@ -121,6 +121,7 @@ function WeekChart({ totals, labels }: { totals: number[]; labels: string[] }) {
 
 export default function Dashboard() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const ensureToday = useFrictionStore((s) => s.ensureToday);
   const displayName = useAppStore((s) => s.displayName);
 
@@ -195,14 +196,19 @@ export default function Dashboard() {
       {/* This week */}
       <WeekChart totals={usage.weekDailyTotals} labels={usage.weekLabels} />
 
-      {/* Time saved */}
-      <Card dark style={styles.timeSaved}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.timeSavedLabel}>TIME SAVED</Text>
-          <Text style={styles.timeSavedSub}>vs. your limits, this week</Text>
-        </View>
-        <Text style={styles.timeSavedNum}>{formatDuration(usage.timeSavedWeek)}</Text>
-      </Card>
+      {/* Time saved — tap for the full weekly breakdown */}
+      <Pressable onPress={() => router.push('/time-saved')}>
+        <Card dark style={styles.timeSaved}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.timeSavedLabelRow}>
+              <Text style={styles.timeSavedLabel}>TIME SAVED</Text>
+              <Feather name="info" size={15} color="rgba(251,244,234,0.5)" />
+            </View>
+            <Text style={styles.timeSavedSub}>vs. your limits, this week · tap to see how</Text>
+          </View>
+          <Text style={styles.timeSavedNum}>{formatDuration(usage.timeSavedWeek)}</Text>
+        </Card>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -267,6 +273,7 @@ const styles = StyleSheet.create({
   chartLabel: { marginTop: 8, fontFamily: fonts.medium, fontSize: 12, color: colors.muted3 },
 
   timeSaved: { marginTop: 12, flexDirection: 'row', alignItems: 'center' },
+  timeSavedLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   timeSavedLabel: {
     fontFamily: fonts.semibold,
     fontSize: 12.5,

@@ -36,8 +36,17 @@ export default function Stats() {
     { answered: 0, highest: 0, stopped: 0 },
   );
 
-  // The headline shows reductions only; the signed value lives on the detail page.
-  const reduction = Math.max(0, usage.improvement);
+  // Direction-aware summary, mirroring the /baseline detail page so the two agree.
+  // improvement is signed: + = below your typical day (good), − = above it.
+  const imp = usage.improvement;
+  const summary =
+    usage.typicalDay <= 0
+      ? { num: 'Building baseline', label: 'a few days of history needed', color: colors.cream }
+      : imp > 0
+      ? { num: `↓ ${imp}%`, label: 'less than your typical day', color: colors.successBg }
+      : imp < 0
+      ? { num: `↑ ${Math.abs(imp)}%`, label: 'more than your typical day', color: colors.cream }
+      : { num: 'On pace', label: 'right around your typical day', color: colors.cream };
 
   // This week, from real usage. (The Month view was removed — Android keeps only
   // ~7 days of per-app daily history, so a real month can't be built from it.)
@@ -72,10 +81,10 @@ export default function Stats() {
       <Pressable onPress={() => router.push('/baseline')}>
         <Card dark style={styles.improve}>
           <View style={styles.improveTop}>
-            <Text style={styles.improveNum}>↓ {reduction}%</Text>
+            <Text style={[styles.improveNum, { color: summary.color }]}>{summary.num}</Text>
             <Feather name="info" size={17} color="rgba(251,244,234,0.5)" />
           </View>
-          <Text style={styles.improveLabel}>less than your typical day</Text>
+          <Text style={styles.improveLabel}>{summary.label}</Text>
           <Text style={styles.improveSub}>today so far · tap to see how</Text>
         </Card>
       </Pressable>
@@ -164,7 +173,7 @@ const styles = StyleSheet.create({
 
   improve: { marginTop: 16, alignItems: 'flex-start' },
   improveTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', alignSelf: 'stretch' },
-  improveNum: { fontFamily: fonts.displayXBold, fontSize: 34, color: colors.successBg },
+  improveNum: { fontFamily: fonts.displayXBold, fontSize: 34 },
   improveLabel: { fontFamily: fonts.medium, fontSize: 15, color: colors.cream, marginTop: 4 },
   improveSub: { fontFamily: fonts.regular, fontSize: 13, color: 'rgba(251,244,234,0.55)', marginTop: 2 },
 

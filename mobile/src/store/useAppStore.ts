@@ -14,7 +14,6 @@ type AppState = {
   questionType: QuestionType;
   gracePeriod: GracePeriod;
   displayName: string;
-  notifications: boolean;
 
   /**
    * True once the user has finished onboarding. Lets the splash skip sign-in +
@@ -31,7 +30,6 @@ type AppState = {
   setQuestionType: (t: QuestionType) => void;
   setGracePeriod: (g: GracePeriod) => void;
   setDisplayName: (name: string) => void;
-  setNotifications: (v: boolean) => void;
   setOnboarded: (v: boolean) => void;
   /** Wipe all config back to defaults (Delete Account → fresh start). */
   reset: () => void;
@@ -49,7 +47,6 @@ const initialData = {
   questionType: 'math' as QuestionType,
   gracePeriod: 10 as GracePeriod,
   displayName: 'EarlyBird',
-  notifications: true,
   onboarded: false,
 };
 
@@ -74,7 +71,6 @@ export const useAppStore = create<AppState>()(
       setQuestionType: (t) => set({ questionType: t }),
       setGracePeriod: (g) => set({ gracePeriod: g }),
       setDisplayName: (name) => set({ displayName: name }),
-      setNotifications: (v) => set({ notifications: v }),
       setOnboarded: (v) => set({ onboarded: v }),
       reset: () => set({ ...initialData }),
 
@@ -92,7 +88,6 @@ export const useAppStore = create<AppState>()(
         questionType: s.questionType,
         gracePeriod: s.gracePeriod,
         displayName: s.displayName,
-        notifications: s.notifications,
         onboarded: s.onboarded,
       }),
     },
