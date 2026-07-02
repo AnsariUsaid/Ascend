@@ -80,7 +80,7 @@ export default function BaselineDetail() {
         {/* Visual: what makes the average vs. what we compare */}
         <Card style={{ marginTop: 12 }}>
           <Text style={styles.cardLabel}>LAST 7 DAYS</Text>
-          <UsageBars days={days} selectedIndex={todayIdx} />
+          <UsageBars days={days} selectedIndex={todayIdx} showScale />
           <Text style={styles.caption}>
             The six faded bars average into your baseline. Today (coral) is what we measure against it.
           </Text>
