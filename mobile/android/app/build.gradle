@@ -89,7 +89,7 @@ android {
 
     namespace 'com.ascend.app'
     defaultConfig {
-        applicationId 'com.ascend.app'
+        applicationId 'me.ansariusaid.ascend'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
