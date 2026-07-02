@@ -13,7 +13,7 @@ const INK = "#2A211A";
 const COR = "#C35A41";
 const MUT = "#6B5C50";
 
-const LAST_UPDATED = "25 June 2026";
+const LAST_UPDATED = "2 July 2026";
 const CONTACT = "usaidanzer@gmail.com";
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -132,12 +132,7 @@ export default function PrivacyPolicy() {
         <ul style={{ paddingLeft: 20, marginTop: 6 }}>
           <Item label="Your limits">The apps you chose to monitor and each app&apos;s daily time budget.</Item>
           <Item label="Your preferences">
-            Challenge type (math, trivia, logic, or typing), grace-period length, a display name you pick, and whether
-            notifications are on.
-          </Item>
-          <Item label="A baseline figure">
-            Your average daily usage of the monitored apps, measured once on your device, used to show how much
-            you&apos;ve cut down.
+            Challenge type (math, trivia, logic, or typing), grace-period length, and a display name you pick.
           </Item>
           <Item label="Your day-to-day progress">
             The current challenge difficulty, any active grace period, whether you&apos;ve chosen to stop an app for the
