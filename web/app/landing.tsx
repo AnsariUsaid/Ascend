@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from "react";
 const POP = "var(--font-poppins)";
 const DM = "var(--font-dm-sans)";
 
+const PLAY_URL = "https://play.google.com/store/apps/details?id=me.ansariusaid.ascend";
+
 const STEPS = [
   {
     num: "01",
@@ -281,7 +283,9 @@ export default function Landing() {
           </span>
         </div>
         <a
-          href="#get"
+          href={PLAY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             textDecoration: "none",
             fontFamily: POP,
@@ -401,7 +405,7 @@ export default function Landing() {
               ASCEND turns your daily limits into a challenge. Go over your time on an app and a puzzle stands between you and the next scroll — so you actually pause.
             </p>
             <div data-reveal data-reveal-delay="240" style={{ marginTop: 34, display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center" }}>
-              <a href="#get" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#F7ECE1", background: "#C35A41", padding: "16px 34px", borderRadius: 100, boxShadow: "0 12px 30px rgba(195,90,65,.32)" }}>Get Started</a>
+              <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#F7ECE1", background: "#C35A41", padding: "16px 34px", borderRadius: 100, boxShadow: "0 12px 30px rgba(195,90,65,.32)" }}>Get Started</a>
               <a href="#how" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#2A211A", padding: "16px 26px", borderRadius: 100, border: "1.5px solid rgba(42,33,26,.16)" }}>See how it works</a>
             </div>
             <div data-reveal data-reveal-delay="320" style={{ marginTop: 40, display: "flex", gap: 30 }}>
@@ -489,7 +493,7 @@ export default function Landing() {
             ASCEND turns your daily limits into a challenge. Go over your time on an app and a puzzle stands between you and the next scroll — so you actually pause.
           </p>
           <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
-            <a href="#get" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#F7ECE1", background: "#C35A41", padding: "15px 38px", borderRadius: 100, boxShadow: "0 12px 30px rgba(195,90,65,.32)" }}>Get Started</a>
+            <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 16, color: "#F7ECE1", background: "#C35A41", padding: "15px 38px", borderRadius: 100, boxShadow: "0 12px 30px rgba(195,90,65,.32)" }}>Get Started</a>
             <a href="#how-m" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 600, fontSize: 15, color: "#2A211A" }}>See how it works</a>
           </div>
           <div style={{ marginTop: 40 }}>
@@ -724,7 +728,7 @@ export default function Landing() {
           <h2 style={{ fontFamily: POP, fontWeight: 800, fontSize: "clamp(44px,7vw,92px)", lineHeight: 0.98, letterSpacing: "-.02em" }}>Take back<br />your time.</h2>
           <p style={{ marginTop: 24, fontSize: "clamp(16px,1.6vw,20px)", color: "rgba(247,236,225,.78)" }}>Let&apos;s start your journey.</p>
           <div style={{ marginTop: 38, display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
-            <a href="#" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 700, fontSize: 17, color: "#C35A41", background: "#F7ECE1", padding: "18px 44px", borderRadius: 100, boxShadow: "0 16px 40px rgba(42,18,8,.3)" }}>Get Started</a>
+            <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", fontFamily: POP, fontWeight: 700, fontSize: 17, color: "#C35A41", background: "#F7ECE1", padding: "18px 44px", borderRadius: 100, boxShadow: "0 16px 40px rgba(42,18,8,.3)" }}>Get Started</a>
           </div>
           <p style={{ marginTop: 26, fontSize: 14, color: "rgba(247,236,225,.66)" }}>No account needed. Everything stays private on your device.</p>
         </div>
