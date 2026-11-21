@@ -346,6 +346,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   stores load, and the question type is locked into the question (so an empty typing passage can't
   pass). (3) *trigger for another app while open*: the screen is keyed on the app, so it remounts
   with that app's own state.
+- **failed load can't freeze friction** (CodeRabbit on #14) — zustand never marks a store hydrated
+  when its storage read or JSON parse fails, so the `useStoresHydrated()` gate would wait forever
+  on a blank scrim. Each store now retries a failed load once (after 300ms), then gives up and
+  runs on its defaults — the pre-gate behaviour (`src/store/hydration.ts`).
 
 ---
 

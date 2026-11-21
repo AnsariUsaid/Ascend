@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEFAULT_LIMIT, LIMIT_MIN, LIMIT_MAX, LIMIT_STEP } from '../data/apps';
+import { onLoadResult } from './hydration';
 
 export type QuestionType = 'math' | 'trivia' | 'logic' | 'typing';
 export type GracePeriod = 5 | 10 | 15;
@@ -82,6 +83,8 @@ export const useAppStore = create<AppState>()(
     {
       name: 'ascend-config',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (_state, error) =>
+        onLoadResult('ascend-config', error, () => useAppStore.persist.rehydrate()),
       partialize: (s) => ({
         selected: s.selected,
         limits: s.limits,
