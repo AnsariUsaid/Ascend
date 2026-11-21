@@ -18,7 +18,8 @@ type Phase = 'question' | 'correct' | 'done' | 'exhausted';
 export default function Friction() {
   useStatusBarStyle('light'); // dark scrim + coral sheet → white icons
   const params = useLocalSearchParams<{ app?: string }>();
-  const ready = useStoresHydrated();
+  const { status, retry } = useStoresHydrated();
+  const insets = useSafeAreaInsets();
 
   // Block the hardware Back button — friction can only be left via the on-screen
   // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
@@ -28,8 +29,21 @@ export default function Friction() {
   }, []);
 
   // On a cold start the saved settings/level are still loading; reading them now
-  // would serve the default type at level 1. Hold the scrim until they're in.
-  if (!ready) return <View style={styles.scrim} />;
+  // would serve the default type at level 1. Keep the challenge gated until both load.
+  if (status === 'error') {
+    return (
+      <View style={styles.scrim}>
+        <View style={[styles.card, { paddingBottom: insets.bottom + 20 }]}>
+          <View style={styles.center}>
+            <Text accessibilityRole="alert" style={styles.bigTitle}>Couldn't load your challenge</Text>
+            <Text style={styles.bigSub}>Try loading your saved settings and progress again.</Text>
+            <Button label="Retry" variant="google" onPress={retry} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+          </View>
+        </View>
+      </View>
+    );
+  }
+  if (status === 'loading') return <View style={styles.scrim} />;
 
   // Keyed on the app so a new trigger for a different app remounts with that
   // app's own state instead of reusing this one's question and level.

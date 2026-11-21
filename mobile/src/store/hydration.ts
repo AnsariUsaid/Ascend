@@ -1,25 +1,25 @@
-// Tracks failed loads of the persisted stores. zustand never marks a store
-// hydrated when its storage read or JSON parse fails, so anything waiting on
-// hydration would wait forever. We retry once, then give up and let the store
-// run on its defaults (how it behaved before we waited at all).
+// Zustand's finish listeners only fire on success. Keep failures from the
+// persist callbacks so a screen that mounts later can still offer a retry.
+const failures = new Set<string>();
+const listeners = new Set<() => void>();
+const notify = () => listeners.forEach((listener) => listener());
 
-const failures: Record<string, number> = {};
-const giveUpListeners = new Set<() => void>();
-
-/** Call from a store's `onRehydrateStorage` result: retry a failed load once, then give up. */
-export const onLoadResult = (name: string, error: unknown, retry: () => void) => {
-  if (!error) return;
-  failures[name] = (failures[name] ?? 0) + 1;
-  if (failures[name] === 1) setTimeout(retry, 300);
-  else giveUpListeners.forEach((cb) => cb());
+export const trackHydration = (name: string) => {
+  if (failures.delete(name)) notify();
+  return (state: unknown) => {
+    // Persist passes no state when hydration fails, even if the error is falsy.
+    if (state === undefined) {
+      failures.add(name);
+      notify();
+    }
+  };
 };
 
-/** True once a store has failed to load twice and is running on defaults. */
-export const gaveUp = (name: string) => (failures[name] ?? 0) >= 2;
+export const hydrationFailed = (name: string) => failures.has(name);
 
-export const onGiveUp = (cb: () => void) => {
-  giveUpListeners.add(cb);
+export const onHydrationFailureChange = (listener: () => void) => {
+  listeners.add(listener);
   return () => {
-    giveUpListeners.delete(cb);
+    listeners.delete(listener);
   };
 };

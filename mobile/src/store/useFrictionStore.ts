@@ -5,7 +5,7 @@ import { todayKey } from '../lib/date';
 import { MAX_LEVEL } from '../data/questionBank';
 import AscendNative from '../../modules/ascend-native';
 import type { QuestionType } from './useAppStore';
-import { onLoadResult } from './hydration';
+import { trackHydration } from './hydration';
 
 // Mirror friction outcomes into the native watcher (Phase D). Wrapped so a
 // missing native module never breaks the JS engine.
@@ -186,8 +186,7 @@ export const useFrictionStore = create<FrictionStore>()(
     {
       name: 'ascend-friction',
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => (_state, error) =>
-        onLoadResult('ascend-friction', error, () => useFrictionStore.persist.rehydrate()),
+      onRehydrateStorage: (_state: FrictionStore) => trackHydration('ascend-friction'),
       // Only persist data, not the action functions.
       partialize: (s) => ({ today: s.today, byApp: s.byApp }),
     },
