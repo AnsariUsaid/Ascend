@@ -317,6 +317,30 @@ Then a **diagnosis pass** found several Stats/UX issues; fixed across these comm
 
 ---
 
+## v1.0.1 — friction bypass fixes (branch `release/1.0.1`)
+
+A tester found that a wrong answer left the same question up, so multiple choice could be
+cleared by tapping each option in turn. An audit found more holes; all are closed here (#12).
+
+- **`351a30e` wrong answer → new question + growing lockout** — math/trivia/logic no longer let you
+  retry the same question. A miss serves a fresh one at the same level and locks answering for
+  3s → 6s → 12s → 24s → 30s (miss streak, reset on a correct answer). *Why the lock:* a fresh
+  question alone still lets blind guessing win 25% of the time on 4 options. Typing keeps its
+  passage (it can't be guessed).
+- **`f06de6a` shuffle MCQ options** on every serve — the answer sat in slot 2/3 almost every time.
+- **`5aeded3` stricter typed trivia** — numbers must be exact; typo tolerance is smaller and needs
+  the right first letter; extra words only if they're harmless qualifiers ("planet venus"), so a
+  guess list ("mercury venus mars") fails. Known gap: real near-miss words ("lactose"/"lactase")
+  need per-question reject lists — left for the question-bank rework.
+- **`acb74c8` no free re-rolls** — the shown question is saved per app, so reopening friction
+  resumes it; a skip at L5 (where the level can't climb) is charged a lockout.
+- **`acd012f` double-tap guard** on Check/Skip/Done (closes #12).
+- **`d4c5db6` ask for limits on newly added apps** — Settings → Monitored Apps → Save now opens
+  Time Limits for just the new apps instead of silently giving them 1 hour (closes #13).
+- **version → 1.0.1 (versionCode 2).**
+
+---
+
 ## Still to come
 
 - **Battery efficiency (option B, deferred)** — adaptive poll rate (skipped on purpose; only
