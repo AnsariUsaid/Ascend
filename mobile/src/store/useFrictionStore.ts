@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { todayKey } from '../lib/date';
 import { MAX_LEVEL } from '../data/questionBank';
 import AscendNative from '../../modules/ascend-native';
+import type { QuestionType } from './useAppStore';
 
 // Mirror friction outcomes into the native watcher (Phase D). Wrapped so a
 // missing native module never breaks the JS engine.
@@ -26,6 +27,8 @@ export type AppFriction = {
   maxLevel: number; // highest level reached today
   wrongStreak: number; // wrong answers in a row (drives the answer lockout)
   lockedUntil: number | null; // epoch ms; can't answer again until then
+  /** Question on screen right now, so reopening friction shows the same one (no free re-roll). */
+  currentQ: { type: QuestionType; level: number; id: string } | null;
 };
 
 const freshApp = (): AppFriction => ({
@@ -38,6 +41,7 @@ const freshApp = (): AppFriction => ({
   maxLevel: 1,
   wrongStreak: 0,
   lockedUntil: null,
+  currentQ: null,
 });
 
 // Older persisted entries predate some fields — fill them from the defaults.
@@ -65,6 +69,8 @@ type FrictionStore = {
   answerCorrect: (key: string, graceMinutes: number) => void;
   /** Wrong answer → bump the miss streak and start a lockout (no grace, no level change). */
   answerWrong: (key: string) => void;
+  /** Remember the question currently shown for this app. */
+  setCurrentQ: (key: string, q: AppFriction['currentQ']) => void;
   /** Skip → +1 level penalty, no grace. */
   skip: (key: string) => void;
   /** "I'm done for today" → block this app for the rest of the day. */
@@ -115,6 +121,7 @@ export const useFrictionStore = create<FrictionStore>()(
               answered: a.answered + 1,
               wrongStreak: 0,
               lockedUntil: null,
+              currentQ: null,
               // Stats never show the sentinel — cap the displayed max at MAX_LEVEL.
               maxLevel: Math.min(MAX_LEVEL, Math.max(a.maxLevel, nextLevel)),
             };
@@ -129,16 +136,25 @@ export const useFrictionStore = create<FrictionStore>()(
             return { ...a, wrongStreak, lockedUntil: Date.now() + lockMsFor(wrongStreak) };
           }),
 
+        setCurrentQ: (key, q) => update(key, (a) => ({ ...a, currentQ: q })),
+
         skip: (key) =>
           update(key, (a) => {
             // Skip penalty climbs a level, capped — at the top it re-serves level MAX_LEVEL.
             const nextLevel = Math.min(MAX_LEVEL, a.level + 1);
+            // At the cap the level can't climb, so a skip would be a free re-roll.
+            // Charge it like a wrong answer instead.
+            const atCap = a.level >= MAX_LEVEL;
+            const wrongStreak = atCap ? a.wrongStreak + 1 : a.wrongStreak;
             return {
               ...a,
               level: nextLevel,
               graceExpiresAt: null,
               skipped: a.skipped + 1,
               maxLevel: Math.max(a.maxLevel, nextLevel),
+              wrongStreak,
+              lockedUntil: atCap ? Date.now() + lockMsFor(wrongStreak) : a.lockedUntil,
+              currentQ: null,
             };
           }),
 
@@ -147,6 +163,7 @@ export const useFrictionStore = create<FrictionStore>()(
             ...a,
             blockedForToday: true,
             graceExpiresAt: null,
+            currentQ: null,
             stopped: a.stopped + 1,
           }));
           // Native watcher stops re-triggering until midnight.

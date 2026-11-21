@@ -7,7 +7,7 @@ import { AppChip, Button, Wordmark } from '../src/components';
 import { colors, fonts, radius } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
 import { useFrictionStore } from '../src/store/useFrictionStore';
-import { getQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
+import { getQuestion, findQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
 import AscendNative from '../modules/ascend-native';
@@ -22,7 +22,7 @@ export default function Friction() {
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
-  const { ensureToday, answerCorrect, answerWrong, skip, doneForToday } = useFrictionStore();
+  const { ensureToday, answerCorrect, answerWrong, setCurrentQ, skip, doneForToday } = useFrictionStore();
 
   // Resolve which app triggered the overlay.
   // `params.app` is a package name (passed by the dashboard / Phase D trigger).
@@ -31,9 +31,16 @@ export default function Friction() {
 
   // Snapshot the starting level once (engine state lives in the store).
   // Day-reset is handled by the dashboard on open and by the effect below.
+  // Resume the question already shown for this app, so leaving and reopening
+  // friction can't be used to re-roll for an easier one.
   const [current, setCurrent] = useState(() => {
     const appState = useFrictionStore.getState().getApp(appKey);
-    return { q: getQuestion(questionType, appState.level), level: appState.level };
+    const saved = appState.currentQ;
+    const resumed =
+      saved && saved.type === questionType && saved.level === appState.level
+        ? findQuestion(questionType, appState.level, saved.id)
+        : undefined;
+    return { q: resumed ?? getQuestion(questionType, appState.level), level: appState.level };
   });
   const [phase, setPhase] = useState<Phase>(() => {
     const a = useFrictionStore.getState().getApp(appKey);
@@ -64,6 +71,12 @@ export default function Friction() {
   useEffect(() => {
     ensureToday();
   }, []);
+
+  // Persist whichever question is on screen (initial, after a miss, or after a skip).
+  useEffect(() => {
+    if (phase !== 'question') return;
+    setCurrentQ(appKey, { type: questionType, level: current.level, id: current.q.id });
+  }, [current.q.id, current.level]);
 
   // Block the hardware Back button — friction can only be left via the on-screen
   // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
@@ -127,6 +140,9 @@ export default function Friction() {
     setSelected(null);
     setWrong(false);
     setEscalated(nextLevel > current.level); // at the cap it re-serves L5 without escalating
+    // Skipping at the cap is charged a lockout (see store) — reflect it on screen.
+    setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
+    setNow(Date.now());
   };
 
   const onDone = () => {

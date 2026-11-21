@@ -701,6 +701,18 @@ export function getQuestion(type: QuestionType, level: number, excludeId?: strin
   }
 }
 
+/** Look up a specific question again (to resume the one already on screen). */
+export function findQuestion(type: QuestionType, level: number, id: string): Question | undefined {
+  const lvl = clampLevel(level);
+  if (type === 'typing') {
+    const ref = TYPING_SENTENCES[lvl].find((s) => `type-${lvl}-${s}` === id);
+    return ref ? { id, prompt: 'Type the sentence exactly.', answer: ref, reference: ref } : undefined;
+  }
+  const pool = type === 'math' ? MATH : type === 'trivia' ? TRIVIA : LOGIC;
+  const q = pool[lvl].find((x) => x.id === id);
+  return q ? withShuffledOptions(q) : undefined;
+}
+
 /** Compare a typed math answer, ignoring currency symbols, commas, and spaces. */
 export function normalizeMath(s: string): string {
   return s.replace(/[^0-9.\-]/g, '');
