@@ -669,6 +669,20 @@ const MATH: Record<number, Question[]> = {
   ],
 };
 
+/** Fisher–Yates shuffle into a new array (the bank itself is never mutated). */
+function shuffled<T>(arr: T[]): T[] {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/** Serve a copy with its options in a fresh random order, so the answer's position means nothing. */
+const withShuffledOptions = (q: Question): Question =>
+  q.options ? { ...q, options: shuffled(q.options) } : q;
+
 /** Next question for a type at a ladder level, avoiding an immediate repeat. */
 export function getQuestion(type: QuestionType, level: number, excludeId?: string): Question {
   const lvl = clampLevel(level);
@@ -676,9 +690,9 @@ export function getQuestion(type: QuestionType, level: number, excludeId?: strin
     case 'math':
       return pick(MATH[lvl], excludeId, (q) => q.id);
     case 'trivia':
-      return pick(TRIVIA[lvl], excludeId, (q) => q.id);
+      return withShuffledOptions(pick(TRIVIA[lvl], excludeId, (q) => q.id));
     case 'logic':
-      return pick(LOGIC[lvl], excludeId, (q) => q.id);
+      return withShuffledOptions(pick(LOGIC[lvl], excludeId, (q) => q.id));
     case 'typing': {
       const sentences = TYPING_SENTENCES[lvl];
       const ref = pick(sentences, excludeId, (s) => `type-${lvl}-${s}`);
