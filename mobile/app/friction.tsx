@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, BackHandler } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -85,6 +85,18 @@ export default function Friction() {
     return () => sub.remove();
   }, []);
 
+  // Ignore a second tap that lands before the screen updates — otherwise a fast
+  // double tap on Check/Skip runs the action twice (e.g. climbs two levels).
+  const busy = useRef(false);
+  const once = (fn: () => void) => () => {
+    if (busy.current) return;
+    busy.current = true;
+    setTimeout(() => {
+      busy.current = false;
+    }, 400);
+    fn();
+  };
+
   const isTyping = questionType === 'typing';
   const ref = current.q.reference ?? '';
   // Multiple-choice questions (logic) carry an `options` array; the rest are typed.
@@ -101,7 +113,7 @@ export default function Friction() {
     lockLeft === 0 &&
     (isTyping ? input.length >= ref.length : isMcq ? selected !== null : input.trim().length > 0);
 
-  const check = () => {
+  const check = once(() => {
     const ok = isTyping
       ? accuracy >= threshold
       : isMcq
@@ -130,11 +142,12 @@ export default function Friction() {
       setWrong(true);
       setMissed(true);
     }
-  };
+  });
 
-  const onSkip = () => {
+  const onSkip = once(() => {
     skip(appKey);
-    const nextLevel = Math.min(MAX_LEVEL, current.level + 1);
+    // Read the level back from the store (the source of truth), not our local copy.
+    const nextLevel = Math.min(MAX_LEVEL, useFrictionStore.getState().getApp(appKey).level);
     setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
     setInput('');
     setSelected(null);
@@ -143,12 +156,12 @@ export default function Friction() {
     // Skipping at the cap is charged a lockout (see store) — reflect it on screen.
     setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
     setNow(Date.now());
-  };
+  });
 
-  const onDone = () => {
+  const onDone = once(() => {
     doneForToday(appKey);
     setPhase('done');
-  };
+  });
 
   // After earning grace, send Ascend to the background so the user lands back in
   // the app they were using (not on Ascend's dashboard). Falls back to a normal
@@ -314,10 +327,10 @@ export default function Friction() {
             <Button
               label="I'm done for today"
               variant="google"
-              onPress={() => {
+              onPress={once(() => {
                 doneForToday(appKey);
                 router.back();
-              }}
+              })}
               style={{ marginTop: 24, alignSelf: 'stretch' }}
             />
           </View>
