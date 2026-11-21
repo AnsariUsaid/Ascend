@@ -24,6 +24,8 @@ export type AppFriction = {
   skipped: number;
   stopped: number;
   maxLevel: number; // highest level reached today
+  wrongStreak: number; // wrong answers in a row (drives the answer lockout)
+  lockedUntil: number | null; // epoch ms; can't answer again until then
 };
 
 const freshApp = (): AppFriction => ({
@@ -34,7 +36,20 @@ const freshApp = (): AppFriction => ({
   skipped: 0,
   stopped: 0,
   maxLevel: 1,
+  wrongStreak: 0,
+  lockedUntil: null,
 });
+
+// Older persisted entries predate some fields — fill them from the defaults.
+const withDefaults = (a?: Partial<AppFriction>): AppFriction => ({ ...freshApp(), ...a });
+
+/**
+ * Lockout after a wrong answer, doubling with each miss in a row: 3s, 6s, 12s,
+ * 24s, then 30s. A fresh question alone isn't enough — blind-guessing a 4-option
+ * question still wins 25% of the time — so guessing has to cost more than thinking.
+ */
+export const lockMsFor = (streak: number) =>
+  Math.min(30, 3 * 2 ** Math.max(0, streak - 1)) * 1000;
 
 type FrictionStore = {
   today: string;
@@ -48,6 +63,8 @@ type FrictionStore = {
 
   /** Correct answer → grant grace + climb one level. */
   answerCorrect: (key: string, graceMinutes: number) => void;
+  /** Wrong answer → bump the miss streak and start a lockout (no grace, no level change). */
+  answerWrong: (key: string) => void;
   /** Skip → +1 level penalty, no grace. */
   skip: (key: string) => void;
   /** "I'm done for today" → block this app for the rest of the day. */
@@ -62,7 +79,7 @@ export const useFrictionStore = create<FrictionStore>()(
     (set, get) => {
       // Apply an update to one app's state, creating it if needed.
       const update = (key: string, fn: (a: AppFriction) => AppFriction) =>
-        set((s) => ({ byApp: { ...s.byApp, [key]: fn(s.byApp[key] ?? freshApp()) } }));
+        set((s) => ({ byApp: { ...s.byApp, [key]: fn(withDefaults(s.byApp[key])) } }));
 
       return {
         today: todayKey(),
@@ -76,7 +93,7 @@ export const useFrictionStore = create<FrictionStore>()(
           }
         },
 
-        getApp: (key) => get().byApp[key] ?? freshApp(),
+        getApp: (key) => withDefaults(get().byApp[key]),
 
         isInGrace: (key) => {
           const a = get().byApp[key];
@@ -96,6 +113,8 @@ export const useFrictionStore = create<FrictionStore>()(
               level: nextLevel,
               graceExpiresAt,
               answered: a.answered + 1,
+              wrongStreak: 0,
+              lockedUntil: null,
               // Stats never show the sentinel — cap the displayed max at MAX_LEVEL.
               maxLevel: Math.min(MAX_LEVEL, Math.max(a.maxLevel, nextLevel)),
             };
@@ -103,6 +122,12 @@ export const useFrictionStore = create<FrictionStore>()(
           // Native watcher backs off until grace expires.
           pushNative(() => AscendNative.setGrace(key, graceExpiresAt));
         },
+
+        answerWrong: (key) =>
+          update(key, (a) => {
+            const wrongStreak = a.wrongStreak + 1;
+            return { ...a, wrongStreak, lockedUntil: Date.now() + lockMsFor(wrongStreak) };
+          }),
 
         skip: (key) =>
           update(key, (a) => {

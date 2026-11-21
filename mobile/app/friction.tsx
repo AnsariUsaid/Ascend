@@ -22,7 +22,7 @@ export default function Friction() {
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
-  const { ensureToday, answerCorrect, skip, doneForToday } = useFrictionStore();
+  const { ensureToday, answerCorrect, answerWrong, skip, doneForToday } = useFrictionStore();
 
   // Resolve which app triggered the overlay.
   // `params.app` is a package name (passed by the dashboard / Phase D trigger).
@@ -46,7 +46,20 @@ export default function Friction() {
   const [selected, setSelected] = useState<string | null>(null); // chosen multiple-choice option
   const [wrong, setWrong] = useState(false);
   const [escalated, setEscalated] = useState(false);
+  // A wrong answer happened → offer Skip (also after reopening mid-streak).
+  const [missed, setMissed] = useState(() => useFrictionStore.getState().getApp(appKey).wrongStreak > 0);
   const [graceExpiresAt, setGraceExpiresAt] = useState<number | null>(null);
+  // Answer lockout after a wrong answer (stored per app, so closing the screen doesn't clear it).
+  const [lockedUntil, setLockedUntil] = useState<number | null>(
+    () => useFrictionStore.getState().getApp(appKey).lockedUntil,
+  );
+  const [now, setNow] = useState(Date.now());
+  const lockLeft = lockedUntil ? Math.max(0, Math.ceil((lockedUntil - now) / 1000)) : 0;
+  useEffect(() => {
+    if (lockLeft <= 0) return;
+    const id = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(id);
+  }, [lockLeft > 0]);
 
   useEffect(() => {
     ensureToday();
@@ -71,11 +84,9 @@ export default function Friction() {
   // Per-level character-accuracy bar a typing answer must clear (85% at L1 → 95% at L5).
   const threshold = isTyping ? typingThreshold(current.level) : 100;
   // Must type the whole passage before checking, so a short correct prefix can't pass.
-  const canCheck = isTyping
-    ? input.length >= ref.length
-    : isMcq
-    ? selected !== null
-    : input.trim().length > 0;
+  const canCheck =
+    lockLeft === 0 &&
+    (isTyping ? input.length >= ref.length : isMcq ? selected !== null : input.trim().length > 0);
 
   const check = () => {
     const ok = isTyping
@@ -89,8 +100,22 @@ export default function Friction() {
       answerCorrect(appKey, grace);
       setGraceExpiresAt(useFrictionStore.getState().getApp(appKey).graceExpiresAt);
       setPhase('correct');
-    } else {
+    } else if (isTyping) {
+      // Typing can't be guessed — keep the same passage so they can fix their typos.
       setWrong(true);
+      setMissed(true);
+    } else {
+      // No retrying the same question (that let you tap through every option).
+      // Serve a fresh one at the same level, behind a lockout that grows per miss.
+      answerWrong(appKey);
+      setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
+      setNow(Date.now());
+      setCurrent({ q: getQuestion(questionType, current.level, current.q.id), level: current.level });
+      setInput('');
+      setSelected(null);
+      setEscalated(false);
+      setWrong(true);
+      setMissed(true);
     }
   };
 
@@ -217,13 +242,23 @@ export default function Friction() {
             )}
 
             {wrong ? (
-              <Text style={styles.wrong}>Not quite. Try again, or skip to a new (harder) question.</Text>
+              <Text style={styles.wrong}>
+                {isTyping
+                  ? 'Not quite. Fix a few typos and try again, or skip to a new (harder) one.'
+                  : 'Not quite. Here\'s a fresh question. Take a moment, or skip to a harder one.'}
+              </Text>
             ) : null}
 
-            <Button label="Check Answer" variant="coffee" onPress={check} disabled={!canCheck} style={{ marginTop: 18 }} />
+            <Button
+              label={lockLeft > 0 ? `Answer in ${lockLeft}s` : 'Check Answer'}
+              variant="coffee"
+              onPress={check}
+              disabled={!canCheck}
+              style={{ marginTop: 18 }}
+            />
 
             <View style={styles.linksRow}>
-              {wrong ? (
+              {missed ? (
                 <Pressable onPress={onSkip}>
                   <Text style={styles.link}>Skip question</Text>
                 </Pressable>
