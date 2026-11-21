@@ -39,8 +39,17 @@ export default function EditApps() {
   );
 
   const commit = () => {
+    // Newly added apps still need a limit — ask for it instead of silently
+    // giving them the 1-hour default.
+    const added = apps
+      .filter((a) => draft[a.packageName] && !committed[a.packageName])
+      .map((a) => a.packageName);
     setSelected(draft);
-    router.back();
+    if (added.length > 0) {
+      router.replace({ pathname: '/edit-limits', params: { added: added.join(',') } });
+    } else {
+      router.back();
+    }
   };
 
   const save = () => {

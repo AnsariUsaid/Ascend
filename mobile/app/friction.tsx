@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, BackHandler } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,33 +7,89 @@ import { AppChip, Button, Wordmark } from '../src/components';
 import { colors, fonts, radius } from '../src/theme';
 import { useAppStore } from '../src/store/useAppStore';
 import { useFrictionStore } from '../src/store/useFrictionStore';
-import { getQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
+import { getQuestion, findQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
+import { useStoresHydrated } from '../src/hooks/useStoresHydrated';
 import AscendNative from '../modules/ascend-native';
 
 type Phase = 'question' | 'correct' | 'done' | 'exhausted';
 
 export default function Friction() {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
   useStatusBarStyle('light'); // dark scrim + coral sheet → white icons
   const params = useLocalSearchParams<{ app?: string }>();
+  const { status, retry } = useStoresHydrated();
+  const insets = useSafeAreaInsets();
+  // Escape hatch if saved data can't be read (e.g. a corrupted file Retry can't fix):
+  // run the challenge on default settings instead of leaving the user stuck.
+  const [continueAnyway, setContinueAnyway] = useState(false);
+
+  // Block the hardware Back button — friction can only be left via the on-screen
+  // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => sub.remove();
+  }, []);
+
+  // On a cold start the saved settings/level are still loading; reading them now
+  // would serve the default type at level 1. Keep the challenge gated until both load.
+  if (status === 'error' && !continueAnyway) {
+    return (
+      <View style={styles.scrim}>
+        <View style={[styles.card, { paddingBottom: insets.bottom + 20 }]}>
+          <View style={styles.center}>
+            <Text accessibilityRole="alert" style={styles.bigTitle}>Couldn't load your challenge</Text>
+            <Text style={styles.bigSub}>
+              Try loading your saved settings and progress again, or continue with a fresh challenge.
+            </Text>
+            <Button label="Retry" variant="google" onPress={retry} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+            <Pressable onPress={() => setContinueAnyway(true)} style={{ marginTop: 18 }}>
+              <Text style={styles.link}>Continue anyway</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    );
+  }
+  if (status === 'loading') return <View style={styles.scrim} />;
+
+  // Keyed on the app so a new trigger for a different app remounts with that
+  // app's own state instead of reusing this one's question and level.
+  const appParam = params.app ?? '';
+  return <FrictionScreen key={appParam} appParam={appParam} />;
+}
+
+function FrictionScreen({ appParam }: { appParam: string }) {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
-  const { ensureToday, answerCorrect, skip, doneForToday } = useFrictionStore();
+  const { ensureToday, answerCorrect, answerWrong, setCurrentQ, skip, doneForToday } = useFrictionStore();
 
   // Resolve which app triggered the overlay.
-  // `params.app` is a package name (passed by the dashboard / Phase D trigger).
-  const app = getApp(params.app ?? '');
+  // `appParam` is a package name (passed by the dashboard / Phase D trigger).
+  const app = getApp(appParam);
   const appKey = app.packageName;
 
-  // Snapshot the starting level once (engine state lives in the store).
-  // Day-reset is handled by the dashboard on open and by the effect below.
+  // Snapshot the starting level once (engine state lives in the store; its reads
+  // are day-aware, so yesterday's level never leaks into a new day).
+  // The question type is locked into `current` so a later settings change can't
+  // mismatch it with the question on screen.
+  // Resume the question already shown for this app, so leaving and reopening
+  // friction can't be used to re-roll for an easier one.
   const [current, setCurrent] = useState(() => {
     const appState = useFrictionStore.getState().getApp(appKey);
-    return { q: getQuestion(questionType, appState.level), level: appState.level };
+    const saved = appState.currentQ;
+    const resumed =
+      saved && saved.type === questionType && saved.level === appState.level
+        ? findQuestion(questionType, appState.level, saved.id)
+        : undefined;
+    return {
+      q: resumed ?? getQuestion(questionType, appState.level),
+      level: appState.level,
+      type: questionType,
+    };
   });
   const [phase, setPhase] = useState<Phase>(() => {
     const a = useFrictionStore.getState().getApp(appKey);
@@ -46,20 +102,45 @@ export default function Friction() {
   const [selected, setSelected] = useState<string | null>(null); // chosen multiple-choice option
   const [wrong, setWrong] = useState(false);
   const [escalated, setEscalated] = useState(false);
+  // A wrong answer happened → offer Skip (also after reopening mid-streak).
+  const [missed, setMissed] = useState(() => useFrictionStore.getState().getApp(appKey).wrongStreak > 0);
   const [graceExpiresAt, setGraceExpiresAt] = useState<number | null>(null);
+  // Answer lockout after a wrong answer (stored per app, so closing the screen doesn't clear it).
+  const [lockedUntil, setLockedUntil] = useState<number | null>(
+    () => useFrictionStore.getState().getApp(appKey).lockedUntil,
+  );
+  const [now, setNow] = useState(Date.now());
+  const lockLeft = lockedUntil ? Math.max(0, Math.ceil((lockedUntil - now) / 1000)) : 0;
+  useEffect(() => {
+    if (lockLeft <= 0) return;
+    const id = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(id);
+  }, [lockLeft > 0]);
 
+  // Persist the day rollover (reads already treat an old day as fresh).
   useEffect(() => {
     ensureToday();
   }, []);
 
-  // Block the hardware Back button — friction can only be left via the on-screen
-  // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
+  // Persist whichever question is on screen (initial, after a miss, or after a skip).
   useEffect(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
-    return () => sub.remove();
-  }, []);
+    if (phase !== 'question') return;
+    setCurrentQ(appKey, { type: current.type, level: current.level, id: current.q.id });
+  }, [current.q.id, current.level]);
 
-  const isTyping = questionType === 'typing';
+  // Ignore a second tap that lands before the screen updates — otherwise a fast
+  // double tap on Check/Skip runs the action twice (e.g. climbs two levels).
+  const busy = useRef(false);
+  const once = (fn: () => void) => () => {
+    if (busy.current) return;
+    busy.current = true;
+    setTimeout(() => {
+      busy.current = false;
+    }, 400);
+    fn();
+  };
+
+  const isTyping = current.type === 'typing';
   const ref = current.q.reference ?? '';
   // Multiple-choice questions (logic) carry an `options` array; the rest are typed.
   const options = current.q.options;
@@ -71,43 +152,60 @@ export default function Friction() {
   // Per-level character-accuracy bar a typing answer must clear (85% at L1 → 95% at L5).
   const threshold = isTyping ? typingThreshold(current.level) : 100;
   // Must type the whole passage before checking, so a short correct prefix can't pass.
-  const canCheck = isTyping
-    ? input.length >= ref.length
-    : isMcq
-    ? selected !== null
-    : input.trim().length > 0;
+  const canCheck =
+    lockLeft === 0 &&
+    (isTyping ? input.length >= ref.length : isMcq ? selected !== null : input.trim().length > 0);
 
-  const check = () => {
+  const check = once(() => {
     const ok = isTyping
       ? accuracy >= threshold
       : isMcq
       ? selected === current.q.answer
-      : questionType === 'trivia'
+      : current.type === 'trivia'
       ? fuzzyMatches(input, current.q) // typed trivia (L4-5): lenient match
       : normalizeMath(input) === normalizeMath(current.q.answer); // math: numeric-exact
     if (ok) {
       answerCorrect(appKey, grace);
       setGraceExpiresAt(useFrictionStore.getState().getApp(appKey).graceExpiresAt);
       setPhase('correct');
-    } else {
+    } else if (isTyping) {
+      // Typing can't be guessed — keep the same passage so they can fix their typos.
       setWrong(true);
+      setMissed(true);
+    } else {
+      // No retrying the same question (that let you tap through every option).
+      // Serve a fresh one at the same level, behind a lockout that grows per miss.
+      answerWrong(appKey);
+      setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
+      setNow(Date.now());
+      setCurrent({ ...current, q: getQuestion(current.type, current.level, current.q.id) });
+      setInput('');
+      setSelected(null);
+      setEscalated(false);
+      setWrong(true);
+      setMissed(true);
     }
-  };
+  });
 
-  const onSkip = () => {
+  const onSkip = once(() => {
+    if (lockLeft > 0) return; // belt and braces: the link is disabled during the wait
     skip(appKey);
-    const nextLevel = Math.min(MAX_LEVEL, current.level + 1);
-    setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
+    // Read the level back from the store (the source of truth), not our local copy.
+    const nextLevel = Math.min(MAX_LEVEL, useFrictionStore.getState().getApp(appKey).level);
+    setCurrent({ ...current, q: getQuestion(current.type, nextLevel, current.q.id), level: nextLevel });
     setInput('');
     setSelected(null);
     setWrong(false);
     setEscalated(nextLevel > current.level); // at the cap it re-serves L5 without escalating
-  };
+    // Skipping at the cap is charged a lockout (see store) — reflect it on screen.
+    setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
+    setNow(Date.now());
+  });
 
-  const onDone = () => {
+  const onDone = once(() => {
     doneForToday(appKey);
     setPhase('done');
-  };
+  });
 
   // After earning grace, send Ascend to the background so the user lands back in
   // the app they were using (not on Ascend's dashboard). Falls back to a normal
@@ -217,15 +315,26 @@ export default function Friction() {
             )}
 
             {wrong ? (
-              <Text style={styles.wrong}>Not quite. Try again, or skip to a new (harder) question.</Text>
+              <Text style={styles.wrong}>
+                {isTyping
+                  ? 'Not quite. Fix a few typos and try again, or skip to a new (harder) one.'
+                  : 'Not quite. Here\'s a fresh question. Take a moment, or skip to a harder one.'}
+              </Text>
             ) : null}
 
-            <Button label="Check Answer" variant="coffee" onPress={check} disabled={!canCheck} style={{ marginTop: 18 }} />
+            <Button
+              label={lockLeft > 0 ? `Answer in ${lockLeft}s` : 'Check Answer'}
+              variant="coffee"
+              onPress={check}
+              disabled={!canCheck}
+              style={{ marginTop: 18 }}
+            />
 
             <View style={styles.linksRow}>
-              {wrong ? (
-                <Pressable onPress={onSkip}>
-                  <Text style={styles.link}>Skip question</Text>
+              {missed ? (
+                // Locked during the answer wait too, or skipping would be an instant re-roll.
+                <Pressable onPress={onSkip} disabled={lockLeft > 0}>
+                  <Text style={[styles.link, lockLeft > 0 && styles.linkDisabled]}>Skip question</Text>
                 </Pressable>
               ) : (
                 <View />
@@ -263,10 +372,10 @@ export default function Friction() {
             <Button
               label="I'm done for today"
               variant="google"
-              onPress={() => {
+              onPress={once(() => {
                 doneForToday(appKey);
                 router.back();
-              }}
+              })}
               style={{ marginTop: 24, alignSelf: 'stretch' }}
             />
           </View>
@@ -379,6 +488,7 @@ const styles = StyleSheet.create({
 
   linksRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18 },
   link: { fontFamily: fonts.medium, fontSize: 14, color: 'rgba(251,244,234,0.75)', textDecorationLine: 'underline' },
+  linkDisabled: { opacity: 0.35 },
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   checkCircle: { width: 76, height: 76, borderRadius: 38, backgroundColor: colors.cream, alignItems: 'center', justifyContent: 'center' },

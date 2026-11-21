@@ -669,6 +669,20 @@ const MATH: Record<number, Question[]> = {
   ],
 };
 
+/** Fisher–Yates shuffle into a new array (the bank itself is never mutated). */
+function shuffled<T>(arr: T[]): T[] {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/** Serve a copy with its options in a fresh random order, so the answer's position means nothing. */
+const withShuffledOptions = (q: Question): Question =>
+  q.options ? { ...q, options: shuffled(q.options) } : q;
+
 /** Next question for a type at a ladder level, avoiding an immediate repeat. */
 export function getQuestion(type: QuestionType, level: number, excludeId?: string): Question {
   const lvl = clampLevel(level);
@@ -676,15 +690,27 @@ export function getQuestion(type: QuestionType, level: number, excludeId?: strin
     case 'math':
       return pick(MATH[lvl], excludeId, (q) => q.id);
     case 'trivia':
-      return pick(TRIVIA[lvl], excludeId, (q) => q.id);
+      return withShuffledOptions(pick(TRIVIA[lvl], excludeId, (q) => q.id));
     case 'logic':
-      return pick(LOGIC[lvl], excludeId, (q) => q.id);
+      return withShuffledOptions(pick(LOGIC[lvl], excludeId, (q) => q.id));
     case 'typing': {
       const sentences = TYPING_SENTENCES[lvl];
       const ref = pick(sentences, excludeId, (s) => `type-${lvl}-${s}`);
       return { id: `type-${lvl}-${ref}`, prompt: 'Type the sentence exactly.', answer: ref, reference: ref };
     }
   }
+}
+
+/** Look up a specific question again (to resume the one already on screen). */
+export function findQuestion(type: QuestionType, level: number, id: string): Question | undefined {
+  const lvl = clampLevel(level);
+  if (type === 'typing') {
+    const ref = TYPING_SENTENCES[lvl].find((s) => `type-${lvl}-${s}` === id);
+    return ref ? { id, prompt: 'Type the sentence exactly.', answer: ref, reference: ref } : undefined;
+  }
+  const pool = type === 'math' ? MATH : type === 'trivia' ? TRIVIA : LOGIC;
+  const q = pool[lvl].find((x) => x.id === id);
+  return q ? withShuffledOptions(q) : undefined;
 }
 
 /** Compare a typed math answer, ignoring currency symbols, commas, and spaces. */
@@ -740,20 +766,36 @@ function tokensContain(hay: string[], needle: string[]): boolean {
   return false;
 }
 
+/**
+ * Harmless extra words a correct answer may carry ("planet venus", "mount everest").
+ * Anything else outside the answer is treated as a guess, so "mercury venus mars"
+ * can't clear "venus". Full-name variants ("vincent van gogh") live in `accept`.
+ */
+const QUALIFIERS = new Set([
+  'planet', 'mount', 'mt', 'river', 'lake', 'sea', 'ocean', 'desert', 'island', 'city',
+  'country', 'state', 'empire', 'republic', 'saint', 'st', 'sir', 'dr', 'of',
+]);
+
 /** Lenient match of typed `input` against one acceptable answer `candidate`. */
 function fuzzyOne(input: string, candidate: string): boolean {
   const ni = normalizeFuzzy(input);
   const nc = normalizeFuzzy(candidate);
   if (!ni || !nc) return false;
   if (ni === nc) return true;
-  // Forgive a typo or two, scaled to the answer's length.
-  const tol = nc.length <= 3 ? 0 : nc.length <= 6 ? 1 : 2;
-  if (levenshtein(ni, nc) <= tol) return true;
+  // Numbers must be exact — a typo allowance would let "5731" pass for "5730".
+  if (/\d/.test(nc)) return ni.replace(/\s/g, '') === nc.replace(/\s/g, '');
+  // Forgive a small typo on longer answers only, and only if the first letter is right
+  // (short words are too easy to swap for a different real word: shin/skin, red/dead).
+  const tol = nc.length <= 5 ? 0 : nc.length <= 10 ? 1 : 2;
+  if (tol > 0 && ni[0] === nc[0] && levenshtein(ni, nc) <= tol) return true;
   if (nc.length >= 4) {
     const ti = ni.split(' ');
     const tc = nc.split(' ');
-    // Input wraps the full answer in extra words ("vincent van gogh" -> "van gogh").
-    if (tokensContain(ti, tc)) return true;
+    // Input wraps the answer in at most one harmless qualifier ("planet venus").
+    if (ti.length === tc.length + 1 && tokensContain(ti, tc)) {
+      const extra = ti[0] === tc[0] ? ti[ti.length - 1] : ti[0];
+      if (QUALIFIERS.has(extra)) return true;
+    }
     // Input is a shorter sub-phrase of the answer ("civil war" -> "american civil war"),
     // but require >=2 words so a lone generic word ("ocean", "war") can't clear it.
     if (ti.length >= 2 && tokensContain(tc, ti)) return true;

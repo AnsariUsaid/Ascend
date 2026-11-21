@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { todayKey } from '../lib/date';
 import { MAX_LEVEL } from '../data/questionBank';
 import AscendNative from '../../modules/ascend-native';
+import type { QuestionType } from './useAppStore';
+import { trackHydration } from './hydration';
 
 // Mirror friction outcomes into the native watcher (Phase D). Wrapped so a
 // missing native module never breaks the JS engine.
@@ -24,6 +26,10 @@ export type AppFriction = {
   skipped: number;
   stopped: number;
   maxLevel: number; // highest level reached today
+  wrongStreak: number; // wrong answers in a row (drives the answer lockout)
+  lockedUntil: number | null; // epoch ms; can't answer again until then
+  /** Question on screen right now, so reopening friction shows the same one (no free re-roll). */
+  currentQ: { type: QuestionType; level: number; id: string } | null;
 };
 
 const freshApp = (): AppFriction => ({
@@ -34,7 +40,21 @@ const freshApp = (): AppFriction => ({
   skipped: 0,
   stopped: 0,
   maxLevel: 1,
+  wrongStreak: 0,
+  lockedUntil: null,
+  currentQ: null,
 });
+
+// Older persisted entries predate some fields — fill them from the defaults.
+const withDefaults = (a?: Partial<AppFriction>): AppFriction => ({ ...freshApp(), ...a });
+
+/**
+ * Lockout after a wrong answer, doubling with each miss in a row: 3s, 6s, 12s,
+ * 24s, then 30s. A fresh question alone isn't enough — blind-guessing a 4-option
+ * question still wins 25% of the time — so guessing has to cost more than thinking.
+ */
+export const lockMsFor = (streak: number) =>
+  Math.min(30, 3 * 2 ** Math.max(0, streak - 1)) * 1000;
 
 type FrictionStore = {
   today: string;
@@ -48,6 +68,10 @@ type FrictionStore = {
 
   /** Correct answer → grant grace + climb one level. */
   answerCorrect: (key: string, graceMinutes: number) => void;
+  /** Wrong answer → bump the miss streak and start a lockout (no grace, no level change). */
+  answerWrong: (key: string) => void;
+  /** Remember the question currently shown for this app. */
+  setCurrentQ: (key: string, q: AppFriction['currentQ']) => void;
   /** Skip → +1 level penalty, no grace. */
   skip: (key: string) => void;
   /** "I'm done for today" → block this app for the rest of the day. */
@@ -60,9 +84,12 @@ type FrictionStore = {
 export const useFrictionStore = create<FrictionStore>()(
   persist(
     (set, get) => {
-      // Apply an update to one app's state, creating it if needed.
-      const update = (key: string, fn: (a: AppFriction) => AppFriction) =>
-        set((s) => ({ byApp: { ...s.byApp, [key]: fn(s.byApp[key] ?? freshApp()) } }));
+      // Apply an update to one app's state, creating it if needed. Roll the day
+      // over first so an action never builds on yesterday's state.
+      const update = (key: string, fn: (a: AppFriction) => AppFriction) => {
+        get().ensureToday();
+        set((s) => ({ byApp: { ...s.byApp, [key]: fn(withDefaults(s.byApp[key])) } }));
+      };
 
       return {
         today: todayKey(),
@@ -76,7 +103,10 @@ export const useFrictionStore = create<FrictionStore>()(
           }
         },
 
-        getApp: (key) => get().byApp[key] ?? freshApp(),
+        // Day-aware read: saved state from an earlier day counts as a fresh day,
+        // even if ensureToday() hasn't run yet (e.g. friction cold-starts past midnight).
+        getApp: (key) =>
+          get().today === todayKey() ? withDefaults(get().byApp[key]) : freshApp(),
 
         isInGrace: (key) => {
           const a = get().byApp[key];
@@ -96,6 +126,9 @@ export const useFrictionStore = create<FrictionStore>()(
               level: nextLevel,
               graceExpiresAt,
               answered: a.answered + 1,
+              wrongStreak: 0,
+              lockedUntil: null,
+              currentQ: null,
               // Stats never show the sentinel — cap the displayed max at MAX_LEVEL.
               maxLevel: Math.min(MAX_LEVEL, Math.max(a.maxLevel, nextLevel)),
             };
@@ -104,16 +137,31 @@ export const useFrictionStore = create<FrictionStore>()(
           pushNative(() => AscendNative.setGrace(key, graceExpiresAt));
         },
 
+        answerWrong: (key) =>
+          update(key, (a) => {
+            const wrongStreak = a.wrongStreak + 1;
+            return { ...a, wrongStreak, lockedUntil: Date.now() + lockMsFor(wrongStreak) };
+          }),
+
+        setCurrentQ: (key, q) => update(key, (a) => ({ ...a, currentQ: q })),
+
         skip: (key) =>
           update(key, (a) => {
             // Skip penalty climbs a level, capped — at the top it re-serves level MAX_LEVEL.
             const nextLevel = Math.min(MAX_LEVEL, a.level + 1);
+            // At the cap the level can't climb, so a skip would be a free re-roll.
+            // Charge it like a wrong answer instead.
+            const atCap = a.level >= MAX_LEVEL;
+            const wrongStreak = atCap ? a.wrongStreak + 1 : a.wrongStreak;
             return {
               ...a,
               level: nextLevel,
               graceExpiresAt: null,
               skipped: a.skipped + 1,
               maxLevel: Math.max(a.maxLevel, nextLevel),
+              wrongStreak,
+              lockedUntil: atCap ? Date.now() + lockMsFor(wrongStreak) : a.lockedUntil,
+              currentQ: null,
             };
           }),
 
@@ -122,6 +170,7 @@ export const useFrictionStore = create<FrictionStore>()(
             ...a,
             blockedForToday: true,
             graceExpiresAt: null,
+            currentQ: null,
             stopped: a.stopped + 1,
           }));
           // Native watcher stops re-triggering until midnight.
@@ -137,6 +186,7 @@ export const useFrictionStore = create<FrictionStore>()(
     {
       name: 'ascend-friction',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: (_state: FrictionStore) => trackHydration('ascend-friction'),
       // Only persist data, not the action functions.
       partialize: (s) => ({ today: s.today, byApp: s.byApp }),
     },

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, LimitStepperRow, MotivationDialog, ScreenHeader } from '../src/components';
 import { colors, fonts, spacing } from '../src/theme';
@@ -18,10 +18,20 @@ export default function EditLimits() {
   const limits = useAppStore((s) => s.limits);
   const setLimit = useAppStore((s) => s.setLimit);
   const usage = useUsage();
+  // Set when coming straight from Monitored Apps after adding apps: show only those.
+  const params = useLocalSearchParams<{ added?: string }>();
+  const added = useMemo(
+    () => new Set((params.added ?? '').split(',').filter(Boolean)),
+    [params.added],
+  );
+  const isNewApps = added.size > 0;
 
   const apps = useMemo(
-    () => getInstalledApps().filter((a) => selected[a.packageName]),
-    [selected],
+    () =>
+      getInstalledApps().filter(
+        (a) => selected[a.packageName] && (!isNewApps || added.has(a.packageName)),
+      ),
+    [selected, added, isNewApps],
   );
 
   // Draft limits; applied only on Save so we can gate a loosening.
@@ -40,8 +50,10 @@ export default function EditLimits() {
     () => new Set(usage.apps.filter((a) => a.today >= a.limit).map((a) => a.key)),
     [usage.apps],
   );
-  // Over-limit apps whose limit the user is raising right now.
+  // Over-limit apps whose limit the user is raising right now. A just-added app
+  // has no limit to escape yet, so it never counts.
   const escaping = apps.filter((a) => {
+    if (added.has(a.packageName)) return false;
     const orig = limits[a.packageName] ?? DEFAULT_LIMIT;
     return (draft[a.packageName] ?? orig) > orig && overLimit.has(a.packageName);
   });
@@ -69,7 +81,11 @@ export default function EditLimits() {
         }}
       >
         <ScreenHeader title="Time Limits" />
-        <Text style={styles.note}>Changes apply when you tap Save.</Text>
+        <Text style={styles.note}>
+          {isNewApps
+            ? `Pick a daily limit for ${apps.length === 1 ? 'your new app' : 'your new apps'}. You can change it anytime.`
+            : 'Changes apply when you tap Save.'}
+        </Text>
         {apps.map((app) => (
           <LimitStepperRow
             key={app.packageName}
