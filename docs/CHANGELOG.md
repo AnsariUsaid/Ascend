@@ -348,8 +348,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   with that app's own state.
 - **failed load can't freeze friction** (CodeRabbit on #14) — zustand never marks a store hydrated
   when its storage read or JSON parse fails, so the `useStoresHydrated()` gate would wait forever
-  on a blank scrim. Each store now retries a failed load once (after 300ms), then gives up and
-  runs on its defaults — the pre-gate behaviour (`src/store/hydration.ts`).
+  on a blank scrim. Final behaviour (CodeRabbit autofix `2790369` + a follow-up): a failed load
+  shows "Couldn't load your challenge" with **Retry** (re-reads only the store that failed) and a
+  **Continue anyway** link that runs the challenge on defaults, so a corrupted file can never trap
+  the user (`src/store/hydration.ts`, `useStoresHydrated()`).
 - **Skip is locked during the answer wait** (device test) — the wait only disabled Check, so at L5
   you could tap Skip repeatedly for instant new questions and shop for an easy one. Skip is now
   greyed out until the wait ends, at every level.

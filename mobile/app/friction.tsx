@@ -20,6 +20,9 @@ export default function Friction() {
   const params = useLocalSearchParams<{ app?: string }>();
   const { status, retry } = useStoresHydrated();
   const insets = useSafeAreaInsets();
+  // Escape hatch if saved data can't be read (e.g. a corrupted file Retry can't fix):
+  // run the challenge on default settings instead of leaving the user stuck.
+  const [continueAnyway, setContinueAnyway] = useState(false);
 
   // Block the hardware Back button — friction can only be left via the on-screen
   // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
@@ -30,14 +33,19 @@ export default function Friction() {
 
   // On a cold start the saved settings/level are still loading; reading them now
   // would serve the default type at level 1. Keep the challenge gated until both load.
-  if (status === 'error') {
+  if (status === 'error' && !continueAnyway) {
     return (
       <View style={styles.scrim}>
         <View style={[styles.card, { paddingBottom: insets.bottom + 20 }]}>
           <View style={styles.center}>
             <Text accessibilityRole="alert" style={styles.bigTitle}>Couldn't load your challenge</Text>
-            <Text style={styles.bigSub}>Try loading your saved settings and progress again.</Text>
+            <Text style={styles.bigSub}>
+              Try loading your saved settings and progress again, or continue with a fresh challenge.
+            </Text>
             <Button label="Retry" variant="google" onPress={retry} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+            <Pressable onPress={() => setContinueAnyway(true)} style={{ marginTop: 18 }}>
+              <Text style={styles.link}>Continue anyway</Text>
+            </Pressable>
           </View>
         </View>
       </View>
