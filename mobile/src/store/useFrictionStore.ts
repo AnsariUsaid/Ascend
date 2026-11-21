@@ -83,9 +83,12 @@ type FrictionStore = {
 export const useFrictionStore = create<FrictionStore>()(
   persist(
     (set, get) => {
-      // Apply an update to one app's state, creating it if needed.
-      const update = (key: string, fn: (a: AppFriction) => AppFriction) =>
+      // Apply an update to one app's state, creating it if needed. Roll the day
+      // over first so an action never builds on yesterday's state.
+      const update = (key: string, fn: (a: AppFriction) => AppFriction) => {
+        get().ensureToday();
         set((s) => ({ byApp: { ...s.byApp, [key]: fn(withDefaults(s.byApp[key])) } }));
+      };
 
       return {
         today: todayKey(),
@@ -99,7 +102,10 @@ export const useFrictionStore = create<FrictionStore>()(
           }
         },
 
-        getApp: (key) => withDefaults(get().byApp[key]),
+        // Day-aware read: saved state from an earlier day counts as a fresh day,
+        // even if ensureToday() hasn't run yet (e.g. friction cold-starts past midnight).
+        getApp: (key) =>
+          get().today === todayKey() ? withDefaults(get().byApp[key]) : freshApp(),
 
         isInGrace: (key) => {
           const a = get().byApp[key];

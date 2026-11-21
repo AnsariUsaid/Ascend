@@ -338,6 +338,14 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 - **`d4c5db6` ask for limits on newly added apps** — Settings → Monitored Apps → Save now opens
   Time Limits for just the new apps instead of silently giving them 1 hour (closes #13).
 - **version → 1.0.1 (versionCode 2).**
+- **friction state fixes (group B)** — (1) *midnight reset ran too late*: friction read the stored
+  level before `ensureToday()` ran, so a cold start after yesterday's L5 could open straight to
+  "You've cleared every level". `getApp()` is now day-aware and every action rolls the day first.
+  (2) *read before load*: on a cold start friction could render before AsyncStorage finished,
+  serving the default type at level 1; a new `useStoresHydrated()` gate holds the scrim until both
+  stores load, and the question type is locked into the question (so an empty typing passage can't
+  pass). (3) *trigger for another app while open*: the screen is keyed on the app, so it remounts
+  with that app's own state.
 
 ---
 

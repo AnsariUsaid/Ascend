@@ -10,27 +10,50 @@ import { useFrictionStore } from '../src/store/useFrictionStore';
 import { getQuestion, findQuestion, normalizeMath, fuzzyMatches, typingAccuracy, typingThreshold, MAX_LEVEL } from '../src/data/questionBank';
 import { getApp } from '../src/data/installedApps';
 import { useStatusBarStyle } from '../src/hooks/useStatusBarStyle';
+import { useStoresHydrated } from '../src/hooks/useStoresHydrated';
 import AscendNative from '../modules/ascend-native';
 
 type Phase = 'question' | 'correct' | 'done' | 'exhausted';
 
 export default function Friction() {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
   useStatusBarStyle('light'); // dark scrim + coral sheet → white icons
   const params = useLocalSearchParams<{ app?: string }>();
+  const ready = useStoresHydrated();
+
+  // Block the hardware Back button — friction can only be left via the on-screen
+  // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => sub.remove();
+  }, []);
+
+  // On a cold start the saved settings/level are still loading; reading them now
+  // would serve the default type at level 1. Hold the scrim until they're in.
+  if (!ready) return <View style={styles.scrim} />;
+
+  // Keyed on the app so a new trigger for a different app remounts with that
+  // app's own state instead of reusing this one's question and level.
+  const appParam = params.app ?? '';
+  return <FrictionScreen key={appParam} appParam={appParam} />;
+}
+
+function FrictionScreen({ appParam }: { appParam: string }) {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
   const { ensureToday, answerCorrect, answerWrong, setCurrentQ, skip, doneForToday } = useFrictionStore();
 
   // Resolve which app triggered the overlay.
-  // `params.app` is a package name (passed by the dashboard / Phase D trigger).
-  const app = getApp(params.app ?? '');
+  // `appParam` is a package name (passed by the dashboard / Phase D trigger).
+  const app = getApp(appParam);
   const appKey = app.packageName;
 
-  // Snapshot the starting level once (engine state lives in the store).
-  // Day-reset is handled by the dashboard on open and by the effect below.
+  // Snapshot the starting level once (engine state lives in the store; its reads
+  // are day-aware, so yesterday's level never leaks into a new day).
+  // The question type is locked into `current` so a later settings change can't
+  // mismatch it with the question on screen.
   // Resume the question already shown for this app, so leaving and reopening
   // friction can't be used to re-roll for an easier one.
   const [current, setCurrent] = useState(() => {
@@ -40,7 +63,11 @@ export default function Friction() {
       saved && saved.type === questionType && saved.level === appState.level
         ? findQuestion(questionType, appState.level, saved.id)
         : undefined;
-    return { q: resumed ?? getQuestion(questionType, appState.level), level: appState.level };
+    return {
+      q: resumed ?? getQuestion(questionType, appState.level),
+      level: appState.level,
+      type: questionType,
+    };
   });
   const [phase, setPhase] = useState<Phase>(() => {
     const a = useFrictionStore.getState().getApp(appKey);
@@ -68,6 +95,7 @@ export default function Friction() {
     return () => clearInterval(id);
   }, [lockLeft > 0]);
 
+  // Persist the day rollover (reads already treat an old day as fresh).
   useEffect(() => {
     ensureToday();
   }, []);
@@ -75,15 +103,8 @@ export default function Friction() {
   // Persist whichever question is on screen (initial, after a miss, or after a skip).
   useEffect(() => {
     if (phase !== 'question') return;
-    setCurrentQ(appKey, { type: questionType, level: current.level, id: current.q.id });
+    setCurrentQ(appKey, { type: current.type, level: current.level, id: current.q.id });
   }, [current.q.id, current.level]);
-
-  // Block the hardware Back button — friction can only be left via the on-screen
-  // actions (solve / skip / "I'm done" / "Back to app"), not by backing out.
-  useEffect(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
-    return () => sub.remove();
-  }, []);
 
   // Ignore a second tap that lands before the screen updates — otherwise a fast
   // double tap on Check/Skip runs the action twice (e.g. climbs two levels).
@@ -97,7 +118,7 @@ export default function Friction() {
     fn();
   };
 
-  const isTyping = questionType === 'typing';
+  const isTyping = current.type === 'typing';
   const ref = current.q.reference ?? '';
   // Multiple-choice questions (logic) carry an `options` array; the rest are typed.
   const options = current.q.options;
@@ -118,7 +139,7 @@ export default function Friction() {
       ? accuracy >= threshold
       : isMcq
       ? selected === current.q.answer
-      : questionType === 'trivia'
+      : current.type === 'trivia'
       ? fuzzyMatches(input, current.q) // typed trivia (L4-5): lenient match
       : normalizeMath(input) === normalizeMath(current.q.answer); // math: numeric-exact
     if (ok) {
@@ -135,7 +156,7 @@ export default function Friction() {
       answerWrong(appKey);
       setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
       setNow(Date.now());
-      setCurrent({ q: getQuestion(questionType, current.level, current.q.id), level: current.level });
+      setCurrent({ ...current, q: getQuestion(current.type, current.level, current.q.id) });
       setInput('');
       setSelected(null);
       setEscalated(false);
@@ -148,7 +169,7 @@ export default function Friction() {
     skip(appKey);
     // Read the level back from the store (the source of truth), not our local copy.
     const nextLevel = Math.min(MAX_LEVEL, useFrictionStore.getState().getApp(appKey).level);
-    setCurrent({ q: getQuestion(questionType, nextLevel, current.q.id), level: nextLevel });
+    setCurrent({ ...current, q: getQuestion(current.type, nextLevel, current.q.id), level: nextLevel });
     setInput('');
     setSelected(null);
     setWrong(false);
