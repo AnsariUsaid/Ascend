@@ -180,6 +180,7 @@ function FrictionScreen({ appParam }: { appParam: string }) {
   });
 
   const onSkip = once(() => {
+    if (lockLeft > 0) return; // belt and braces: the link is disabled during the wait
     skip(appKey);
     // Read the level back from the store (the source of truth), not our local copy.
     const nextLevel = Math.min(MAX_LEVEL, useFrictionStore.getState().getApp(appKey).level);
@@ -323,8 +324,9 @@ function FrictionScreen({ appParam }: { appParam: string }) {
 
             <View style={styles.linksRow}>
               {missed ? (
-                <Pressable onPress={onSkip}>
-                  <Text style={styles.link}>Skip question</Text>
+                // Locked during the answer wait too, or skipping would be an instant re-roll.
+                <Pressable onPress={onSkip} disabled={lockLeft > 0}>
+                  <Text style={[styles.link, lockLeft > 0 && styles.linkDisabled]}>Skip question</Text>
                 </Pressable>
               ) : (
                 <View />
@@ -478,6 +480,7 @@ const styles = StyleSheet.create({
 
   linksRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18 },
   link: { fontFamily: fonts.medium, fontSize: 14, color: 'rgba(251,244,234,0.75)', textDecorationLine: 'underline' },
+  linkDisabled: { opacity: 0.35 },
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   checkCircle: { width: 76, height: 76, borderRadius: 38, backgroundColor: colors.cream, alignItems: 'center', justifyContent: 'center' },
