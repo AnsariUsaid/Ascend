@@ -26,4 +26,4 @@ export { ProtectionCard } from './ProtectionCard';
 export { UsageBars } from './UsageBars';
 export type { BarDay, BarSegment } from './UsageBars';
 export { AppStatRow } from './AppStatRow';
-export { AnnouncementCard } from './AnnouncementCard';
+export { AnnouncementPill } from './AnnouncementPill';

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { AnnouncementCard, AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
+import { AnnouncementPill, AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
 import { useAnnouncement } from '../../src/data/announcements';
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import { formatDuration } from '../../src/data/mock';
@@ -155,26 +155,12 @@ export default function Dashboard() {
         <Avatar initials={displayName.slice(0, 2).toUpperCase()} />
       </View>
 
-      {/* A short note from us (feedback form, "new version ready"), checked once a day. */}
-      {announcement && <AnnouncementCard item={announcement} />}
-
       {/* Usage-access prompt when the permission isn't granted */}
       {!usage.hasAccess && (
         <Pressable style={styles.accessBanner} onPress={() => AscendNative.openUsageAccessSettings()}>
           <Feather name="alert-triangle" size={16} color="#9a6a1f" />
           <Text style={styles.accessText}>
             Grant Usage Access to see your real screen time. Tap to open Settings.
-          </Text>
-        </Pressable>
-      )}
-
-      {/* Battery nudge: the watcher can be killed unless Ascend is set "Unrestricted". */}
-      {usage.hasAccess && usage.apps.length > 0 && !batteryExempt && (
-        <Pressable style={styles.accessBanner} onPress={() => AscendNative.openBatteryOptimizationSettings()}>
-          <Feather name="battery-charging" size={16} color="#9a6a1f" />
-          <Text style={styles.accessText}>
-            Let Ascend run in the background so it reliably catches your limits — set its
-            battery to “Unrestricted”. Tap to enable.
           </Text>
         </Pressable>
       )}
@@ -188,6 +174,9 @@ export default function Dashboard() {
         </View>
       </View>
 
+      {/* A short note from us (feedback form, "new version ready"), checked once a day. */}
+      {announcement && <AnnouncementPill item={announcement} />}
+
       {/* Today's usage */}
       <Text style={[styles.sectionLabel, { marginTop: 22 }]}>TODAY'S USAGE</Text>
       {usage.apps.length === 0 ? (
@@ -196,6 +185,17 @@ export default function Dashboard() {
         </Card>
       ) : (
         usage.apps.map((app) => <UsageRow key={app.key} app={app} />)
+      )}
+
+      {/* Battery nudge: the watcher can be killed unless Ascend is set "Unrestricted". */}
+      {usage.hasAccess && usage.apps.length > 0 && !batteryExempt && (
+        <Pressable style={[styles.accessBanner, styles.bannerAboveWeek]} onPress={() => AscendNative.openBatteryOptimizationSettings()}>
+          <Feather name="battery-charging" size={16} color="#9a6a1f" />
+          <Text style={styles.accessText}>
+            Let Ascend run in the background so it reliably catches your limits — set its
+            battery to “Unrestricted”. Tap to enable.
+          </Text>
+        </Pressable>
       )}
 
       {/* This week */}
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 16,
   },
+  bannerAboveWeek: { marginTop: 16, marginBottom: 0 },
   accessText: { flex: 1, fontFamily: fonts.medium, fontSize: 13, color: '#7a5417', lineHeight: 18 },
 
   streak: {

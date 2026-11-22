@@ -8,7 +8,7 @@ import { todayKey } from '../lib/date';
 
 /**
  * Announcements: short notes from us (feedback forms, "a new version is ready")
- * shown as one small card on Home. The source is a public file on the website,
+ * shown as one collapsible pill on Home (not dismissible — remove it from the file to retire it). The source is a public file on the website,
  * downloaded at most once a day. Nothing about the user is sent.
  * Edit web/public/announcements.json to publish.
  */
@@ -36,9 +36,7 @@ export type Announcement = {
 type AnnouncementState = {
   items: Announcement[];
   lastChecked: number; // epoch ms of the last successful download
-  dismissed: string[];
   setItems: (items: Announcement[]) => void;
-  dismiss: (id: string) => void;
   reset: () => void;
 };
 
@@ -47,15 +45,13 @@ export const useAnnouncementStore = create<AnnouncementState>()(
     (set) => ({
       items: [],
       lastChecked: 0,
-      dismissed: [],
       setItems: (items) => set({ items, lastChecked: Date.now() }),
-      dismiss: (id) => set((s) => ({ dismissed: [...s.dismissed, id] })),
-      reset: () => set({ items: [], lastChecked: 0, dismissed: [] }),
+      reset: () => set({ items: [], lastChecked: 0 }),
     }),
     {
       name: 'ascend-announcements',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (s) => ({ items: s.items, lastChecked: s.lastChecked, dismissed: s.dismissed }),
+      partialize: (s) => ({ items: s.items, lastChecked: s.lastChecked }),
     },
   ),
 );
@@ -137,7 +133,6 @@ export async function openAnnouncementLink(url: string) {
 /** The one announcement to show right now (or null), checking for new ones once a day. */
 export function useAnnouncement(): Announcement | null {
   const items = useAnnouncementStore((s) => s.items);
-  const dismissed = useAnnouncementStore((s) => s.dismissed);
 
   useEffect(() => {
     checkIfDue();
@@ -152,7 +147,6 @@ export function useAnnouncement(): Announcement | null {
   return (
     items.find(
       (a) =>
-        !dismissed.includes(a.id) &&
         !(a.expires && today >= a.expires) &&
         // Version rules only apply to items that set them; they need a known version.
         (!a.onlyBelow || (!!version && compareVersions(version, a.onlyBelow) < 0)) &&

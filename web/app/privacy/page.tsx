@@ -140,8 +140,7 @@ export default function PrivacyPolicy() {
             day, and simple counts of answers and skips. This resets each day.
           </Item>
           <Item label="Announcements">
-            The latest copy of the announcements file, when it was last checked, and which announcements you&apos;ve
-            dismissed.
+            The latest copy of the announcements file and when it was last checked.
           </Item>
         </ul>
 
