@@ -1,4 +1,12 @@
 {
   "_readme": "Shown as a small card on Ascend's Home screen (app 1.0.2+), one at a time, in order; users can dismiss each by id. Fields: id (unique, never reuse), title, body, optional button + url (https:// or market://, opens in the browser / Play Store). Optional per-item rules: onlyBelow (e.g. \"1.0.3\" = only versions older than that), onlyFrom (e.g. \"1.0.2\" = only that version or newer), expires (\"YYYY-MM-DD\", hidden from that day). Leave the rules out to show an item to everyone.",
-  "items": []
+  "items": [
+    {
+      "id": "feedback-2026-11",
+      "title": "Help improve Ascend",
+      "body": "Thanks for using Ascend! I'm working to make it better, and your feedback really helps.\n\nFound a bug, have an idea, or just want to share how it's going? It takes about 2 minutes.",
+      "button": "Send feedback",
+      "url": "https://tally.so/r/aO2Bkb"
+    }
+  ]
 }
