@@ -33,6 +33,10 @@ class MonitorService : Service() {
   // activity is coming to the foreground).
   private val lastLaunch = HashMap<String, Long>()
 
+  // Last known state of the two permissions the watcher needs (worker thread only).
+  private var permsOk = true
+  private var lastPermCheck = 0L
+
   // Whether the screen is on. When it's off, nobody can be using an app, so the
   // poll loop idles to save battery; SCREEN_ON wakes it immediately.
   @Volatile private var screenOn = true
@@ -106,6 +110,20 @@ class MonitorService : Service() {
       stopSelf()
       return
     }
+    // If a permission was revoked, limits can't be enforced. Say so in the
+    // notification (instead of claiming we're still guarding) and keep running,
+    // so enforcement resumes by itself once it's turned back on.
+    val nowMs = System.currentTimeMillis()
+    if (nowMs - lastPermCheck >= PERM_CHECK_MS) {
+      lastPermCheck = nowMs
+      val ok = Permissions.hasUsageAccess(this) && Permissions.hasOverlay(this)
+      if (ok != permsOk) {
+        permsOk = ok
+        refreshNotification()
+      }
+    }
+    if (!permsOk) return
+
     val fg = UsageReader.currentForegroundApp(this) ?: return
     if (fg == packageName) return // our own friction screen is showing
     val limit = MonitorStore.limitFor(this, fg) ?: return // not a monitored app
@@ -147,6 +165,15 @@ class MonitorService : Service() {
     }
   }
 
+  /** Re-post the ongoing notification so its text matches the permission state. */
+  private fun refreshNotification() {
+    try {
+      getSystemService(NotificationManager::class.java).notify(NOTIF_ID, buildNotification())
+    } catch (e: Exception) {
+      // notifications blocked — nothing to update
+    }
+  }
+
   private fun buildNotification(): Notification {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val manager = getSystemService(NotificationManager::class.java)
@@ -168,9 +195,15 @@ class MonitorService : Service() {
       PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
+    val (title, text) = if (permsOk) {
+      "Ascend is guarding your limits" to "Watching your monitored apps."
+    } else {
+      "Ascend needs a quick fix" to "A permission was turned off, so your limits are paused. Tap to turn it back on."
+    }
     return NotificationCompat.Builder(this, CHANNEL_ID)
-      .setContentTitle("Ascend is guarding your limits")
-      .setContentText("Watching your monitored apps.")
+      .setContentTitle(title)
+      .setContentText(text)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(text))
       .setSmallIcon(applicationInfo.icon)
       .setOngoing(true)
       .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -184,5 +217,6 @@ class MonitorService : Service() {
     private const val POLL_MS = 2_000L // screen-on poll (screen-off idles at IDLE_MS)
     private const val IDLE_MS = 60_000L // screen-off idle between safety re-checks
     private const val LAUNCH_COOLDOWN_MS = 1_500L // < POLL_MS so it never adds delay on re-block
+    private const val PERM_CHECK_MS = 30_000L // how often to re-check the two permissions
   }
 }

@@ -1,13 +1,11 @@
 package expo.modules.ascendnative
 
 import android.Manifest
-import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
-import android.os.Process
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
@@ -90,29 +88,8 @@ class AscendNativeModule : Module() {
   private val context: Context
     get() = requireNotNull(appContext.reactContext) { "Android context unavailable" }
 
-  /**
-   * Usage Access (PACKAGE_USAGE_STATS) isn't a runtime permission — it's an
-   * "app op" the user grants in a special settings screen. We check it via
-   * AppOpsManager.
-   */
-  private fun hasUsageAccess(): Boolean {
-    val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-    val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      appOps.unsafeCheckOpNoThrow(
-        AppOpsManager.OPSTR_GET_USAGE_STATS,
-        Process.myUid(),
-        context.packageName,
-      )
-    } else {
-      @Suppress("DEPRECATION")
-      appOps.checkOpNoThrow(
-        AppOpsManager.OPSTR_GET_USAGE_STATS,
-        Process.myUid(),
-        context.packageName,
-      )
-    }
-    return mode == AppOpsManager.MODE_ALLOWED
-  }
+  /** Usage Access is an "app op", not a runtime permission — see Permissions. */
+  private fun hasUsageAccess(): Boolean = Permissions.hasUsageAccess(context)
 
   private fun openUsageAccessSettings() {
     // FLAG_ACTIVITY_NEW_TASK is required because we're launching from a
@@ -123,7 +100,7 @@ class AscendNativeModule : Module() {
   }
 
   /** Overlay (SYSTEM_ALERT_WINDOW) has a dedicated framework check. */
-  private fun hasOverlayPermission(): Boolean = Settings.canDrawOverlays(context)
+  private fun hasOverlayPermission(): Boolean = Permissions.hasOverlay(context)
 
   private fun openOverlaySettings() {
     val intent = Intent(

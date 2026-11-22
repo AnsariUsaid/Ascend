@@ -372,6 +372,11 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   (and its limit passed silently) until the user switched apps. The first read now replays the last 24h.
 - **Watcher re-arms after an app update** (#19) — `BootReceiver` now also handles
   `MY_PACKAGE_REPLACED`; before, an update left the watcher off until Ascend was opened.
+- **Notification says when a permission is off** (#19) — revoking Usage access or Display-over-apps
+  silently ended enforcement while the notification still said "guarding your limits". The watcher
+  now re-checks both every 30s; if one is off it shows "Ascend needs a quick fix … Tap to turn it
+  back on" (opens the app's permission screen) and resumes by itself once fixed. Checks moved to
+  a shared `Permissions.kt`.
 
 ---
 
