@@ -76,6 +76,8 @@ export function activePack(): Pack {
 }
 
 const isStr = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
+/** Optional word lists: missing is fine, but if present they must be lists of text. */
+const isStrList = (v: unknown) => v === undefined || (Array.isArray(v) && v.every(isStr));
 
 /** Accept a downloaded pack only if every type has usable questions at every level. */
 function isValidPack(p: unknown): p is Pack {
@@ -87,6 +89,7 @@ function isValidPack(p: unknown): p is Pack {
       if (!Array.isArray(items) || items.length < 5) return false;
       for (const q of items) {
         if (!isStr(q?.id) || !isStr(q?.prompt) || !isStr(q?.answer)) return false;
+        if (!isStrList(q.options) || !isStrList(q.accept) || !isStrList(q.reject)) return false;
         if (q.options && !q.options.includes(q.answer)) return false;
         if (type === 'typing' && !isStr(q.reference)) return false;
       }

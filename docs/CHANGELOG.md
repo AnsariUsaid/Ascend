@@ -440,7 +440,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   upload `batch-N.json` + raise `batches` in `index.json`, no app update. Clear all data also clears it.
 - **Checker** — honours each question's `reject` list (e.g. "lactose" no longer passes "lactase");
   numeric answers compare digits only, so "80 years" and "1,440" pass; mixed answers like CO2 must match
-  exactly.
+  exactly. Short words and Roman numerals must be typed exactly (so "vitamin b" no longer
+  passes "Vitamin C", nor "Henry VII" for "Henry VIII"); the typo allowance still covers longer words.
+  Downloaded packs with malformed `options`/`accept`/`reject` lists are rejected, and a saved pack that
+  fails to load falls back to the built-in set instead of holding up the limit watcher.
 - `questionBank.ts` shrank from 288 KB to ~7.5 KB (the hard-coded lists are gone). Privacy policy now
   mentions the weekly question download.
 

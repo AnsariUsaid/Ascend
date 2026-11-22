@@ -144,11 +144,20 @@ function fuzzyOne(input: string, candidate: string): boolean {
   if (/\d/.test(nc)) return false;
   // Forgive a small typo on longer answers only, and only if the first letter is right
   // (short words are too easy to swap for a different real word: shin/skin, red/dead).
+  const ti = ni.split(' ');
+  const tc = nc.split(' ');
+  // ...but short words and Roman numerals must be typed exactly, or the allowance lets
+  // the one part that matters change ("vitamin b" for "vitamin c", "henry vii" for "henry viii").
+  const exactWords = tc.filter((t) => t.length <= 3 || /^[ivx]+$/.test(t));
   const tol = nc.length <= 5 ? 0 : nc.length <= 10 ? 1 : 2;
-  if (tol > 0 && ni[0] === nc[0] && levenshtein(ni, nc) <= tol) return true;
+  if (
+    tol > 0 &&
+    ni[0] === nc[0] &&
+    exactWords.every((t) => ti.includes(t)) &&
+    levenshtein(ni, nc) <= tol
+  )
+    return true;
   if (nc.length >= 4) {
-    const ti = ni.split(' ');
-    const tc = nc.split(' ');
     // Input wraps the answer in at most one harmless qualifier ("planet venus").
     if (ti.length === tc.length + 1 && tokensContain(ti, tc)) {
       const extra = ti[0] === tc[0] ? ti[ti.length - 1] : ti[0];
