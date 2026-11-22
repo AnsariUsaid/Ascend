@@ -7,6 +7,10 @@
        merged manifest so the app requests no access to your files. -->
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove"/>
+  <!-- screenOrientation="portrait" makes Android imply a REQUIRED portrait screen,
+       which hides the app from landscape-only devices on Play. Portrait still
+       applies on phones; it just isn't an install requirement. -->
+  <uses-feature android:name="android.hardware.screen.portrait" android:required="false"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
