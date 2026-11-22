@@ -38,3 +38,6 @@ CLAUDE.md
 
 # Release status / checklist — local working notes for shipping (untracked).
 docs/RELEASE_STATUS.md
+# Question-bank generator + validator (Python). Local tooling only — the app and
+# site use the generated JSON in mobile/src/data/questions/ and web/public/questions/.
+scripts/

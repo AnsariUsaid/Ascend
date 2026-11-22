@@ -120,9 +120,9 @@ export default function PrivacyPolicy() {
           </Item>
           <Item label="Vibration">Short haptic feedback inside the app.</Item>
           <Item label="Internet">
-            Used for one thing only: about once a day, Ascend downloads a short announcements file from this website
-            (see &quot;Announcements&quot; below). It never uses the internet to send your data anywhere, and everything else
-            works fully offline.
+            Used only to download two kinds of public files from this website: a short announcements file (about once
+            a day) and a fresh set of challenge questions (about once a week). See &quot;Downloads&quot; below. It never uses
+            the internet to send your data anywhere, and everything else works fully offline.
           </Item>
         </ul>
 
@@ -142,15 +142,31 @@ export default function PrivacyPolicy() {
           <Item label="Announcements">
             The latest copy of the announcements file and when it was last checked.
           </Item>
+          <Item label="Challenge questions">
+            This week&apos;s set of questions and when it was last downloaded. A built-in set ships with the app, so
+            challenges work even if a download never happens.
+          </Item>
         </ul>
 
-        <H2>Announcements</H2>
+        <H2>Downloads</H2>
         <P>
-          About once a day, when you open Ascend, it downloads a small public file from{" "}
-          <span style={{ fontFamily: POP, fontWeight: 600, color: INK }}>ascend.ansariusaid.me</span> containing short
-          notes from us, such as a new version being available or an optional feedback form. The request carries
-          nothing about you: no account, no device ID, no usage data. Like any website, our hosting provider may
-          briefly log the request&apos;s IP address as part of normal operation; we don&apos;t store or use it.
+          Ascend downloads two kinds of small public files from{" "}
+          <span style={{ fontFamily: POP, fontWeight: 600, color: INK }}>ascend.ansariusaid.me</span>:
+        </P>
+        <ul style={{ paddingLeft: 20, marginTop: 6 }}>
+          <Item label="Announcements">
+            About once a day, short notes from us, such as a new version being available or an optional feedback
+            form.
+          </Item>
+          <Item label="Challenge questions">
+            About once a week, a fresh set of math, trivia, logic, and typing questions, so the challenges don&apos;t
+            get repetitive.
+          </Item>
+        </ul>
+        <P>
+          These are the same files for everyone, and the requests carry nothing about you: no account, no device ID,
+          no usage data, and no record of how you answered. Like any website, our hosting provider may briefly log a
+          request&apos;s IP address as part of normal operation; we don&apos;t store or use it.
         </P>
         <P>
           Links in an announcement open in your phone&apos;s browser, outside Ascend. If you choose to fill in a feedback
@@ -164,7 +180,7 @@ export default function PrivacyPolicy() {
             You never give Ascend an email, phone number, password, or any name beyond the display name you type.
           </Item>
           <Item label="No servers that receive your data">
-            Ascend has no backend or database. Apart from downloading the public announcements file, it never talks to
+            Ascend has no backend or database. Apart from downloading the public announcement and question files, it never talks to
             the internet, and your information has nowhere external to go.
           </Item>
           <Item label="No analytics or tracking">

@@ -1,0 +1,3347 @@
+{
+ "batch": 0,
+ "version": 1,
+ "trivia": {
+  "1": [
+   {
+    "prompt": "What gas makes up most of Earth's air?",
+    "options": [
+     "Nitrogen",
+     "Oxygen",
+     "Carbon dioxide",
+     "Argon"
+    ],
+    "answer": "Nitrogen",
+    "id": "b0-t1-01"
+   },
+   {
+    "prompt": "Which is the largest ocean on Earth?",
+    "options": [
+     "Pacific",
+     "Atlantic",
+     "Indian",
+     "Arctic"
+    ],
+    "answer": "Pacific",
+    "id": "b0-t1-02"
+   },
+   {
+    "prompt": "How many bones are in the adult human body?",
+    "options": [
+     "206",
+     "196",
+     "216",
+     "226"
+    ],
+    "answer": "206",
+    "id": "b0-t1-03"
+   },
+   {
+    "prompt": "Which planet is closest to the Sun?",
+    "options": [
+     "Mercury",
+     "Venus",
+     "Mars",
+     "Earth"
+    ],
+    "answer": "Mercury",
+    "id": "b0-t1-04"
+   },
+   {
+    "prompt": "Which organ produces insulin?",
+    "options": [
+     "Pancreas",
+     "Liver",
+     "Kidney",
+     "Stomach"
+    ],
+    "answer": "Pancreas",
+    "id": "b0-t1-05"
+   },
+   {
+    "prompt": "What is the chemical symbol for sodium?",
+    "options": [
+     "Na",
+     "So",
+     "Sd",
+     "Sn"
+    ],
+    "answer": "Na",
+    "id": "b0-t1-06"
+   },
+   {
+    "prompt": "On which continent is the Sahara Desert?",
+    "options": [
+     "Africa",
+     "Asia",
+     "Australia",
+     "South America"
+    ],
+    "answer": "Africa",
+    "id": "b0-t1-07"
+   },
+   {
+    "prompt": "Who painted the Mona Lisa?",
+    "options": [
+     "Leonardo da Vinci",
+     "Michelangelo",
+     "Raphael",
+     "Botticelli"
+    ],
+    "answer": "Leonardo da Vinci",
+    "id": "b0-t1-08"
+   },
+   {
+    "prompt": "How many sides does an octagon have?",
+    "options": [
+     "8",
+     "6",
+     "10",
+     "12"
+    ],
+    "answer": "8",
+    "id": "b0-t1-09"
+   },
+   {
+    "prompt": "What is the main ingredient of guacamole?",
+    "options": [
+     "Avocado",
+     "Tomato",
+     "Lime",
+     "Onion"
+    ],
+    "answer": "Avocado",
+    "id": "b0-t1-10"
+   },
+   {
+    "prompt": "Which instrument usually has 88 keys?",
+    "options": [
+     "Piano",
+     "Harp",
+     "Accordion",
+     "Xylophone"
+    ],
+    "answer": "Piano",
+    "id": "b0-t1-11"
+   },
+   {
+    "prompt": "What is the largest mammal on Earth?",
+    "options": [
+     "Blue whale",
+     "African elephant",
+     "Sperm whale",
+     "Giraffe"
+    ],
+    "answer": "Blue whale",
+    "id": "b0-t1-12"
+   },
+   {
+    "prompt": "What is the capital of Japan?",
+    "options": [
+     "Tokyo",
+     "Kyoto",
+     "Osaka",
+     "Seoul"
+    ],
+    "answer": "Tokyo",
+    "id": "b0-t1-13"
+   },
+   {
+    "prompt": "Which vitamin does your skin make in sunlight?",
+    "options": [
+     "Vitamin D",
+     "Vitamin A",
+     "Vitamin C",
+     "Vitamin B12"
+    ],
+    "answer": "Vitamin D",
+    "id": "b0-t1-14"
+   },
+   {
+    "prompt": "Which metal is liquid at room temperature?",
+    "options": [
+     "Mercury",
+     "Lead",
+     "Tin",
+     "Aluminium"
+    ],
+    "answer": "Mercury",
+    "id": "b0-t1-15"
+   },
+   {
+    "prompt": "Which river flows through Cairo?",
+    "options": [
+     "Nile",
+     "Congo",
+     "Niger",
+     "Zambezi"
+    ],
+    "answer": "Nile",
+    "id": "b0-t1-16"
+   },
+   {
+    "prompt": "In which country are the Pyramids of Giza?",
+    "options": [
+     "Egypt",
+     "Mexico",
+     "Peru",
+     "Sudan"
+    ],
+    "answer": "Egypt",
+    "id": "b0-t1-17"
+   },
+   {
+    "prompt": "What is the square root of 144?",
+    "options": [
+     "12",
+     "14",
+     "11",
+     "13"
+    ],
+    "answer": "12",
+    "id": "b0-t1-18"
+   },
+   {
+    "prompt": "Which language has the most native speakers in the world?",
+    "options": [
+     "Mandarin Chinese",
+     "English",
+     "Spanish",
+     "Hindi"
+    ],
+    "answer": "Mandarin Chinese",
+    "id": "b0-t1-19"
+   },
+   {
+    "prompt": "Which colour do you get by mixing blue and yellow paint?",
+    "options": [
+     "Green",
+     "Purple",
+     "Orange",
+     "Brown"
+    ],
+    "answer": "Green",
+    "id": "b0-t1-20"
+   }
+  ],
+  "2": [
+   {
+    "prompt": "Which planet has the shortest day?",
+    "options": [
+     "Jupiter",
+     "Mercury",
+     "Earth",
+     "Saturn"
+    ],
+    "answer": "Jupiter",
+    "id": "b0-t2-01"
+   },
+   {
+    "prompt": "What is the capital of Australia?",
+    "options": [
+     "Canberra",
+     "Sydney",
+     "Melbourne",
+     "Perth"
+    ],
+    "answer": "Canberra",
+    "id": "b0-t2-02"
+   },
+   {
+    "prompt": "Which element has the chemical symbol K?",
+    "options": [
+     "Potassium",
+     "Krypton",
+     "Calcium",
+     "Cobalt"
+    ],
+    "answer": "Potassium",
+    "id": "b0-t2-03"
+   },
+   {
+    "prompt": "What is the smallest bone in the human body?",
+    "options": [
+     "Stapes",
+     "Incus",
+     "Malleus",
+     "Hyoid"
+    ],
+    "answer": "Stapes",
+    "id": "b0-t2-04"
+   },
+   {
+    "prompt": "Which planet is the hottest?",
+    "options": [
+     "Venus",
+     "Mercury",
+     "Mars",
+     "Jupiter"
+    ],
+    "answer": "Venus",
+    "id": "b0-t2-05"
+   },
+   {
+    "prompt": "In which year did humans first walk on the Moon?",
+    "options": [
+     "1969",
+     "1967",
+     "1971",
+     "1965"
+    ],
+    "answer": "1969",
+    "id": "b0-t2-06"
+   },
+   {
+    "prompt": "What is the largest desert on Earth, counting cold deserts?",
+    "options": [
+     "Antarctic",
+     "Sahara",
+     "Arctic",
+     "Gobi"
+    ],
+    "answer": "Antarctic",
+    "id": "b0-t2-07"
+   },
+   {
+    "prompt": "What is the most common element in Earth's crust?",
+    "options": [
+     "Oxygen",
+     "Silicon",
+     "Aluminium",
+     "Iron"
+    ],
+    "answer": "Oxygen",
+    "id": "b0-t2-08"
+   },
+   {
+    "prompt": "Which is the longest bone in the human body?",
+    "options": [
+     "Femur",
+     "Tibia",
+     "Humerus",
+     "Fibula"
+    ],
+    "answer": "Femur",
+    "id": "b0-t2-09"
+   },
+   {
+    "prompt": "Who developed the theory of general relativity?",
+    "options": [
+     "Albert Einstein",
+     "Isaac Newton",
+     "Niels Bohr",
+     "Max Planck"
+    ],
+    "answer": "Albert Einstein",
+    "id": "b0-t2-10"
+   },
+   {
+    "prompt": "What is the capital of Canada?",
+    "options": [
+     "Ottawa",
+     "Toronto",
+     "Montreal",
+     "Vancouver"
+    ],
+    "answer": "Ottawa",
+    "id": "b0-t2-11"
+   },
+   {
+    "prompt": "How many hearts does an octopus have?",
+    "options": [
+     "3",
+     "1",
+     "2",
+     "4"
+    ],
+    "answer": "3",
+    "id": "b0-t2-12"
+   },
+   {
+    "prompt": "Roughly how fast does sound travel in air, in metres per second?",
+    "options": [
+     "343",
+     "120",
+     "1,200",
+     "3,000"
+    ],
+    "answer": "343",
+    "id": "b0-t2-13"
+   },
+   {
+    "prompt": "Which blood type is known as the universal red-blood-cell donor?",
+    "options": [
+     "O negative",
+     "AB positive",
+     "A negative",
+     "O positive"
+    ],
+    "answer": "O negative",
+    "id": "b0-t2-14"
+   },
+   {
+    "prompt": "In which country is the ancient city of Petra?",
+    "options": [
+     "Jordan",
+     "Egypt",
+     "Turkey",
+     "Lebanon"
+    ],
+    "answer": "Jordan",
+    "id": "b0-t2-15"
+   },
+   {
+    "prompt": "What is the largest moon of Saturn?",
+    "options": [
+     "Titan",
+     "Europa",
+     "Ganymede",
+     "Enceladus"
+    ],
+    "answer": "Titan",
+    "id": "b0-t2-16"
+   },
+   {
+    "prompt": "Who described the three laws of motion?",
+    "options": [
+     "Isaac Newton",
+     "Galileo Galilei",
+     "Johannes Kepler",
+     "Robert Hooke"
+    ],
+    "answer": "Isaac Newton",
+    "id": "b0-t2-17"
+   },
+   {
+    "prompt": "Which planet has the largest volcano in the solar system?",
+    "options": [
+     "Mars",
+     "Venus",
+     "Jupiter",
+     "Earth"
+    ],
+    "answer": "Mars",
+    "id": "b0-t2-18"
+   },
+   {
+    "prompt": "Which ocean lies between Africa and Australia?",
+    "options": [
+     "Indian",
+     "Pacific",
+     "Atlantic",
+     "Southern"
+    ],
+    "answer": "Indian",
+    "id": "b0-t2-19"
+   },
+   {
+    "prompt": "Which organ produces bile?",
+    "options": [
+     "Liver",
+     "Gallbladder",
+     "Pancreas",
+     "Stomach"
+    ],
+    "answer": "Liver",
+    "id": "b0-t2-20"
+   }
+  ],
+  "3": [
+   {
+    "prompt": "What is the hardest natural substance on Earth?",
+    "answer": "Diamond",
+    "accept": [
+     "diamonds"
+    ],
+    "reject": [
+     "graphite"
+    ],
+    "id": "b0-t3-01"
+   },
+   {
+    "prompt": "Which planet is famous for its Great Red Spot?",
+    "answer": "Jupiter",
+    "reject": [
+     "mars"
+    ],
+    "id": "b0-t3-02"
+   },
+   {
+    "prompt": "What is the largest organ of the human body?",
+    "answer": "Skin",
+    "reject": [
+     "liver"
+    ],
+    "id": "b0-t3-03"
+   },
+   {
+    "prompt": "What is the chemical symbol for gold?",
+    "answer": "Au",
+    "reject": [
+     "ag",
+     "go"
+    ],
+    "id": "b0-t3-04"
+   },
+   {
+    "prompt": "Which instrument measures air pressure?",
+    "answer": "Barometer",
+    "reject": [
+     "thermometer",
+     "hygrometer"
+    ],
+    "id": "b0-t3-05"
+   },
+   {
+    "prompt": "What is the capital of Turkey?",
+    "answer": "Ankara",
+    "reject": [
+     "istanbul"
+    ],
+    "id": "b0-t3-06"
+   },
+   {
+    "prompt": "What is the currency of Japan?",
+    "answer": "Yen",
+    "accept": [
+     "japanese yen"
+    ],
+    "reject": [
+     "yuan",
+     "won"
+    ],
+    "id": "b0-t3-07"
+   },
+   {
+    "prompt": "Who wrote 'On the Origin of Species'?",
+    "answer": "Charles Darwin",
+    "accept": [
+     "darwin"
+    ],
+    "id": "b0-t3-08"
+   },
+   {
+    "prompt": "What is the tallest mountain on Earth above sea level?",
+    "answer": "Everest",
+    "accept": [
+     "mount everest",
+     "mt everest",
+     "sagarmatha",
+     "chomolungma",
+     "qomolangma"
+    ],
+    "reject": [
+     "k2"
+    ],
+    "id": "b0-t3-09"
+   },
+   {
+    "prompt": "What is the largest living bird?",
+    "answer": "Ostrich",
+    "reject": [
+     "emu"
+    ],
+    "id": "b0-t3-10"
+   },
+   {
+    "prompt": "What is the name of the galaxy we live in?",
+    "answer": "Milky Way",
+    "accept": [
+     "the milky way"
+    ],
+    "reject": [
+     "andromeda"
+    ],
+    "id": "b0-t3-11"
+   },
+   {
+    "prompt": "What force keeps the planets in orbit around the Sun?",
+    "answer": "Gravity",
+    "accept": [
+     "gravitation"
+    ],
+    "id": "b0-t3-12"
+   },
+   {
+    "prompt": "What is the largest country in the world by area?",
+    "answer": "Russia",
+    "reject": [
+     "canada",
+     "china"
+    ],
+    "id": "b0-t3-13"
+   },
+   {
+    "prompt": "In which part of a plant cell does photosynthesis happen?",
+    "answer": "Chloroplast",
+    "accept": [
+     "chloroplasts"
+    ],
+    "reject": [
+     "chlorophyll"
+    ],
+    "id": "b0-t3-14"
+   },
+   {
+    "prompt": "Who painted 'The Starry Night'?",
+    "answer": "Vincent van Gogh",
+    "accept": [
+     "van gogh",
+     "gogh"
+    ],
+    "id": "b0-t3-15"
+   },
+   {
+    "prompt": "What is the smallest planet in our solar system?",
+    "answer": "Mercury",
+    "reject": [
+     "pluto",
+     "mars"
+    ],
+    "id": "b0-t3-16"
+   },
+   {
+    "prompt": "Which ancient wonder stood at the harbour of Rhodes?",
+    "answer": "Colossus",
+    "accept": [
+     "colossus of rhodes",
+     "helios",
+     "statue of helios"
+    ],
+    "id": "b0-t3-17"
+   },
+   {
+    "prompt": "What is the main language spoken in Brazil?",
+    "answer": "Portuguese",
+    "reject": [
+     "spanish"
+    ],
+    "id": "b0-t3-18"
+   },
+   {
+    "prompt": "What is a baby kangaroo called?",
+    "answer": "Joey",
+    "reject": [
+     "cub",
+     "kid"
+    ],
+    "id": "b0-t3-19"
+   },
+   {
+    "prompt": "What is the imaginary line around the middle of the Earth, at 0 degrees latitude, called?",
+    "answer": "Equator",
+    "accept": [
+     "the equator"
+    ],
+    "reject": [
+     "prime meridian",
+     "tropic of cancer"
+    ],
+    "id": "b0-t3-20"
+   }
+  ],
+  "4": [
+   {
+    "prompt": "What is the capital of the country where the Taj Mahal stands?",
+    "answer": "New Delhi",
+    "accept": [
+     "delhi"
+    ],
+    "reject": [
+     "agra",
+     "mumbai"
+    ],
+    "id": "b0-t4-01"
+   },
+   {
+    "prompt": "Which planet comes right after the one with the Great Red Spot, moving away from the Sun?",
+    "answer": "Saturn",
+    "reject": [
+     "jupiter",
+     "uranus"
+    ],
+    "id": "b0-t4-02"
+   },
+   {
+    "prompt": "What is the chemical symbol of the gas that makes up most of Earth's air?",
+    "answer": "N",
+    "accept": [
+     "n2"
+    ],
+    "reject": [
+     "o",
+     "o2"
+    ],
+    "id": "b0-t4-03"
+   },
+   {
+    "prompt": "What is the capital of the largest country in South America?",
+    "answer": "Brasilia",
+    "accept": [
+     "brasília"
+    ],
+    "reject": [
+     "rio de janeiro",
+     "sao paulo",
+     "buenos aires"
+    ],
+    "id": "b0-t4-04"
+   },
+   {
+    "prompt": "Which ocean do you cross flying directly from India to Australia?",
+    "answer": "Indian Ocean",
+    "accept": [
+     "indian"
+    ],
+    "reject": [
+     "pacific",
+     "pacific ocean"
+    ],
+    "id": "b0-t4-05"
+   },
+   {
+    "prompt": "What is the currency of the country whose capital is Cairo?",
+    "answer": "Egyptian pound",
+    "accept": [
+     "pound",
+     "pounds",
+     "egyptian pounds"
+    ],
+    "reject": [
+     "dinar"
+    ],
+    "id": "b0-t4-06"
+   },
+   {
+    "prompt": "What language is mainly spoken in the country where the Eiffel Tower stands?",
+    "answer": "French",
+    "id": "b0-t4-07"
+   },
+   {
+    "prompt": "What is the largest moon of the largest planet?",
+    "answer": "Ganymede",
+    "reject": [
+     "titan",
+     "europa"
+    ],
+    "id": "b0-t4-08"
+   },
+   {
+    "prompt": "How many astronauts flew on the first mission to land people on the Moon?",
+    "answer": "3",
+    "accept": [
+     "three"
+    ],
+    "id": "b0-t4-09"
+   },
+   {
+    "prompt": "What is the capital of the country where the Atacama Desert is?",
+    "answer": "Santiago",
+    "accept": [
+     "santiago de chile"
+    ],
+    "reject": [
+     "lima",
+     "la paz"
+    ],
+    "id": "b0-t4-10"
+   },
+   {
+    "prompt": "Which continent is the country whose capital is Nairobi on?",
+    "answer": "Africa",
+    "id": "b0-t4-11"
+   },
+   {
+    "prompt": "What is the official language of the country whose capital is Buenos Aires?",
+    "answer": "Spanish",
+    "reject": [
+     "portuguese"
+    ],
+    "id": "b0-t4-12"
+   },
+   {
+    "prompt": "What is the chemical symbol of the main metal in steel?",
+    "answer": "Fe",
+    "reject": [
+     "ir",
+     "i",
+     "st"
+    ],
+    "id": "b0-t4-13"
+   },
+   {
+    "prompt": "What is the capital of the country where the Colosseum stands?",
+    "answer": "Rome",
+    "accept": [
+     "roma"
+    ],
+    "id": "b0-t4-14"
+   },
+   {
+    "prompt": "What is the capital of the country famous for its fjords and the city of Bergen?",
+    "answer": "Oslo",
+    "reject": [
+     "stockholm",
+     "bergen"
+    ],
+    "id": "b0-t4-15"
+   },
+   {
+    "prompt": "Which planet comes right after the planet with the most famous rings, moving away from the Sun?",
+    "answer": "Uranus",
+    "reject": [
+     "neptune",
+     "jupiter"
+    ],
+    "id": "b0-t4-16"
+   },
+   {
+    "prompt": "What is the capital of the country that gave the Statue of Liberty to the United States?",
+    "answer": "Paris",
+    "reject": [
+     "new york",
+     "london"
+    ],
+    "id": "b0-t4-17"
+   },
+   {
+    "prompt": "What is the capital of the country home to the Great Pyramid of Giza?",
+    "answer": "Cairo",
+    "reject": [
+     "giza",
+     "alexandria"
+    ],
+    "id": "b0-t4-18"
+   },
+   {
+    "prompt": "Which country is home to both Machu Picchu and the city of Lima?",
+    "answer": "Peru",
+    "reject": [
+     "chile",
+     "bolivia"
+    ],
+    "id": "b0-t4-19"
+   },
+   {
+    "prompt": "What is the currency of the country whose capital is Berlin?",
+    "answer": "Euro",
+    "accept": [
+     "euros"
+    ],
+    "reject": [
+     "mark",
+     "deutsche mark"
+    ],
+    "id": "b0-t4-20"
+   }
+  ],
+  "5": [
+   {
+    "prompt": "How many years passed between the first Moon landing and the fall of the Berlin Wall?",
+    "answer": "20",
+    "accept": [
+     "twenty"
+    ],
+    "id": "b0-t5-01"
+   },
+   {
+    "prompt": "How many legs do three spiders and two ants have in total?",
+    "answer": "36",
+    "accept": [
+     "thirty-six",
+     "thirty six"
+    ],
+    "id": "b0-t5-02"
+   },
+   {
+    "prompt": "What do you get if you multiply the number of planets in our solar system by the number of sides on a hexagon?",
+    "answer": "48",
+    "accept": [
+     "forty-eight",
+     "forty eight"
+    ],
+    "id": "b0-t5-03"
+   },
+   {
+    "prompt": "How many legs do four ants and three birds have altogether?",
+    "answer": "30",
+    "accept": [
+     "thirty"
+    ],
+    "id": "b0-t5-04"
+   },
+   {
+    "prompt": "What is the sum of the atomic numbers of hydrogen and oxygen?",
+    "answer": "9",
+    "accept": [
+     "nine"
+    ],
+    "id": "b0-t5-05"
+   },
+   {
+    "prompt": "How many sides do a hexagon, an octagon and a decagon have altogether?",
+    "answer": "24",
+    "accept": [
+     "twenty-four",
+     "twenty four"
+    ],
+    "id": "b0-t5-06"
+   },
+   {
+    "prompt": "How many years are there in three centuries and two decades?",
+    "answer": "320",
+    "accept": [
+     "three hundred and twenty",
+     "three hundred twenty"
+    ],
+    "id": "b0-t5-07"
+   },
+   {
+    "prompt": "What is the atomic number of oxygen multiplied by the number of sides on a pentagon?",
+    "answer": "40",
+    "accept": [
+     "forty"
+    ],
+    "id": "b0-t5-08"
+   },
+   {
+    "prompt": "How many keys does a standard piano have, minus the number of days in a week?",
+    "answer": "81",
+    "accept": [
+     "eighty-one",
+     "eighty one"
+    ],
+    "id": "b0-t5-09"
+   },
+   {
+    "prompt": "How many years passed between the opening of the Eiffel Tower and the first modern Olympic Games?",
+    "answer": "7",
+    "accept": [
+     "seven"
+    ],
+    "id": "b0-t5-10"
+   },
+   {
+    "prompt": "What is the number of planets in our solar system plus the number of strings on a violin?",
+    "answer": "12",
+    "accept": [
+     "twelve"
+    ],
+    "id": "b0-t5-11"
+   },
+   {
+    "prompt": "How many days longer is a leap year than 52 full weeks?",
+    "answer": "2",
+    "accept": [
+     "two"
+    ],
+    "id": "b0-t5-12"
+   },
+   {
+    "prompt": "A standard piano has 52 white keys. How many black keys does it have?",
+    "answer": "36",
+    "accept": [
+     "thirty-six",
+     "thirty six"
+    ],
+    "id": "b0-t5-13"
+   },
+   {
+    "prompt": "How many wheels do three tricycles and two bicycles have in total?",
+    "answer": "13",
+    "accept": [
+     "thirteen"
+    ],
+    "id": "b0-t5-14"
+   },
+   {
+    "prompt": "How many players are on a basketball court when both teams have a full line-up?",
+    "answer": "10",
+    "accept": [
+     "ten"
+    ],
+    "id": "b0-t5-15"
+   },
+   {
+    "prompt": "How many degrees do the inside angles of a triangle and a square add up to altogether?",
+    "answer": "540",
+    "accept": [
+     "five hundred and forty",
+     "five hundred forty"
+    ],
+    "id": "b0-t5-16"
+   },
+   {
+    "prompt": "How many strings do two violins and one standard guitar have in total?",
+    "answer": "14",
+    "accept": [
+     "fourteen"
+    ],
+    "id": "b0-t5-17"
+   },
+   {
+    "prompt": "If sunlight took exactly 8 minutes to reach Earth, how many seconds would that be?",
+    "answer": "480",
+    "accept": [
+     "four hundred and eighty",
+     "four hundred eighty"
+    ],
+    "id": "b0-t5-18"
+   },
+   {
+    "prompt": "How many years passed between the first powered aeroplane flight and the first Moon landing?",
+    "answer": "66",
+    "accept": [
+     "sixty-six",
+     "sixty six"
+    ],
+    "id": "b0-t5-19"
+   },
+   {
+    "prompt": "How many minutes of normal playing time are there in two football (soccer) matches, not counting extra time?",
+    "answer": "180",
+    "accept": [
+     "one hundred and eighty",
+     "one hundred eighty"
+    ],
+    "id": "b0-t5-20"
+   }
+  ]
+ },
+ "logic": {
+  "1": [
+   {
+    "prompt": "What comes next? 2, 6, 12, 20, 30, ?",
+    "options": [
+     "42",
+     "40",
+     "44",
+     "36"
+    ],
+    "answer": "42",
+    "id": "b0-l1-01"
+   },
+   {
+    "prompt": "What comes next? 3, 9, 27, 81, ?",
+    "options": [
+     "243",
+     "162",
+     "324",
+     "189"
+    ],
+    "answer": "243",
+    "id": "b0-l1-02"
+   },
+   {
+    "prompt": "What comes next? 1, 4, 9, 16, 25, ?",
+    "options": [
+     "36",
+     "30",
+     "49",
+     "35"
+    ],
+    "answer": "36",
+    "id": "b0-l1-03"
+   },
+   {
+    "prompt": "What comes next? 5, 11, 17, 23, ?",
+    "options": [
+     "29",
+     "28",
+     "31",
+     "27"
+    ],
+    "answer": "29",
+    "id": "b0-l1-04"
+   },
+   {
+    "prompt": "What comes next? 1, 1, 2, 3, 5, 8, ?",
+    "options": [
+     "13",
+     "11",
+     "12",
+     "15"
+    ],
+    "answer": "13",
+    "id": "b0-l1-05"
+   },
+   {
+    "prompt": "What comes next? A, C, E, G, ?",
+    "options": [
+     "I",
+     "H",
+     "J",
+     "K"
+    ],
+    "answer": "I",
+    "id": "b0-l1-06"
+   },
+   {
+    "prompt": "What comes next? 100, 95, 85, 70, ?",
+    "options": [
+     "50",
+     "55",
+     "45",
+     "60"
+    ],
+    "answer": "50",
+    "id": "b0-l1-07"
+   },
+   {
+    "prompt": "What comes next? 2, 3, 5, 7, 11, ?",
+    "options": [
+     "13",
+     "12",
+     "14",
+     "15"
+    ],
+    "answer": "13",
+    "id": "b0-l1-08"
+   },
+   {
+    "prompt": "What comes next? 64, 32, 16, 8, ?",
+    "options": [
+     "4",
+     "2",
+     "6",
+     "0"
+    ],
+    "answer": "4",
+    "id": "b0-l1-09"
+   },
+   {
+    "prompt": "What comes next? Z, X, V, T, ?",
+    "options": [
+     "R",
+     "S",
+     "Q",
+     "P"
+    ],
+    "answer": "R",
+    "id": "b0-l1-10"
+   },
+   {
+    "prompt": "What comes next? 1, 8, 27, 64, ?",
+    "options": [
+     "125",
+     "100",
+     "216",
+     "81"
+    ],
+    "answer": "125",
+    "id": "b0-l1-11"
+   },
+   {
+    "prompt": "What comes next? 7, 14, 28, 56, ?",
+    "options": [
+     "112",
+     "84",
+     "98",
+     "108"
+    ],
+    "answer": "112",
+    "id": "b0-l1-12"
+   },
+   {
+    "prompt": "What comes next? 4, 7, 12, 19, 28, ?",
+    "options": [
+     "39",
+     "37",
+     "38",
+     "40"
+    ],
+    "answer": "39",
+    "id": "b0-l1-13"
+   },
+   {
+    "prompt": "What comes next? 1, 3, 6, 10, 15, ?",
+    "options": [
+     "21",
+     "20",
+     "22",
+     "25"
+    ],
+    "answer": "21",
+    "id": "b0-l1-14"
+   },
+   {
+    "prompt": "What comes next? B, E, H, K, ?",
+    "options": [
+     "N",
+     "M",
+     "O",
+     "L"
+    ],
+    "answer": "N",
+    "id": "b0-l1-15"
+   },
+   {
+    "prompt": "What comes next? 81, 72, 63, 54, ?",
+    "options": [
+     "45",
+     "44",
+     "46",
+     "36"
+    ],
+    "answer": "45",
+    "id": "b0-l1-16"
+   },
+   {
+    "prompt": "What comes next? 2, 4, 8, 14, 22, ?",
+    "options": [
+     "32",
+     "30",
+     "34",
+     "36"
+    ],
+    "answer": "32",
+    "id": "b0-l1-17"
+   },
+   {
+    "prompt": "What comes next? 10, 13, 11, 14, 12, ?",
+    "options": [
+     "15",
+     "13",
+     "16",
+     "10"
+    ],
+    "answer": "15",
+    "id": "b0-l1-18"
+   },
+   {
+    "prompt": "What comes next? 1, 2, 6, 24, ?",
+    "options": [
+     "120",
+     "48",
+     "96",
+     "144"
+    ],
+    "answer": "120",
+    "id": "b0-l1-19"
+   },
+   {
+    "prompt": "What comes next? A1, B2, C3, D4, ?",
+    "options": [
+     "E5",
+     "E6",
+     "F5",
+     "D5"
+    ],
+    "answer": "E5",
+    "id": "b0-l1-20"
+   }
+  ],
+  "2": [
+   {
+    "prompt": "Riya, Sam and Tom own a cat, a dog and a fish. Riya doesn't own the dog. Sam owns the fish. Who owns the cat?",
+    "options": [
+     "Riya",
+     "Sam",
+     "Tom",
+     "Can't tell"
+    ],
+    "answer": "Riya",
+    "id": "b0-l2-01"
+   },
+   {
+    "prompt": "Ana, Ben and Chloe each drink one of tea, coffee and juice. Ben drinks neither tea nor juice. Chloe doesn't drink tea. Who drinks tea?",
+    "options": [
+     "Ana",
+     "Ben",
+     "Chloe",
+     "Can't tell"
+    ],
+    "answer": "Ana",
+    "id": "b0-l2-02"
+   },
+   {
+    "prompt": "A red, a blue and a green box hold a ball, a book and a pen. The ball isn't in the red or blue box. The pen isn't in the blue box. What is in the blue box?",
+    "options": [
+     "Book",
+     "Ball",
+     "Pen",
+     "Can't tell"
+    ],
+    "answer": "Book",
+    "id": "b0-l2-03"
+   },
+   {
+    "prompt": "Arun, Bela and Kofi live on floors 1, 2 and 3. Bela lives above Arun. Kofi lives below Arun. Who lives on floor 3?",
+    "options": [
+     "Bela",
+     "Arun",
+     "Kofi",
+     "Can't tell"
+    ],
+    "answer": "Bela",
+    "id": "b0-l2-04"
+   },
+   {
+    "prompt": "Mina, Omar and Lucy play guitar, drums and piano. Omar plays neither drums nor piano. Lucy doesn't play drums. Who plays the drums?",
+    "options": [
+     "Mina",
+     "Omar",
+     "Lucy",
+     "Can't tell"
+    ],
+    "answer": "Mina",
+    "id": "b0-l2-05"
+   },
+   {
+    "prompt": "Jin, Priya and Leo are 10, 12 and 14 years old. Priya is older than Leo. Jin is the youngest. How old is Leo?",
+    "options": [
+     "12",
+     "10",
+     "14",
+     "Can't tell"
+    ],
+    "answer": "12",
+    "id": "b0-l2-06"
+   },
+   {
+    "prompt": "Ivy, Raj and Zoe travel by car, bike and bus. Zoe doesn't take the bus. Raj takes the bike. How does Ivy travel?",
+    "options": [
+     "Bus",
+     "Car",
+     "Bike",
+     "Can't tell"
+    ],
+    "answer": "Bus",
+    "id": "b0-l2-07"
+   },
+   {
+    "prompt": "Three cups stand in a row: water, milk and juice. The milk is on the left. The juice is somewhere to the right of the water. What is in the right-hand cup?",
+    "options": [
+     "Juice",
+     "Water",
+     "Milk",
+     "Can't tell"
+    ],
+    "answer": "Juice",
+    "id": "b0-l2-08"
+   },
+   {
+    "prompt": "Dina, Eli and Faye are a doctor, a teacher and a chef. Eli is not the chef. Faye is the teacher. What is Dina's job?",
+    "options": [
+     "Chef",
+     "Doctor",
+     "Teacher",
+     "Can't tell"
+    ],
+    "answer": "Chef",
+    "id": "b0-l2-09"
+   },
+   {
+    "prompt": "Gita, Hugo and Ines finished a race 1st, 2nd and 3rd. Gita did not win. Hugo finished right after Gita. Who won?",
+    "options": [
+     "Ines",
+     "Gita",
+     "Hugo",
+     "Can't tell"
+    ],
+    "answer": "Ines",
+    "id": "b0-l2-10"
+   },
+   {
+    "prompt": "A blue, a green and a yellow bag weigh 2 kg, 5 kg and 7 kg. The blue bag is heavier than the green one. The yellow bag is the lightest. How heavy is the blue bag?",
+    "options": [
+     "7 kg",
+     "2 kg",
+     "5 kg",
+     "Can't tell"
+    ],
+    "answer": "7 kg",
+    "id": "b0-l2-11"
+   },
+   {
+    "prompt": "Kai, Lena and Mo each love a different season: spring, summer or winter. Lena likes neither summer nor winter. Mo doesn't like winter. Which season does Kai love?",
+    "options": [
+     "Winter",
+     "Spring",
+     "Summer",
+     "Can't tell"
+    ],
+    "answer": "Winter",
+    "id": "b0-l2-12"
+   },
+   {
+    "prompt": "A red, a white and a blue house stand in a row. The red house is at the left end. The blue house is not next to the red one. Which house is in the middle?",
+    "options": [
+     "White",
+     "Red",
+     "Blue",
+     "Can't tell"
+    ],
+    "answer": "White",
+    "id": "b0-l2-13"
+   },
+   {
+    "prompt": "Nora, Oscar and Pia scored 60, 75 and 90 in a test. Oscar scored more than Pia. Nora scored the most. What did Pia score?",
+    "options": [
+     "60",
+     "75",
+     "90",
+     "Can't tell"
+    ],
+    "answer": "60",
+    "id": "b0-l2-14"
+   },
+   {
+    "prompt": "Planes to Paris, Rome and Oslo leave at 9:00, 10:00 and 11:00. The Rome plane leaves before the Paris plane. The Oslo plane leaves last. When does the Paris plane leave?",
+    "options": [
+     "10:00",
+     "9:00",
+     "11:00",
+     "Can't tell"
+    ],
+    "answer": "10:00",
+    "id": "b0-l2-15"
+   },
+   {
+    "prompt": "Quin, Rosa and Sid have a red, a blue and a yellow umbrella. Rosa's is neither red nor yellow. Sid's isn't blue. Quin's isn't yellow. What colour is Sid's umbrella?",
+    "options": [
+     "Yellow",
+     "Red",
+     "Blue",
+     "Can't tell"
+    ],
+    "answer": "Yellow",
+    "id": "b0-l2-16"
+   },
+   {
+    "prompt": "Tara, Umar and Vik walk, cycle or drive to work. Umar doesn't drive. Tara doesn't cycle. Vik walks. Who drives?",
+    "options": [
+     "Tara",
+     "Umar",
+     "Vik",
+     "Can't tell"
+    ],
+    "answer": "Tara",
+    "id": "b0-l2-17"
+   },
+   {
+    "prompt": "A gold, a silver and a bronze coin are in a jacket, a pair of jeans and a bag. The gold coin isn't in the bag. The silver coin is in the jeans. Where is the bronze coin?",
+    "options": [
+     "Bag",
+     "Jacket",
+     "Jeans",
+     "Can't tell"
+    ],
+    "answer": "Bag",
+    "id": "b0-l2-18"
+   },
+   {
+    "prompt": "Uma, Vera and Will are 150 cm, 160 cm and 170 cm tall. Will is taller than Uma. Vera is the shortest. How tall is Will?",
+    "options": [
+     "170 cm",
+     "150 cm",
+     "160 cm",
+     "Can't tell"
+    ],
+    "answer": "170 cm",
+    "id": "b0-l2-19"
+   },
+   {
+    "prompt": "Xia, Yusuf and Zara ate an apple, a banana and a cherry. Yusuf didn't eat the apple. Zara ate the banana. Who ate the apple?",
+    "options": [
+     "Xia",
+     "Yusuf",
+     "Zara",
+     "Can't tell"
+    ],
+    "answer": "Xia",
+    "id": "b0-l2-20"
+   }
+  ],
+  "3": [
+   {
+    "prompt": "Dev, Ali, Mia and Sara race. Mia finishes before Dev. Ali finishes right after Sara. Dev isn't last. Who came second?",
+    "options": [
+     "Dev",
+     "Ali",
+     "Mia",
+     "Sara",
+     "Can't tell"
+    ],
+    "answer": "Dev",
+    "id": "b0-l3-01"
+   },
+   {
+    "prompt": "Four books are stacked: red, blue, green and yellow. Blue sits directly on top of green. Red is not on top. Yellow is at the bottom. Which book is on top?",
+    "options": [
+     "Blue",
+     "Red",
+     "Green",
+     "Yellow",
+     "Can't tell"
+    ],
+    "answer": "Blue",
+    "id": "b0-l3-02"
+   },
+   {
+    "prompt": "Anu, Ben, Cara and Dan stand in a queue. Cara is right behind Anu. Dan is at the front. Ben is not last. Who is last?",
+    "options": [
+     "Cara",
+     "Anu",
+     "Ben",
+     "Dan",
+     "Can't tell"
+    ],
+    "answer": "Cara",
+    "id": "b0-l3-03"
+   },
+   {
+    "prompt": "Eva, Finn, Gus and Hana live on floors 1 to 4. Finn lives above Hana. Hana is not on floor 1. Eva lives directly above Gus. Who lives on floor 3?",
+    "options": [
+     "Hana",
+     "Eva",
+     "Finn",
+     "Gus",
+     "Can't tell"
+    ],
+    "answer": "Hana",
+    "id": "b0-l3-04"
+   },
+   {
+    "prompt": "Ike, Jo, Kim and Lu sit in a row of four seats. Jo sits at the left end. Kim sits next to Jo. Lu does not sit next to Kim. Who sits at the right end?",
+    "options": [
+     "Lu",
+     "Ike",
+     "Jo",
+     "Kim",
+     "Can't tell"
+    ],
+    "answer": "Lu",
+    "id": "b0-l3-05"
+   },
+   {
+    "prompt": "A blue, a red, a white and a black car race. White finishes second. Red finishes before black. Blue finishes last. Which car finishes third?",
+    "options": [
+     "Black",
+     "Blue",
+     "Red",
+     "White",
+     "Can't tell"
+    ],
+    "answer": "Black",
+    "id": "b0-l3-06"
+   },
+   {
+    "prompt": "Pam, Quinn, Raj and Sol are 20, 25, 30 and 35 years old. Quinn is older than Raj but younger than Sol. Pam is the youngest. Who is 30?",
+    "options": [
+     "Quinn",
+     "Pam",
+     "Raj",
+     "Sol",
+     "Can't tell"
+    ],
+    "answer": "Quinn",
+    "id": "b0-l3-07"
+   },
+   {
+    "prompt": "A bakery, a bank, a cafe and a chemist stand in a row from west to east. The bank is east of the cafe. The bakery is at the west end. The chemist is next to the bakery. What is at the east end?",
+    "options": [
+     "Bank",
+     "Bakery",
+     "Cafe",
+     "Chemist",
+     "Can't tell"
+    ],
+    "answer": "Bank",
+    "id": "b0-l3-08"
+   },
+   {
+    "prompt": "Tom, Uri, Val and Wen took a test. Uri scored higher than Tom. Wen scored lower than Val but higher than Uri. Who came third?",
+    "options": [
+     "Uri",
+     "Tom",
+     "Val",
+     "Wen",
+     "Can't tell"
+    ],
+    "answer": "Uri",
+    "id": "b0-l3-09"
+   },
+   {
+    "prompt": "Ava, Bo, Cy and Di line up. Bo is taller than Di. Ava is shorter than Di. Cy is not the tallest. Who is the tallest?",
+    "options": [
+     "Bo",
+     "Ava",
+     "Cy",
+     "Di",
+     "Can't tell"
+    ],
+    "answer": "Bo",
+    "id": "b0-l3-10"
+   },
+   {
+    "prompt": "Trains to Delhi, Agra, Pune and Goa leave at 1, 2, 3 and 4 pm. The Agra train leaves right after the Delhi train. The Pune train leaves first. The Goa train doesn't leave at 2 pm. When does the Agra train leave?",
+    "options": [
+     "3 pm",
+     "1 pm",
+     "2 pm",
+     "4 pm",
+     "Can't tell"
+    ],
+    "answer": "3 pm",
+    "id": "b0-l3-11"
+   },
+   {
+    "prompt": "Lia, Max, Nia and Oli own a cat, a dog, a rabbit and a parrot. Max owns the dog. Nia owns neither the cat nor the parrot. Oli doesn't own the cat. Who owns the parrot?",
+    "options": [
+     "Oli",
+     "Lia",
+     "Max",
+     "Nia",
+     "Can't tell"
+    ],
+    "answer": "Oli",
+    "id": "b0-l3-12"
+   },
+   {
+    "prompt": "Boxes 1 to 4 stand in a row and hold a ball, a doll, a kite and a yo-yo. The ball is in box 1. The kite is not next to the ball. The doll is to the right of the kite. The yo-yo is not in box 4. What is in box 3?",
+    "options": [
+     "Kite",
+     "Ball",
+     "Doll",
+     "Yo-yo",
+     "Can't tell"
+    ],
+    "answer": "Kite",
+    "id": "b0-l3-13"
+   },
+   {
+    "prompt": "Alex, Bea, Cal and Dia present one after another. Bea presents before Alex. Cal presents last. Dia presents right before Bea. Who presents first?",
+    "options": [
+     "Dia",
+     "Alex",
+     "Bea",
+     "Cal",
+     "Can't tell"
+    ],
+    "answer": "Dia",
+    "id": "b0-l3-14"
+   },
+   {
+    "prompt": "Towers P, Q, R and S have different heights. P is taller than Q. R is shorter than Q. S is the tallest. Which tower is the second shortest?",
+    "options": [
+     "Q",
+     "P",
+     "R",
+     "S",
+     "Can't tell"
+    ],
+    "answer": "Q",
+    "id": "b0-l3-15"
+   },
+   {
+    "prompt": "Hal, Ivy, Jay and Kai sit in a row. Ivy sits between Hal and Jay. Kai sits at an end. Hal is not at an end. Who sits at the other end?",
+    "options": [
+     "Jay",
+     "Hal",
+     "Ivy",
+     "Kai",
+     "Can't tell"
+    ],
+    "answer": "Jay",
+    "id": "b0-l3-16"
+   },
+   {
+    "prompt": "Ada, Ben, Cai and Dov visit on Monday to Thursday, one each day. Ben visits the day after Ada. Cai visits before Ada. Dov visits after Ben. Who visits on Tuesday?",
+    "options": [
+     "Ada",
+     "Ben",
+     "Cai",
+     "Dov",
+     "Can't tell"
+    ],
+    "answer": "Ada",
+    "id": "b0-l3-17"
+   },
+   {
+    "prompt": "A red, a green, a blue and a yellow ball sit in a tube, one above another. Green is directly below red. Yellow is above blue. Red is not at the top. Blue is not at the bottom. Which ball is at the bottom?",
+    "options": [
+     "Green",
+     "Red",
+     "Blue",
+     "Yellow",
+     "Can't tell"
+    ],
+    "answer": "Green",
+    "id": "b0-l3-18"
+   },
+   {
+    "prompt": "Pia, Ruo, Sam and Tia run a race. Ruo finishes before Pia but after Tia. Sam finishes neither first nor last. Who finishes last?",
+    "options": [
+     "Pia",
+     "Ruo",
+     "Sam",
+     "Tia",
+     "Can't tell"
+    ],
+    "answer": "Pia",
+    "id": "b0-l3-19"
+   },
+   {
+    "prompt": "Una, Vic, Wes and Xan use lockers 1 to 4. Vic's locker number is double Una's. Wes uses locker 3. Xan's locker is not number 1. Who uses locker 4?",
+    "options": [
+     "Xan",
+     "Una",
+     "Vic",
+     "Wes",
+     "Can't tell"
+    ],
+    "answer": "Xan",
+    "id": "b0-l3-20"
+   }
+  ],
+  "4": [
+   {
+    "prompt": "Exactly one of Asha, Ben and Chen is lying. Asha: \"Ben is lying.\" Ben: \"I'm telling the truth.\" Chen: \"Asha is lying.\" Who is lying?",
+    "options": [
+     "Asha",
+     "Ben",
+     "Chen",
+     "Asha and Ben",
+     "Ben and Chen",
+     "Asha and Chen"
+    ],
+    "answer": "Asha",
+    "id": "b0-l4-01"
+   },
+   {
+    "prompt": "Exactly one of Dina, Eli and Farah is lying. Dina: \"Farah is telling the truth.\" Eli: \"Farah is lying.\" Farah: \"Eli is lying.\" Who is lying?",
+    "options": [
+     "Dina",
+     "Eli",
+     "Farah",
+     "Dina and Eli",
+     "Eli and Farah",
+     "Dina and Farah"
+    ],
+    "answer": "Eli",
+    "id": "b0-l4-02"
+   },
+   {
+    "prompt": "Exactly one of Gus, Hana and Ivo tells the truth. Gus: \"Hana is lying.\" Hana: \"Ivo is lying.\" Ivo: \"Gus and Hana are both lying.\" Who is lying?",
+    "options": [
+     "Gus",
+     "Hana",
+     "Ivo",
+     "Gus and Hana",
+     "Hana and Ivo",
+     "Gus and Ivo"
+    ],
+    "answer": "Gus and Ivo",
+    "id": "b0-l4-03"
+   },
+   {
+    "prompt": "Each of Jaya, Karl and Lin always tells the truth or always lies. Jaya: \"Karl is lying.\" Karl: \"Lin is lying.\" Lin: \"Jaya and Karl are both lying.\" Who is lying?",
+    "options": [
+     "Jaya",
+     "Karl",
+     "Lin",
+     "Jaya and Karl",
+     "Karl and Lin",
+     "Jaya and Lin"
+    ],
+    "answer": "Jaya and Lin",
+    "id": "b0-l4-04"
+   },
+   {
+    "prompt": "Exactly two of Mo, Nia and Omar are lying. Mo: \"Nia is telling the truth.\" Nia: \"Omar is lying.\" Omar: \"Mo is lying.\" Who is lying?",
+    "options": [
+     "Mo",
+     "Nia",
+     "Omar",
+     "Mo and Nia",
+     "Nia and Omar",
+     "Mo and Omar"
+    ],
+    "answer": "Mo and Nia",
+    "id": "b0-l4-05"
+   },
+   {
+    "prompt": "Exactly one of Pia, Quin and Rai is lying. Pia: \"Quin is lying.\" Quin: \"Rai is lying.\" Rai: \"Pia is telling the truth.\" Who is lying?",
+    "options": [
+     "Pia",
+     "Quin",
+     "Rai",
+     "Pia and Quin",
+     "Quin and Rai",
+     "Pia and Rai"
+    ],
+    "answer": "Quin",
+    "id": "b0-l4-06"
+   },
+   {
+    "prompt": "Exactly one of Sara, Theo and Uma is lying. Sara: \"Theo and I are both telling the truth.\" Theo: \"Uma is lying.\" Uma: \"Theo is lying.\" Who is lying?",
+    "options": [
+     "Sara",
+     "Theo",
+     "Uma",
+     "Sara and Theo",
+     "Theo and Uma",
+     "Sara and Uma"
+    ],
+    "answer": "Uma",
+    "id": "b0-l4-07"
+   },
+   {
+    "prompt": "Exactly one of Vik, Wren and Xia is lying. Vik: \"Xia is lying.\" Wren: \"Vik is telling the truth.\" Xia: \"I am telling the truth.\" Who is lying?",
+    "options": [
+     "Vik",
+     "Wren",
+     "Xia",
+     "Vik and Wren",
+     "Wren and Xia",
+     "Vik and Xia"
+    ],
+    "answer": "Xia",
+    "id": "b0-l4-08"
+   },
+   {
+    "prompt": "Each of Yara, Zed and Ama always tells the truth or always lies. Yara: \"At least one of us is lying.\" Zed: \"Yara is lying.\" Ama: \"Zed is telling the truth.\" Who is lying?",
+    "options": [
+     "Yara",
+     "Zed",
+     "Ama",
+     "Yara and Zed",
+     "Zed and Ama",
+     "Yara and Ama"
+    ],
+    "answer": "Zed and Ama",
+    "id": "b0-l4-09"
+   },
+   {
+    "prompt": "Exactly one of Bo, Cara and Dev tells the truth. Bo: \"Cara is telling the truth.\" Cara: \"Dev is lying.\" Dev: \"Bo is lying.\" Who is telling the truth?",
+    "options": [
+     "Bo",
+     "Cara",
+     "Dev",
+     "Bo and Cara",
+     "Cara and Dev",
+     "Bo and Dev"
+    ],
+    "answer": "Dev",
+    "id": "b0-l4-10"
+   },
+   {
+    "prompt": "Exactly one of Eva, Femi and Gil is lying. Eva: \"Gil is lying.\" Femi: \"Eva is lying.\" Gil: \"Femi is telling the truth.\" Who is lying?",
+    "options": [
+     "Eva",
+     "Femi",
+     "Gil",
+     "Eva and Femi",
+     "Femi and Gil",
+     "Eva and Gil"
+    ],
+    "answer": "Eva",
+    "id": "b0-l4-11"
+   },
+   {
+    "prompt": "Exactly two of Hugo, Iris and Jun are lying. Hugo: \"Iris and Jun are both lying.\" Iris: \"Hugo is lying.\" Jun: \"Iris is telling the truth.\" Who is lying?",
+    "options": [
+     "Hugo",
+     "Iris",
+     "Jun",
+     "Hugo and Iris",
+     "Iris and Jun",
+     "Hugo and Jun"
+    ],
+    "answer": "Iris and Jun",
+    "id": "b0-l4-12"
+   },
+   {
+    "prompt": "Exactly one of Kofi, Lea and Max is lying. Kofi: \"Lea is telling the truth.\" Lea: \"Max is lying.\" Max: \"Lea is lying.\" Who is lying?",
+    "options": [
+     "Kofi",
+     "Lea",
+     "Max",
+     "Kofi and Lea",
+     "Lea and Max",
+     "Kofi and Max"
+    ],
+    "answer": "Max",
+    "id": "b0-l4-13"
+   },
+   {
+    "prompt": "Exactly two of Nina, Oto and Pax are lying. Nina: \"Oto and Pax are both lying.\" Oto: \"Nina is telling the truth.\" Pax: \"Oto is lying.\" Who is lying?",
+    "options": [
+     "Nina",
+     "Oto",
+     "Pax",
+     "Nina and Oto",
+     "Oto and Pax",
+     "Nina and Pax"
+    ],
+    "answer": "Nina and Oto",
+    "id": "b0-l4-14"
+   },
+   {
+    "prompt": "Each of Quil, Rosa and Sid always tells the truth or always lies. Quil: \"At least one of Rosa and Sid is lying.\" Rosa: \"Sid is lying.\" Sid: \"Quil is telling the truth.\" Who is lying?",
+    "options": [
+     "Quil",
+     "Rosa",
+     "Sid",
+     "Quil and Rosa",
+     "Rosa and Sid",
+     "Quil and Sid"
+    ],
+    "answer": "Rosa",
+    "id": "b0-l4-15"
+   },
+   {
+    "prompt": "Exactly two of Tia, Udo and Vera are lying. Tia: \"Vera is lying.\" Udo: \"Tia is telling the truth.\" Vera: \"Udo is lying.\" Who is lying?",
+    "options": [
+     "Tia",
+     "Udo",
+     "Vera",
+     "Tia and Udo",
+     "Udo and Vera",
+     "Tia and Vera"
+    ],
+    "answer": "Tia and Udo",
+    "id": "b0-l4-16"
+   },
+   {
+    "prompt": "Exactly one of Wes, Xan and Yui is lying. Wes: \"Xan is telling the truth.\" Xan: \"Yui is lying.\" Yui: \"Wes is lying.\" Who is lying?",
+    "options": [
+     "Wes",
+     "Xan",
+     "Yui",
+     "Wes and Xan",
+     "Xan and Yui",
+     "Wes and Yui"
+    ],
+    "answer": "Yui",
+    "id": "b0-l4-17"
+   },
+   {
+    "prompt": "Exactly two of Zoe, Abe and Bea are lying. Zoe: \"Abe is telling the truth.\" Abe: \"Zoe is telling the truth.\" Bea: \"Zoe is lying.\" Who is lying?",
+    "options": [
+     "Zoe",
+     "Abe",
+     "Bea",
+     "Zoe and Abe",
+     "Abe and Bea",
+     "Zoe and Bea"
+    ],
+    "answer": "Zoe and Abe",
+    "id": "b0-l4-18"
+   },
+   {
+    "prompt": "Each of Cleo, Dax and Eli always tells the truth or always lies. Cleo: \"Dax and Eli are both telling the truth.\" Dax: \"Eli is lying.\" Eli: \"Cleo is lying.\" Who is lying?",
+    "options": [
+     "Cleo",
+     "Dax",
+     "Eli",
+     "Cleo and Dax",
+     "Dax and Eli",
+     "Cleo and Eli"
+    ],
+    "answer": "Cleo and Dax",
+    "id": "b0-l4-19"
+   },
+   {
+    "prompt": "Exactly one of Fay, Gio and Hal tells the truth. Fay: \"Gio is lying.\" Gio: \"Fay and Hal are both lying.\" Hal: \"Gio is telling the truth.\" Who is lying?",
+    "options": [
+     "Fay",
+     "Gio",
+     "Hal",
+     "Fay and Gio",
+     "Gio and Hal",
+     "Fay and Hal"
+    ],
+    "answer": "Gio and Hal",
+    "id": "b0-l4-20"
+   }
+  ],
+  "5": [
+   {
+    "prompt": "A, B, C, D and E sit in a row of five seats. B is in the middle. D sits right next to B, on B's right. C sits at one end. A is not at an end. E sits somewhere left of A. Who sits at the far left?",
+    "options": [
+     "E",
+     "A",
+     "B",
+     "C",
+     "D",
+     "Can't tell"
+    ],
+    "answer": "E",
+    "id": "b0-l5-01"
+   },
+   {
+    "prompt": "Ana, Bob, Cas, Dee and Eli finish a race. Bob finishes right after Ana. Cas finishes before Ana. Eli is not last. Dee finishes third. Who finishes last?",
+    "options": [
+     "Bob",
+     "Ana",
+     "Cas",
+     "Dee",
+     "Eli",
+     "Can't tell"
+    ],
+    "answer": "Bob",
+    "id": "b0-l5-02"
+   },
+   {
+    "prompt": "Fay, Gus, Hal, Ivy and Jo live on floors 1 to 5. Ivy lives above Hal but below Jo. Gus lives lower than everyone else. Fay lives directly above Gus. Who lives on floor 4?",
+    "options": [
+     "Ivy",
+     "Fay",
+     "Gus",
+     "Hal",
+     "Jo",
+     "Can't tell"
+    ],
+    "answer": "Ivy",
+    "id": "b0-l5-03"
+   },
+   {
+    "prompt": "Kim, Leo, Mia, Ned and Ola are 21, 22, 23, 24 and 25 years old. Leo is older than Kim. Ola is the oldest. Mia is younger than Kim. Ned is 22. How old is Kim?",
+    "options": [
+     "23",
+     "21",
+     "22",
+     "24",
+     "25",
+     "Can't tell"
+    ],
+    "answer": "23",
+    "id": "b0-l5-04"
+   },
+   {
+    "prompt": "Five houses in a row are red, blue, green, white and yellow. Green is directly left of white. Red is in the middle. Yellow is not next to red. Blue is next to red. White is not at an end. Which colour is at the far right?",
+    "options": [
+     "Yellow",
+     "Red",
+     "Blue",
+     "Green",
+     "White",
+     "Can't tell"
+    ],
+    "answer": "Yellow",
+    "id": "b0-l5-05"
+   },
+   {
+    "prompt": "Pia, Quin, Raj, Sol and Tom finish 1st to 5th. Raj beat Sol but lost to Pia. Tom came last. Quin did not win. Sol was not fourth. Who came third?",
+    "options": [
+     "Sol",
+     "Pia",
+     "Quin",
+     "Raj",
+     "Tom",
+     "Can't tell"
+    ],
+    "answer": "Sol",
+    "id": "b0-l5-06"
+   },
+   {
+    "prompt": "Uma, Vic, Wes, Xia and Yan stand in a queue. Wes is directly behind Uma. Xia is somewhere in front of Vic. Yan is at the back. Uma is not at the front. Who is at the front?",
+    "options": [
+     "Xia",
+     "Uma",
+     "Vic",
+     "Wes",
+     "Yan",
+     "Can't tell"
+    ],
+    "answer": "Xia",
+    "id": "b0-l5-07"
+   },
+   {
+    "prompt": "Ada, Ben, Cy, Dot and Eve each visit on one day from Monday to Friday. Ben visits two days after Ada. Cy visits on Friday. Dot visits before Ada. Eve doesn't visit on Monday. Who visits on Wednesday?",
+    "options": [
+     "Eve",
+     "Ada",
+     "Ben",
+     "Cy",
+     "Dot",
+     "Can't tell"
+    ],
+    "answer": "Eve",
+    "id": "b0-l5-08"
+   },
+   {
+    "prompt": "Five books stand on a shelf: Art, Bio, Chem, Drama and Econ. Chem is at the left end. Art is directly right of Drama. Econ is not next to Chem. Bio is somewhere right of Art. Which book is in the middle?",
+    "options": [
+     "Art",
+     "Bio",
+     "Chem",
+     "Drama",
+     "Econ",
+     "Can't tell"
+    ],
+    "answer": "Art",
+    "id": "b0-l5-09"
+   },
+   {
+    "prompt": "A red, blue, black, white and silver car are parked in spots 1 to 5. The white car is in spot 4. The black car is next to both the red and the blue car. The silver car is at an end. The red car is not in spot 1. Which car is in spot 1?",
+    "options": [
+     "Blue",
+     "Red",
+     "Black",
+     "White",
+     "Silver",
+     "Can't tell"
+    ],
+    "answer": "Blue",
+    "id": "b0-l5-10"
+   },
+   {
+    "prompt": "Abi, Bao, Cem, Dua and Ezra have different heights. Bao is taller than Cem but shorter than Ezra. Dua is taller than Ezra. Abi is shorter than Bao. Who is the second tallest?",
+    "options": [
+     "Ezra",
+     "Abi",
+     "Bao",
+     "Cem",
+     "Dua",
+     "Can't tell"
+    ],
+    "answer": "Ezra",
+    "id": "b0-l5-11"
+   },
+   {
+    "prompt": "Fia, Gav, Hui, Ira and Jax own a cat, a dog, a fish, a bird and a rabbit. Gav owns the bird or the fish. Hui owns the dog. Ira owns neither the cat nor the fish. Jax owns the fish. Who owns the rabbit?",
+    "options": [
+     "Ira",
+     "Fia",
+     "Gav",
+     "Hui",
+     "Jax",
+     "Can't tell"
+    ],
+    "answer": "Ira",
+    "id": "b0-l5-12"
+   },
+   {
+    "prompt": "Kai, Lia, Mo, Nan and Oz are a baker, a chef, a doctor, a pilot and a teacher. Lia is neither the doctor nor the pilot. Mo is the chef. Nan is the pilot or the teacher. Oz is the doctor. Kai is neither the teacher nor the pilot. What is Lia's job?",
+    "options": [
+     "Teacher",
+     "Baker",
+     "Chef",
+     "Doctor",
+     "Pilot",
+     "Can't tell"
+    ],
+    "answer": "Teacher",
+    "id": "b0-l5-13"
+   },
+   {
+    "prompt": "A traveller visits Oslo, Paris, Quito, Rome and Seoul, one after another. Paris comes right after Oslo. Rome comes last. Seoul comes before Quito. Quito is not second. Oslo is not first. Which city comes first?",
+    "options": [
+     "Seoul",
+     "Oslo",
+     "Paris",
+     "Quito",
+     "Rome",
+     "Can't tell"
+    ],
+    "answer": "Seoul",
+    "id": "b0-l5-14"
+   },
+   {
+    "prompt": "Tao, Una, Val, Wim and Xen use lockers 1 to 5. Val's locker number is double Una's. Tao uses locker 5. Xen is next to Tao. Who uses locker 3?",
+    "options": [
+     "Wim",
+     "Tao",
+     "Una",
+     "Val",
+     "Xen",
+     "Can't tell"
+    ],
+    "answer": "Wim",
+    "id": "b0-l5-15"
+   },
+   {
+    "prompt": "Green, orange, purple, red and white flags fly on poles 1 to 5. Purple is directly between green and white. Red is on pole 1. Orange is not next to red. Green is not on pole 5. Which flag is on pole 5?",
+    "options": [
+     "Orange",
+     "Green",
+     "Purple",
+     "Red",
+     "White",
+     "Can't tell"
+    ],
+    "answer": "Orange",
+    "id": "b0-l5-16"
+   },
+   {
+    "prompt": "Ayo, Bri, Caz, Dov and Elle have birthdays in January to May, one per month. Bri's is the month after Ayo's. Elle's is in May. Caz's is before Ayo's. Dov's is not in January. Dov's is after Bri's. Whose birthday is in March?",
+    "options": [
+     "Bri",
+     "Ayo",
+     "Caz",
+     "Dov",
+     "Elle",
+     "Can't tell"
+    ],
+    "answer": "Bri",
+    "id": "b0-l5-17"
+   },
+   {
+    "prompt": "Boxes P, Q, R, S and T weigh 1, 2, 3, 4 and 5 kg. R is heavier than Q. Q is heavier than T. S weighs exactly 2 kg less than R. P is the lightest. How much does Q weigh?",
+    "options": [
+     "4 kg",
+     "1 kg",
+     "2 kg",
+     "3 kg",
+     "5 kg",
+     "Can't tell"
+    ],
+    "answer": "4 kg",
+    "id": "b0-l5-18"
+   },
+   {
+    "prompt": "Gia, Hal, Ike, Jon and Kat stand in a line. Hal is somewhere left of Ike. Jon is at the right end. Kat is directly left of Gia. Ike is next to Jon. Gia is not next to Ike. Who is at the left end?",
+    "options": [
+     "Kat",
+     "Gia",
+     "Hal",
+     "Ike",
+     "Jon",
+     "Can't tell"
+    ],
+    "answer": "Kat",
+    "id": "b0-l5-19"
+   },
+   {
+    "prompt": "Trains to Agra, Bonn, Cork, Doha and Faro leave from platforms 1 to 5. Agra is on platform 2. Bonn's platform is one higher than Cork's. Doha is on an odd platform above 1. Faro is not on platform 5. Cork is on an even platform. Which platform is Bonn on?",
+    "options": [
+     "5",
+     "1",
+     "2",
+     "3",
+     "4",
+     "Can't tell"
+    ],
+    "answer": "5",
+    "id": "b0-l5-20"
+   }
+  ]
+ },
+ "typing": {
+  "1": [
+   {
+    "prompt": "Type this sentence",
+    "answer": "The morning sun rose slowly over the quiet village, painting every rooftop a soft shade of gold.",
+    "reference": "The morning sun rose slowly over the quiet village, painting every rooftop a soft shade of gold.",
+    "id": "b0-p1-01"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "A small brown dog chased the ball across the park and brought it back with a happy wag of its tail.",
+    "reference": "A small brown dog chased the ball across the park and brought it back with a happy wag of its tail.",
+    "id": "b0-p1-02"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Fresh bread from the corner bakery fills the whole street with a warm and very welcome smell.",
+    "reference": "Fresh bread from the corner bakery fills the whole street with a warm and very welcome smell.",
+    "id": "b0-p1-03"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The river flows gently past the old mill, where a family of ducks gathers to rest in the shade.",
+    "reference": "The river flows gently past the old mill, where a family of ducks gathers to rest in the shade.",
+    "id": "b0-p1-04"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "She packed a light jacket, a bottle of water and a good book for the long train ride north.",
+    "reference": "She packed a light jacket, a bottle of water and a good book for the long train ride north.",
+    "id": "b0-p1-05"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Tall green trees line the road to the hills, and the air up there feels cool and clean.",
+    "reference": "Tall green trees line the road to the hills, and the air up there feels cool and clean.",
+    "id": "b0-p1-06"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Every evening the family sits together at the table to share stories about their day.",
+    "reference": "Every evening the family sits together at the table to share stories about their day.",
+    "id": "b0-p1-07"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The little garden behind the house is full of tomatoes, beans and bright yellow flowers.",
+    "reference": "The little garden behind the house is full of tomatoes, beans and bright yellow flowers.",
+    "id": "b0-p1-08"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "A gentle rain began to fall, so we waited under the cafe roof until the dark clouds passed.",
+    "reference": "A gentle rain began to fall, so we waited under the cafe roof until the dark clouds passed.",
+    "id": "b0-p1-09"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The children built a tall sandcastle near the water and laughed when a wave knocked it down.",
+    "reference": "The children built a tall sandcastle near the water and laughed when a wave knocked it down.",
+    "id": "b0-p1-10"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "On clear nights you can see thousands of stars shining above the quiet desert sand.",
+    "reference": "On clear nights you can see thousands of stars shining above the quiet desert sand.",
+    "id": "b0-p1-11"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "He likes to start each day with a short walk, a cup of tea and a few pages of a good book.",
+    "reference": "He likes to start each day with a short walk, a cup of tea and a few pages of a good book.",
+    "id": "b0-p1-12"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The market was busy with people buying fruit, spices and fresh flowers for the weekend.",
+    "reference": "The market was busy with people buying fruit, spices and fresh flowers for the weekend.",
+    "id": "b0-p1-13"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Our teacher showed us how to plant seeds in small pots and water them every single morning.",
+    "reference": "Our teacher showed us how to plant seeds in small pots and water them every single morning.",
+    "id": "b0-p1-14"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The old lighthouse still stands on the rocky cliff, watching over the fishing boats at sea.",
+    "reference": "The old lighthouse still stands on the rocky cliff, watching over the fishing boats at sea.",
+    "id": "b0-p1-15"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "A cool breeze moved through the open window and made the long white curtains dance.",
+    "reference": "A cool breeze moved through the open window and made the long white curtains dance.",
+    "id": "b0-p1-16"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The bus was late again, so we walked to school and talked about our favourite games.",
+    "reference": "The bus was late again, so we walked to school and talked about our favourite games.",
+    "id": "b0-p1-17"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Snow covered the mountain top, and the whole valley below looked bright and peaceful.",
+    "reference": "Snow covered the mountain top, and the whole valley below looked bright and peaceful.",
+    "id": "b0-p1-18"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "My grandmother keeps a notebook full of recipes that she has collected over many years.",
+    "reference": "My grandmother keeps a notebook full of recipes that she has collected over many years.",
+    "id": "b0-p1-19"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The kite flew higher and higher until it looked like a tiny red dot in the clear blue sky.",
+    "reference": "The kite flew higher and higher until it looked like a tiny red dot in the clear blue sky.",
+    "id": "b0-p1-20"
+   }
+  ],
+  "2": [
+   {
+    "prompt": "Type this sentence",
+    "answer": "Honeybees visit thousands of flowers in a single day, carrying pollen from plant to plant. Without their hard work, many fruits and vegetables would be much harder to grow.",
+    "reference": "Honeybees visit thousands of flowers in a single day, carrying pollen from plant to plant. Without their hard work, many fruits and vegetables would be much harder to grow.",
+    "id": "b0-p2-01"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Moon has no light of its own, so what we see at night is sunlight bouncing off its surface. Its shape seems to change as it travels around the Earth.",
+    "reference": "The Moon has no light of its own, so what we see at night is sunlight bouncing off its surface. Its shape seems to change as it travels around the Earth.",
+    "id": "b0-p2-02"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Penguins cannot fly, but they are excellent swimmers, using their wings like flippers in the water. Some kinds can dive very deep to catch fish and squid.",
+    "reference": "Penguins cannot fly, but they are excellent swimmers, using their wings like flippers in the water. Some kinds can dive very deep to catch fish and squid.",
+    "id": "b0-p2-03"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Kiwi birds from New Zealand cannot fly, and they lay huge eggs for their size. They hunt for food at night, sniffing out worms with nostrils at the tip of their long beaks.",
+    "reference": "Kiwi birds from New Zealand cannot fly, and they lay huge eggs for their size. They hunt for food at night, sniffing out worms with nostrils at the tip of their long beaks.",
+    "id": "b0-p2-04"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Coffee grows on small trees, and each red cherry usually holds two seeds, which we call beans. After picking, the beans are dried, roasted and ground before brewing.",
+    "reference": "Coffee grows on small trees, and each red cherry usually holds two seeds, which we call beans. After picking, the beans are dried, roasted and ground before brewing.",
+    "id": "b0-p2-05"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Rainbows appear when sunlight passes through raindrops and splits into its colours. To see one, the Sun must be behind you while the rain falls in front of you.",
+    "reference": "Rainbows appear when sunlight passes through raindrops and splits into its colours. To see one, the Sun must be behind you while the rain falls in front of you.",
+    "id": "b0-p2-06"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Elephants use their trunks to breathe, smell, drink and pick things up. A trunk has no bones, yet it is strong enough to lift a log and gentle enough to pick up a single nut.",
+    "reference": "Elephants use their trunks to breathe, smell, drink and pick things up. A trunk has no bones, yet it is strong enough to lift a log and gentle enough to pick up a single nut.",
+    "id": "b0-p2-07"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Owls can turn their heads much further than people can, so they can look around without moving their bodies. Their soft feathers let them fly almost silently at night.",
+    "reference": "Owls can turn their heads much further than people can, so they can look around without moving their bodies. Their soft feathers let them fly almost silently at night.",
+    "id": "b0-p2-08"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Volcanoes form where hot melted rock from deep inside the Earth finds a way to the surface. Over time, the cooled rock can build mountains, islands and even new land.",
+    "reference": "Volcanoes form where hot melted rock from deep inside the Earth finds a way to the surface. Over time, the cooled rock can build mountains, islands and even new land.",
+    "id": "b0-p2-09"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Tea is the most popular drink in the world after water, and people enjoy it in many ways. Some add milk and sugar, while others prefer it plain, green or with lemon.",
+    "reference": "Tea is the most popular drink in the world after water, and people enjoy it in many ways. Some add milk and sugar, while others prefer it plain, green or with lemon.",
+    "id": "b0-p2-10"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Camels can travel for days across hot deserts without drinking, thanks to their special bodies. Their humps store fat, not water, which gives them energy when food is scarce.",
+    "reference": "Camels can travel for days across hot deserts without drinking, thanks to their special bodies. Their humps store fat, not water, which gives them energy when food is scarce.",
+    "id": "b0-p2-11"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The human heart beats about once every second, pumping blood all around the body. It never takes a full rest, working day and night for an entire lifetime.",
+    "reference": "The human heart beats about once every second, pumping blood all around the body. It never takes a full rest, working day and night for an entire lifetime.",
+    "id": "b0-p2-12"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Libraries let anyone borrow books for free, opening the door to stories, facts and new ideas. Many also offer quiet rooms, computers and friendly staff who are happy to help.",
+    "reference": "Libraries let anyone borrow books for free, opening the door to stories, facts and new ideas. Many also offer quiet rooms, computers and friendly staff who are happy to help.",
+    "id": "b0-p2-13"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Butterflies taste with their feet, which helps them find the right plants for laying eggs. Their bright wings are covered in tiny scales that reflect the light.",
+    "reference": "Butterflies taste with their feet, which helps them find the right plants for laying eggs. Their bright wings are covered in tiny scales that reflect the light.",
+    "id": "b0-p2-14"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "A compass works because its needle is a small magnet that lines up with the Earth's magnetic field. That is why it points north and has guided travellers for centuries.",
+    "reference": "A compass works because its needle is a small magnet that lines up with the Earth's magnetic field. That is why it points north and has guided travellers for centuries.",
+    "id": "b0-p2-15"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Young sunflowers turn to follow the Sun across the sky during the day. When they are fully grown, most of them stop moving and face east, greeting each new morning.",
+    "reference": "Young sunflowers turn to follow the Sun across the sky during the day. When they are fully grown, most of them stop moving and face east, greeting each new morning.",
+    "id": "b0-p2-16"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Dolphins live in groups called pods and talk to each other using clicks and whistles. They are clever, playful animals and often ride the waves made by passing boats.",
+    "reference": "Dolphins live in groups called pods and talk to each other using clicks and whistles. They are clever, playful animals and often ride the waves made by passing boats.",
+    "id": "b0-p2-17"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Olive trees can live for hundreds of years, and some around the Mediterranean are far older. Their fruit is eaten whole or pressed to make olive oil for cooking.",
+    "reference": "Olive trees can live for hundreds of years, and some around the Mediterranean are far older. Their fruit is eaten whole or pressed to make olive oil for cooking.",
+    "id": "b0-p2-18"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Clouds are made of tiny drops of water or ice that float high in the sky. When the drops join together and grow too heavy, they fall back to the ground as rain or snow.",
+    "reference": "Clouds are made of tiny drops of water or ice that float high in the sky. When the drops join together and grow too heavy, they fall back to the ground as rain or snow.",
+    "id": "b0-p2-19"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Spiders spin silk that is light, stretchy and surprisingly strong for its size. They use it to build webs, wrap their food and even float through the air on the wind.",
+    "reference": "Spiders spin silk that is light, stretchy and surprisingly strong for its size. They use it to build webs, wrap their food and even float through the air on the wind.",
+    "id": "b0-p2-20"
+   }
+  ],
+  "3": [
+   {
+    "prompt": "Type this sentence",
+    "answer": "In 1969, Apollo 11 carried three astronauts to the Moon. Neil Armstrong and Buzz Aldrin walked on its surface, while Michael Collins stayed in orbit aboard the command module. Millions of people around the world watched the landing live on television.",
+    "reference": "In 1969, Apollo 11 carried three astronauts to the Moon. Neil Armstrong and Buzz Aldrin walked on its surface, while Michael Collins stayed in orbit aboard the command module. Millions of people around the world watched the landing live on television.",
+    "id": "b0-p3-01"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Amazon rainforest covers a huge part of South America and stretches across nine countries and territories, with Brazil holding the largest share. It is home to around 10 percent of all known species on Earth, and its trees help shape the weather of the whole planet.",
+    "reference": "The Amazon rainforest covers a huge part of South America and stretches across nine countries and territories, with Brazil holding the largest share. It is home to around 10 percent of all known species on Earth, and its trees help shape the weather of the whole planet.",
+    "id": "b0-p3-02"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Mount Everest, on the border of Nepal and China, is the highest mountain above sea level at about 8,849 metres. Climbers usually spend several weeks getting used to the thin air before trying to reach the top, and many of them carry bottled oxygen. The summit is often windy and bitterly cold.",
+    "reference": "Mount Everest, on the border of Nepal and China, is the highest mountain above sea level at about 8,849 metres. Climbers usually spend several weeks getting used to the thin air before trying to reach the top, and many of them carry bottled oxygen. The summit is often windy and bitterly cold.",
+    "id": "b0-p3-03"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Eiffel Tower in Paris was completed in 1889 for a world fair. At first many artists disliked it, but today it is one of the most visited monuments on Earth. Its iron frame is repainted roughly every seven years to protect it from rust. Visitors can climb its stairs to the second floor or take a lift all the way to the top.",
+    "reference": "The Eiffel Tower in Paris was completed in 1889 for a world fair. At first many artists disliked it, but today it is one of the most visited monuments on Earth. Its iron frame is repainted roughly every seven years to protect it from rust. Visitors can climb its stairs to the second floor or take a lift all the way to the top.",
+    "id": "b0-p3-04"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Water covers about 71 percent of the Earth's surface, yet only around 3 percent of all that water is fresh. Most of the fresh water is frozen in glaciers and ice caps, which is one reason clean drinking water is so precious. Even so, the same water keeps cycling between the oceans, the air and the land.",
+    "reference": "Water covers about 71 percent of the Earth's surface, yet only around 3 percent of all that water is fresh. Most of the fresh water is frozen in glaciers and ice caps, which is one reason clean drinking water is so precious. Even so, the same water keeps cycling between the oceans, the air and the land.",
+    "id": "b0-p3-05"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Great Pyramid of Giza in Egypt was built about 4,500 years ago for the pharaoh Khufu. For more than 3,800 years it was the tallest structure made by people anywhere on Earth, and it is the only Wonder of the Ancient World still standing. Its sides were originally covered in smooth white limestone.",
+    "reference": "The Great Pyramid of Giza in Egypt was built about 4,500 years ago for the pharaoh Khufu. For more than 3,800 years it was the tallest structure made by people anywhere on Earth, and it is the only Wonder of the Ancient World still standing. Its sides were originally covered in smooth white limestone.",
+    "id": "b0-p3-06"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Marie Curie was the first person to win Nobel Prizes in two different sciences: physics in 1903 and chemistry in 1911. Her research on radioactivity changed medicine and transformed our understanding of the atom. She was also the first woman to win a Nobel Prize at all.",
+    "reference": "Marie Curie was the first person to win Nobel Prizes in two different sciences: physics in 1903 and chemistry in 1911. Her research on radioactivity changed medicine and transformed our understanding of the atom. She was also the first woman to win a Nobel Prize at all.",
+    "id": "b0-p3-07"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "A day on Venus lasts longer than its year. The planet takes about 243 Earth days to spin once, but only around 225 Earth days to travel around the Sun. It also spins in the opposite direction to most of the other planets. Its thick clouds trap heat, making it the hottest planet in the solar system.",
+    "reference": "A day on Venus lasts longer than its year. The planet takes about 243 Earth days to spin once, but only around 225 Earth days to travel around the Sun. It also spins in the opposite direction to most of the other planets. Its thick clouds trap heat, making it the hottest planet in the solar system.",
+    "id": "b0-p3-08"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Sahara is the largest hot desert in the world, covering about 9 million square kilometres of North Africa. Despite the heat of the day, temperatures can fall sharply at night, and some parts of it have even seen snow. Only a small part of it is covered by sand dunes; much of it is rock and gravel.",
+    "reference": "The Sahara is the largest hot desert in the world, covering about 9 million square kilometres of North Africa. Despite the heat of the day, temperatures can fall sharply at night, and some parts of it have even seen snow. Only a small part of it is covered by sand dunes; much of it is rock and gravel.",
+    "id": "b0-p3-09"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The first modern Olympic Games were held in Athens in 1896, with athletes from 14 countries. Today the Summer Games bring together more than 10,000 athletes from over 200 teams, once every four years. The Olympic flame is lit in Greece months before each Games and carried to the host city.",
+    "reference": "The first modern Olympic Games were held in Athens in 1896, with athletes from 14 countries. Today the Summer Games bring together more than 10,000 athletes from over 200 teams, once every four years. The Olympic flame is lit in Greece months before each Games and carried to the host city.",
+    "id": "b0-p3-10"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Leonardo da Vinci painted the Mona Lisa in the early 1500s. Besides being an artist, he filled his notebooks with designs for flying machines and bridges, and with careful studies of the human body, many of them centuries ahead of their time. The painting now hangs in the Louvre in Paris.",
+    "reference": "Leonardo da Vinci painted the Mona Lisa in the early 1500s. Besides being an artist, he filled his notebooks with designs for flying machines and bridges, and with careful studies of the human body, many of them centuries ahead of their time. The painting now hangs in the Louvre in Paris.",
+    "id": "b0-p3-11"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The blue whale is the largest animal known to have ever lived, growing to about 30 metres long. Its tongue alone can weigh as much as an elephant, and its deep calls can travel for hundreds of kilometres under the sea. Despite its size, it feeds mainly on tiny shrimp-like animals called krill.",
+    "reference": "The blue whale is the largest animal known to have ever lived, growing to about 30 metres long. Its tongue alone can weigh as much as an elephant, and its deep calls can travel for hundreds of kilometres under the sea. Despite its size, it feeds mainly on tiny shrimp-like animals called krill.",
+    "id": "b0-p3-12"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Sunlight takes about 8 minutes to reach the Earth, crossing roughly 150 million kilometres of space. That means the sunlight you see right now left the Sun about eight minutes ago. Moonlight is simply sunlight bounced back to us by the Moon, and it reaches us in just over a second.",
+    "reference": "Sunlight takes about 8 minutes to reach the Earth, crossing roughly 150 million kilometres of space. That means the sunlight you see right now left the Sun about eight minutes ago. Moonlight is simply sunlight bounced back to us by the Moon, and it reaches us in just over a second.",
+    "id": "b0-p3-13"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Taj Mahal in Agra, India, was built in the 1600s by the emperor Shah Jahan in memory of his wife, Mumtaz Mahal. Made of white marble, it seems to change colour from pink to gold as the light shifts during the day. It took around 20 years and thousands of workers to complete.",
+    "reference": "The Taj Mahal in Agra, India, was built in the 1600s by the emperor Shah Jahan in memory of his wife, Mumtaz Mahal. Made of white marble, it seems to change colour from pink to gold as the light shifts during the day. It took around 20 years and thousands of workers to complete.",
+    "id": "b0-p3-14"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The human brain has around 86 billion nerve cells, called neurons, which pass signals to one another at high speed. Although it weighs only about 1.4 kilograms, it uses roughly 20 percent of the body's energy. It is also always active, even while you are fast asleep.",
+    "reference": "The human brain has around 86 billion nerve cells, called neurons, which pass signals to one another at high speed. Although it weighs only about 1.4 kilograms, it uses roughly 20 percent of the body's energy. It is also always active, even while you are fast asleep.",
+    "id": "b0-p3-15"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Antarctica is the coldest, windiest and driest continent. The lowest natural temperature ever measured there was about minus 89 degrees Celsius, at Vostok Station in 1983. Today the continent is shared under an international treaty and used for science.",
+    "reference": "Antarctica is the coldest, windiest and driest continent. The lowest natural temperature ever measured there was about minus 89 degrees Celsius, at Vostok Station in 1983. Today the continent is shared under an international treaty and used for science.",
+    "id": "b0-p3-16"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Silk Road was a network of trade routes linking China with the Middle East and Europe for more than 1,500 years. Merchants carried silk, spices and paper, and ideas, languages and inventions travelled along with them. Its name comes from the precious Chinese silk that was among its most prized goods.",
+    "reference": "The Silk Road was a network of trade routes linking China with the Middle East and Europe for more than 1,500 years. Merchants carried silk, spices and paper, and ideas, languages and inventions travelled along with them. Its name comes from the precious Chinese silk that was among its most prized goods.",
+    "id": "b0-p3-17"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Honey hardly ever spoils if it is stored properly. Archaeologists have found jars of honey in ancient Egyptian tombs that are thousands of years old, and the honey inside them had kept remarkably well. This is because honey has very little water and is naturally acidic, which stops germs from growing.",
+    "reference": "Honey hardly ever spoils if it is stored properly. Archaeologists have found jars of honey in ancient Egyptian tombs that are thousands of years old, and the honey inside them had kept remarkably well. This is because honey has very little water and is naturally acidic, which stops germs from growing.",
+    "id": "b0-p3-18"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Nile and its tributaries flow through 11 countries in Africa, and the river finally reaches the Mediterranean Sea. For thousands of years, its yearly floods left rich soil along its banks, allowing farming to thrive in the deserts of Egypt. Today the Aswan High Dam controls its flooding and produces electricity.",
+    "reference": "The Nile and its tributaries flow through 11 countries in Africa, and the river finally reaches the Mediterranean Sea. For thousands of years, its yearly floods left rich soil along its banks, allowing farming to thrive in the deserts of Egypt. Today the Aswan High Dam controls its flooding and produces electricity.",
+    "id": "b0-p3-19"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Chess is believed to have begun in India around the 6th century, as a game called chaturanga. It later spread to Persia and then to Europe, where the pieces slowly became the kings, queens, bishops and knights we know today. A standard chessboard has 64 squares.",
+    "reference": "Chess is believed to have begun in India around the 6th century, as a game called chaturanga. It later spread to Persia and then to Europe, where the pieces slowly became the kings, queens, bishops and knights we know today. A standard chessboard has 64 squares.",
+    "id": "b0-p3-20"
+   }
+  ],
+  "4": [
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Great Wall of China is not one single wall but a series of walls built over many centuries; together, all its sections stretch for more than 21,000 kilometres. The best-known parts, near Beijing, were built during the Ming dynasty (1368 to 1644) using brick and stone. Despite a popular myth, the wall is very hard to see with the naked eye from space, because although it is long, it is also very narrow.",
+    "reference": "The Great Wall of China is not one single wall but a series of walls built over many centuries; together, all its sections stretch for more than 21,000 kilometres. The best-known parts, near Beijing, were built during the Ming dynasty (1368 to 1644) using brick and stone. Despite a popular myth, the wall is very hard to see with the naked eye from space, because although it is long, it is also very narrow.",
+    "id": "b0-p4-01"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Isaac Newton published his laws of motion in 1687, in a book usually called the Principia. The first law says an object stays still, or keeps moving at the same speed in a straight line, unless a force acts on it; the second links force, mass and acceleration (F = ma); and the third says every action has an equal and opposite reaction. These simple rules still guide the engineers who design cars, bridges and rockets. Newton also worked out the law of universal gravitation.",
+    "reference": "Isaac Newton published his laws of motion in 1687, in a book usually called the Principia. The first law says an object stays still, or keeps moving at the same speed in a straight line, unless a force acts on it; the second links force, mass and acceleration (F = ma); and the third says every action has an equal and opposite reaction. These simple rules still guide the engineers who design cars, bridges and rockets. Newton also worked out the law of universal gravitation.",
+    "id": "b0-p4-02"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The International Space Station orbits the Earth about 400 kilometres up, travelling at roughly 28,000 kilometres per hour. At that speed it circles the planet about 16 times a day, so the crew sees around 16 sunrises and 16 sunsets every 24 hours. Starting in November 2000, astronauts from many countries lived on board without a break for more than two decades. The station is roughly the size of a football field and can sometimes be seen from the ground as a bright, moving point of light.",
+    "reference": "The International Space Station orbits the Earth about 400 kilometres up, travelling at roughly 28,000 kilometres per hour. At that speed it circles the planet about 16 times a day, so the crew sees around 16 sunrises and 16 sunsets every 24 hours. Starting in November 2000, astronauts from many countries lived on board without a break for more than two decades. The station is roughly the size of a football field and can sometimes be seen from the ground as a bright, moving point of light.",
+    "id": "b0-p4-03"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Mumbai began as a group of seven islands on India's west coast. During the 18th and 19th centuries, huge land reclamation projects joined the islands together; today the city is India's financial capital (home to its largest stock exchanges) and the heart of a vast film industry, often called Bollywood. Its grand main railway station, completed in 1888, is a UNESCO World Heritage Site. It was designed by the British architect Frederick William Stevens.",
+    "reference": "Mumbai began as a group of seven islands on India's west coast. During the 18th and 19th centuries, huge land reclamation projects joined the islands together; today the city is India's financial capital (home to its largest stock exchanges) and the heart of a vast film industry, often called Bollywood. Its grand main railway station, completed in 1888, is a UNESCO World Heritage Site. It was designed by the British architect Frederick William Stevens.",
+    "id": "b0-p4-04"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The periodic table, first arranged by Dmitri Mendeleev in 1869, groups the chemical elements by their properties. Mendeleev left gaps for elements nobody had found yet, and he even predicted what they would be like; when gallium (1875) and germanium (1886) were finally discovered, they matched his predictions closely. The modern table is arranged by atomic number, starting with hydrogen (number 1), the lightest element of all.",
+    "reference": "The periodic table, first arranged by Dmitri Mendeleev in 1869, groups the chemical elements by their properties. Mendeleev left gaps for elements nobody had found yet, and he even predicted what they would be like; when gallium (1875) and germanium (1886) were finally discovered, they matched his predictions closely. The modern table is arranged by atomic number, starting with hydrogen (number 1), the lightest element of all.",
+    "id": "b0-p4-05"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Penicillin, the first widely used antibiotic, was discovered by Alexander Fleming in London in 1928, when he noticed that a mould had stopped bacteria from growing in a dish. It took more than a decade, and the work of Howard Florey and Ernst Chain, to turn it into a medicine; by the 1940s it was being produced in large quantities. Fleming, Florey and Chain shared the Nobel Prize in Physiology or Medicine in 1945.",
+    "reference": "Penicillin, the first widely used antibiotic, was discovered by Alexander Fleming in London in 1928, when he noticed that a mould had stopped bacteria from growing in a dish. It took more than a decade, and the work of Howard Florey and Ernst Chain, to turn it into a medicine; by the 1940s it was being produced in large quantities. Fleming, Florey and Chain shared the Nobel Prize in Physiology or Medicine in 1945.",
+    "id": "b0-p4-06"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Panama Canal, opened in 1914, cuts across a narrow strip of Central America to link the Atlantic and Pacific oceans. Before it existed, ships sailing between New York and San Francisco had to go all the way around the tip of South America, a journey thousands of kilometres longer. Ships cross the land by rising and falling through a series of locks (giant water-filled chambers). A typical crossing takes about 8 to 10 hours.",
+    "reference": "The Panama Canal, opened in 1914, cuts across a narrow strip of Central America to link the Atlantic and Pacific oceans. Before it existed, ships sailing between New York and San Francisco had to go all the way around the tip of South America, a journey thousands of kilometres longer. Ships cross the land by rising and falling through a series of locks (giant water-filled chambers). A typical crossing takes about 8 to 10 hours.",
+    "id": "b0-p4-07"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The speed of sound in air is about 343 metres per second at 20 degrees Celsius, far slower than light. That is why you see lightning before you hear the thunder; counting the seconds between them and dividing by 3 gives a rough distance to the storm in kilometres. Sound moves faster through water (about 1,480 m/s) and faster still through steel. Light, by comparison, covers the same distance almost instantly.",
+    "reference": "The speed of sound in air is about 343 metres per second at 20 degrees Celsius, far slower than light. That is why you see lightning before you hear the thunder; counting the seconds between them and dividing by 3 gives a rough distance to the storm in kilometres. Sound moves faster through water (about 1,480 m/s) and faster still through steel. Light, by comparison, covers the same distance almost instantly.",
+    "id": "b0-p4-08"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Rosetta Stone, found in Egypt in 1799, carries the same text written in three scripts: hieroglyphs, Demotic and ancient Greek. Because scholars could already read Greek, the stone became the key to understanding hieroglyphs; in 1822 the French scholar Jean-Francois Champollion announced that he had finally cracked the code. The stone has been held by the British Museum in London since 1802. It weighs about 760 kilograms.",
+    "reference": "The Rosetta Stone, found in Egypt in 1799, carries the same text written in three scripts: hieroglyphs, Demotic and ancient Greek. Because scholars could already read Greek, the stone became the key to understanding hieroglyphs; in 1822 the French scholar Jean-Francois Champollion announced that he had finally cracked the code. The stone has been held by the British Museum in London since 1802. It weighs about 760 kilograms.",
+    "id": "b0-p4-09"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Photosynthesis is the process plants use to make food from light. Inside their leaves, tiny structures called chloroplasts capture sunlight and use its energy to combine water (drawn up from the roots) with carbon dioxide (taken from the air); the result is sugar for energy, plus oxygen, which is released into the air for animals, including us, to breathe. Some of this sugar is also used to build the plant's stems, leaves and roots.",
+    "reference": "Photosynthesis is the process plants use to make food from light. Inside their leaves, tiny structures called chloroplasts capture sunlight and use its energy to combine water (drawn up from the roots) with carbon dioxide (taken from the air); the result is sugar for energy, plus oxygen, which is released into the air for animals, including us, to breathe. Some of this sugar is also used to build the plant's stems, leaves and roots.",
+    "id": "b0-p4-10"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Ada Lovelace, born in London in 1815, is often called the first computer programmer. Working with Charles Babbage on his Analytical Engine, a mechanical computer that was never completed, she published notes in 1843 showing how it could calculate a series of numbers; she even imagined that such machines might one day compose music. The second Tuesday of October is now celebrated as Ada Lovelace Day, honouring women in science and technology.",
+    "reference": "Ada Lovelace, born in London in 1815, is often called the first computer programmer. Working with Charles Babbage on his Analytical Engine, a mechanical computer that was never completed, she published notes in 1843 showing how it could calculate a series of numbers; she even imagined that such machines might one day compose music. The second Tuesday of October is now celebrated as Ada Lovelace Day, honouring women in science and technology.",
+    "id": "b0-p4-11"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Wright brothers, Orville and Wilbur, made the first powered, controlled aeroplane flight on 17 December 1903, near Kitty Hawk in North Carolina. That first flight lasted just 12 seconds and covered about 37 metres; by the end of the same day, their best attempt had stayed in the air for 59 seconds. Their aircraft, the Wright Flyer, was powered by a small petrol engine that the brothers built with their mechanic, Charlie Taylor.",
+    "reference": "The Wright brothers, Orville and Wilbur, made the first powered, controlled aeroplane flight on 17 December 1903, near Kitty Hawk in North Carolina. That first flight lasted just 12 seconds and covered about 37 metres; by the end of the same day, their best attempt had stayed in the air for 59 seconds. Their aircraft, the Wright Flyer, was powered by a small petrol engine that the brothers built with their mechanic, Charlie Taylor.",
+    "id": "b0-p4-12"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Saturn's rings are made mostly of chunks of ice, from tiny grains to pieces as large as a house. Although the main rings stretch more than 270,000 kilometres across, they are remarkably thin; in many places they are only about 10 metres thick. Galileo first spotted them in 1610, but his telescope was too weak to reveal their true shape. Titan, the largest of Saturn's many moons, is wider than the planet Mercury.",
+    "reference": "Saturn's rings are made mostly of chunks of ice, from tiny grains to pieces as large as a house. Although the main rings stretch more than 270,000 kilometres across, they are remarkably thin; in many places they are only about 10 metres thick. Galileo first spotted them in 1610, but his telescope was too weak to reveal their true shape. Titan, the largest of Saturn's many moons, is wider than the planet Mercury.",
+    "id": "b0-p4-13"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Dead Sea, in the Jordan Rift Valley, is one of the saltiest bodies of water on Earth; its water is almost ten times saltier than the ocean. Because salty water is so dense, people float on its surface with ease. Its shore, more than 400 metres below sea level, is the lowest point on dry land anywhere on the planet. Its mineral-rich mud is also famous, and visitors often cover themselves in it before washing it off in the water.",
+    "reference": "The Dead Sea, in the Jordan Rift Valley, is one of the saltiest bodies of water on Earth; its water is almost ten times saltier than the ocean. Because salty water is so dense, people float on its surface with ease. Its shore, more than 400 metres below sea level, is the lowest point on dry land anywhere on the planet. Its mineral-rich mud is also famous, and visitors often cover themselves in it before washing it off in the water.",
+    "id": "b0-p4-14"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Fibonacci sequence starts 0, 1, 1, 2, 3, 5, 8, 13, 21, and each number is the sum of the two before it. It is named after Leonardo of Pisa (known as Fibonacci), who described it in 1202; the same pattern shows up in nature, from the spirals of seeds in a sunflower head to the scales of a pine cone. If you divide each number by the one before it, the answer gets closer and closer to about 1.618, the so-called golden ratio.",
+    "reference": "The Fibonacci sequence starts 0, 1, 1, 2, 3, 5, 8, 13, 21, and each number is the sum of the two before it. It is named after Leonardo of Pisa (known as Fibonacci), who described it in 1202; the same pattern shows up in nature, from the spirals of seeds in a sunflower head to the scales of a pine cone. If you divide each number by the one before it, the answer gets closer and closer to about 1.618, the so-called golden ratio.",
+    "id": "b0-p4-15"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Mount Kilimanjaro in Tanzania is the highest mountain in Africa, rising to about 5,895 metres. It is a dormant volcano with three volcanic cones (Kibo, Mawenzi and Shira); climbers pass through rainforest, moorland and alpine desert before reaching the snowy summit, crossing several climate zones in just a few days. Its first recorded ascent was made in 1889 by Hans Meyer and Ludwig Purtscheller, guided by a local man named Yohani Kinyala Lauwo.",
+    "reference": "Mount Kilimanjaro in Tanzania is the highest mountain in Africa, rising to about 5,895 metres. It is a dormant volcano with three volcanic cones (Kibo, Mawenzi and Shira); climbers pass through rainforest, moorland and alpine desert before reaching the snowy summit, crossing several climate zones in just a few days. Its first recorded ascent was made in 1889 by Hans Meyer and Ludwig Purtscheller, guided by a local man named Yohani Kinyala Lauwo.",
+    "id": "b0-p4-16"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The printing press built by Johannes Gutenberg in Mainz, Germany, around 1450 used movable metal type, which could be rearranged to print any page. Books that once took months to copy by hand could now be produced in days; by the year 1500, millions of printed books were circulating across Europe. Before then, owning a book was a luxury that very few people could afford. The new technology spread quickly, and printing presses were soon at work in cities all over Europe.",
+    "reference": "The printing press built by Johannes Gutenberg in Mainz, Germany, around 1450 used movable metal type, which could be rearranged to print any page. Books that once took months to copy by hand could now be produced in days; by the year 1500, millions of printed books were circulating across Europe. Before then, owning a book was a luxury that very few people could afford. The new technology spread quickly, and printing presses were soon at work in cities all over Europe.",
+    "id": "b0-p4-17"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The cheetah is the fastest animal on land, reaching speeds of around 100 kilometres per hour in short bursts. It can go from standing still to about 95 km/h in roughly three seconds; however, it tires quickly and usually has to stop after 20 to 30 seconds of running at full speed. Its body is built for speed, with a light frame, long legs, a flexible spine and a long tail that helps it balance and steer at high speed.",
+    "reference": "The cheetah is the fastest animal on land, reaching speeds of around 100 kilometres per hour in short bursts. It can go from standing still to about 95 km/h in roughly three seconds; however, it tires quickly and usually has to stop after 20 to 30 seconds of running at full speed. Its body is built for speed, with a light frame, long legs, a flexible spine and a long tail that helps it balance and steer at high speed.",
+    "id": "b0-p4-18"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Venice, in north-east Italy, is built on more than 100 small islands in a shallow lagoon. Instead of roads, the city has about 150 canals crossed by over 400 bridges; people get around by boat, including gondolas. Many of its buildings rest on wooden posts that were driven deep into the mud centuries ago. The Grand Canal, the city's main waterway, winds through its centre in a large S-shape and is crossed by four bridges, including the famous Rialto.",
+    "reference": "Venice, in north-east Italy, is built on more than 100 small islands in a shallow lagoon. Instead of roads, the city has about 150 canals crossed by over 400 bridges; people get around by boat, including gondolas. Many of its buildings rest on wooden posts that were driven deep into the mud centuries ago. The Grand Canal, the city's main waterway, winds through its centre in a large S-shape and is crossed by four bridges, including the famous Rialto.",
+    "id": "b0-p4-19"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Albert Einstein published his special theory of relativity in 1905, the same year he explained the photoelectric effect (the work that earned him the Nobel Prize in Physics for 1921). His most famous equation, E = mc^2, shows that mass and energy are two forms of the same thing; a tiny amount of mass holds an enormous amount of energy. In 1999, Time magazine named him its Person of the Century, a sign of how deeply his ideas shaped the modern world.",
+    "reference": "Albert Einstein published his special theory of relativity in 1905, the same year he explained the photoelectric effect (the work that earned him the Nobel Prize in Physics for 1921). His most famous equation, E = mc^2, shows that mass and energy are two forms of the same thing; a tiny amount of mass holds an enormous amount of energy. In 1999, Time magazine named him its Person of the Century, a sign of how deeply his ideas shaped the modern world.",
+    "id": "b0-p4-20"
+   }
+  ],
+  "5": [
+   {
+    "prompt": "Type this sentence",
+    "answer": "Light travels at about 299,792 kilometres per second in a vacuum - fast enough to circle the Earth roughly 7.5 times in a single second. Even so, the universe is so vast that light from Proxima Centauri, the nearest star beyond the Sun, takes about 4.2 years to reach us. Astronomers measure such distances in 'light-years': one light-year is close to 9.46 trillion kilometres. When we look at a distant galaxy, we see light that left it millions of years ago, so a telescope is, in a very real sense, a kind of time machine. The light from the Sun itself, by contrast, reaches Earth in only about eight minutes.",
+    "reference": "Light travels at about 299,792 kilometres per second in a vacuum - fast enough to circle the Earth roughly 7.5 times in a single second. Even so, the universe is so vast that light from Proxima Centauri, the nearest star beyond the Sun, takes about 4.2 years to reach us. Astronomers measure such distances in 'light-years': one light-year is close to 9.46 trillion kilometres. When we look at a distant galaxy, we see light that left it millions of years ago, so a telescope is, in a very real sense, a kind of time machine. The light from the Sun itself, by contrast, reaches Earth in only about eight minutes.",
+    "id": "b0-p5-01"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "DNA, short for deoxyribonucleic acid, carries the instructions for building and running every living thing. Its famous 'double helix' shape was described in 1953 by James Watson and Francis Crick, using X-ray images from the labs of Rosalind Franklin and Maurice Wilkins. The code is written with just four chemical letters - A, C, G and T - yet the human genome contains about 3.2 billion of them. Stretched out, the DNA in a single human cell would measure around 2 metres; packed tightly, it fits inside a nucleus far smaller than a grain of sand. Roughly 99.9 percent of the DNA in any two people is identical.",
+    "reference": "DNA, short for deoxyribonucleic acid, carries the instructions for building and running every living thing. Its famous 'double helix' shape was described in 1953 by James Watson and Francis Crick, using X-ray images from the labs of Rosalind Franklin and Maurice Wilkins. The code is written with just four chemical letters - A, C, G and T - yet the human genome contains about 3.2 billion of them. Stretched out, the DNA in a single human cell would measure around 2 metres; packed tightly, it fits inside a nucleus far smaller than a grain of sand. Roughly 99.9 percent of the DNA in any two people is identical.",
+    "id": "b0-p5-02"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Hubble Space Telescope was launched on 24 April 1990 and placed in orbit about 600 kilometres above the Earth. Soon after launch, scientists found a flaw: its main mirror had been ground to the wrong shape by about 2 micrometres, roughly one-fiftieth the width of a human hair. A Space Shuttle mission in 1993 fitted corrective optics, and Hubble went on to capture some of the most famous images in astronomy, including the 'Pillars of Creation' and the 'Hubble Deep Field', which revealed thousands of galaxies in a tiny patch of sky. Its successor, the James Webb Space Telescope, launched on 25 December 2021.",
+    "reference": "The Hubble Space Telescope was launched on 24 April 1990 and placed in orbit about 600 kilometres above the Earth. Soon after launch, scientists found a flaw: its main mirror had been ground to the wrong shape by about 2 micrometres, roughly one-fiftieth the width of a human hair. A Space Shuttle mission in 1993 fitted corrective optics, and Hubble went on to capture some of the most famous images in astronomy, including the 'Pillars of Creation' and the 'Hubble Deep Field', which revealed thousands of galaxies in a tiny patch of sky. Its successor, the James Webb Space Telescope, launched on 25 December 2021.",
+    "id": "b0-p5-03"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Mount Everest's height has been measured many times. In 1856, the Great Trigonometrical Survey of India calculated it at 29,002 feet (about 8,840 metres); a joint China-Nepal survey announced in December 2020 put it at 8,848.86 metres, including its cap of snow. The mountain is still rising by a few millimetres a year, pushed upward as the Indian tectonic plate presses into the Eurasian plate - the same slow collision that built the whole Himalayan range over roughly 50 million years. The first confirmed ascent was made on 29 May 1953 by Edmund Hillary of New Zealand and the Sherpa mountaineer Tenzing Norgay.",
+    "reference": "Mount Everest's height has been measured many times. In 1856, the Great Trigonometrical Survey of India calculated it at 29,002 feet (about 8,840 metres); a joint China-Nepal survey announced in December 2020 put it at 8,848.86 metres, including its cap of snow. The mountain is still rising by a few millimetres a year, pushed upward as the Indian tectonic plate presses into the Eurasian plate - the same slow collision that built the whole Himalayan range over roughly 50 million years. The first confirmed ascent was made on 29 May 1953 by Edmund Hillary of New Zealand and the Sherpa mountaineer Tenzing Norgay.",
+    "id": "b0-p5-04"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Rubik's Cube, invented in 1974 by the Hungarian architect Erno Rubik, has 43,252,003,274,489,856,000 possible arrangements - more than 43 quintillion. Even so, mathematicians proved in 2010 that any scrambled cube can be solved in 20 moves or fewer, a figure nicknamed 'God's Number'. Speedcubers rely on memorised sequences called algorithms, plus clever 'finger tricks', and the best of them can solve a scrambled cube in well under 10 seconds. Rubik originally created the puzzle as a teaching tool to help his students understand three-dimensional objects, and it took him about a month to solve it for the first time himself.",
+    "reference": "The Rubik's Cube, invented in 1974 by the Hungarian architect Erno Rubik, has 43,252,003,274,489,856,000 possible arrangements - more than 43 quintillion. Even so, mathematicians proved in 2010 that any scrambled cube can be solved in 20 moves or fewer, a figure nicknamed 'God's Number'. Speedcubers rely on memorised sequences called algorithms, plus clever 'finger tricks', and the best of them can solve a scrambled cube in well under 10 seconds. Rubik originally created the puzzle as a teaching tool to help his students understand three-dimensional objects, and it took him about a month to solve it for the first time himself.",
+    "id": "b0-p5-05"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The human body contains about 37 trillion cells, and many of them are constantly being replaced. The outer layer of your skin renews itself every few weeks, red blood cells live for about 120 days, and the lining of the stomach is replaced every few days to protect it from its own acid. Bones, too, are living tissue: they are slowly broken down and rebuilt, so the skeleton you have today is not quite the same one you had ten years ago. Nearly every cell carries its own copy of your DNA, yet cells in your eye, your heart and your liver read very different parts of it to do their jobs.",
+    "reference": "The human body contains about 37 trillion cells, and many of them are constantly being replaced. The outer layer of your skin renews itself every few weeks, red blood cells live for about 120 days, and the lining of the stomach is replaced every few days to protect it from its own acid. Bones, too, are living tissue: they are slowly broken down and rebuilt, so the skeleton you have today is not quite the same one you had ten years ago. Nearly every cell carries its own copy of your DNA, yet cells in your eye, your heart and your liver read very different parts of it to do their jobs.",
+    "id": "b0-p5-06"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Apollo Guidance Computer, which helped land astronauts on the Moon in 1969, had about 4 kilobytes of erasable memory and 72 kilobytes of fixed 'rope' memory - woven by hand from copper wire. Its processor ran at roughly 1 megahertz. A modern smartphone is millions of times more powerful, yet the AGC did its job brilliantly, and its software (written by a team led by Margaret Hamilton at MIT) helped the Apollo 11 crew land safely despite a series of unexpected '1202' alarms. Hamilton later received the Presidential Medal of Freedom, in 2016, for her pioneering work in software.",
+    "reference": "The Apollo Guidance Computer, which helped land astronauts on the Moon in 1969, had about 4 kilobytes of erasable memory and 72 kilobytes of fixed 'rope' memory - woven by hand from copper wire. Its processor ran at roughly 1 megahertz. A modern smartphone is millions of times more powerful, yet the AGC did its job brilliantly, and its software (written by a team led by Margaret Hamilton at MIT) helped the Apollo 11 crew land safely despite a series of unexpected '1202' alarms. Hamilton later received the Presidential Medal of Freedom, in 2016, for her pioneering work in software.",
+    "id": "b0-p5-07"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Pi is the ratio of a circle's circumference to its diameter, roughly 3.14159. It is an irrational number, so its decimal digits never end and never settle into a repeating pattern. Archimedes estimated it more than 2,200 years ago, proving that it lies between 3 10/71 and 3 1/7. With computers, mathematicians have now worked out trillions of digits - yet about 40 of them are enough to calculate the circumference of the observable universe to within the width of a single atom. Pi Day is celebrated on 14 March, because the date is written as 3/14 in some countries.",
+    "reference": "Pi is the ratio of a circle's circumference to its diameter, roughly 3.14159. It is an irrational number, so its decimal digits never end and never settle into a repeating pattern. Archimedes estimated it more than 2,200 years ago, proving that it lies between 3 10/71 and 3 1/7. With computers, mathematicians have now worked out trillions of digits - yet about 40 of them are enough to calculate the circumference of the observable universe to within the width of a single atom. Pi Day is celebrated on 14 March, because the date is written as 3/14 in some countries.",
+    "id": "b0-p5-08"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Trans-Siberian Railway, completed in 1916, links Moscow with Vladivostok on the Pacific coast, a distance of about 9,289 kilometres. The full journey takes around seven days and crosses eight time zones, so passengers reset their watches again and again along the way. The line passes Lake Baikal, the deepest lake on Earth at about 1,642 metres, which holds roughly 20 percent of the world's unfrozen fresh surface water. Baikal is also thought to be the oldest lake on Earth, at around 25 million years, and it is home to the nerpa, a seal found nowhere else.",
+    "reference": "The Trans-Siberian Railway, completed in 1916, links Moscow with Vladivostok on the Pacific coast, a distance of about 9,289 kilometres. The full journey takes around seven days and crosses eight time zones, so passengers reset their watches again and again along the way. The line passes Lake Baikal, the deepest lake on Earth at about 1,642 metres, which holds roughly 20 percent of the world's unfrozen fresh surface water. Baikal is also thought to be the oldest lake on Earth, at around 25 million years, and it is home to the nerpa, a seal found nowhere else.",
+    "id": "b0-p5-09"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Honeybees share news through a remarkable 'waggle dance'. When a forager finds a good patch of flowers, she returns to the hive and runs in a figure-of-eight, waggling her body during the straight part of the run. The angle of that run, measured from straight up, shows the direction of the food relative to the Sun; the length of the waggle tells the other bees how far away it is. Karl von Frisch decoded this language and shared the 1973 Nobel Prize in Physiology or Medicine for the discovery. A strong colony may contain tens of thousands of worker bees, all of them female.",
+    "reference": "Honeybees share news through a remarkable 'waggle dance'. When a forager finds a good patch of flowers, she returns to the hive and runs in a figure-of-eight, waggling her body during the straight part of the run. The angle of that run, measured from straight up, shows the direction of the food relative to the Sun; the length of the waggle tells the other bees how far away it is. Karl von Frisch decoded this language and shared the 1973 Nobel Prize in Physiology or Medicine for the discovery. A strong colony may contain tens of thousands of worker bees, all of them female.",
+    "id": "b0-p5-10"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Burj Khalifa in Dubai, which opened in January 2010 as the world's tallest building, rises 828 metres and has more than 160 storeys. Its design was inspired by the spider lily, a desert flower, and its Y-shaped base helps it stand up to strong winds. On a clear day its tip can be seen from about 95 kilometres away, and people on its upper floors see the sunset a few minutes later than people down at street level. Its foundations reach more than 50 metres into the ground, and cleaning all of its roughly 24,000 windows by hand takes a team of workers about three months.",
+    "reference": "The Burj Khalifa in Dubai, which opened in January 2010 as the world's tallest building, rises 828 metres and has more than 160 storeys. Its design was inspired by the spider lily, a desert flower, and its Y-shaped base helps it stand up to strong winds. On a clear day its tip can be seen from about 95 kilometres away, and people on its upper floors see the sunset a few minutes later than people down at street level. Its foundations reach more than 50 metres into the ground, and cleaning all of its roughly 24,000 windows by hand takes a team of workers about three months.",
+    "id": "b0-p5-11"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Antibiotics such as penicillin kill bacteria but have no effect on viruses, which is why they cannot cure a cold or the flu. Overusing them is a serious problem: each time bacteria are exposed, the few that survive may pass on their resistance, and over many generations whole populations can become 'superbugs'. Doctors therefore follow a simple rule - the right drug, at the right dose, for the right length of time - while scientists keep searching for new medicines in places like soil and the ocean floor. Some of the most important antibiotics were first found in moulds and soil bacteria.",
+    "reference": "Antibiotics such as penicillin kill bacteria but have no effect on viruses, which is why they cannot cure a cold or the flu. Overusing them is a serious problem: each time bacteria are exposed, the few that survive may pass on their resistance, and over many generations whole populations can become 'superbugs'. Doctors therefore follow a simple rule - the right drug, at the right dose, for the right length of time - while scientists keep searching for new medicines in places like soil and the ocean floor. Some of the most important antibiotics were first found in moulds and soil bacteria.",
+    "id": "b0-p5-12"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Origami, the Japanese art of paper folding, turns a single flat sheet into birds, flowers and boxes without cutting or glue. Its ideas now help engineers: the 'Miura fold', developed by the astrophysicist Koryo Miura, lets a large sheet open or close in one smooth motion, and it was used for a solar panel array flown in space in 1995. Similar folding patterns guide the design of airbags, medical stents and telescopes that must travel folded up before opening to full size. In Japan, folding a thousand paper cranes, called senbazuru, is a traditional symbol of hope and good luck.",
+    "reference": "Origami, the Japanese art of paper folding, turns a single flat sheet into birds, flowers and boxes without cutting or glue. Its ideas now help engineers: the 'Miura fold', developed by the astrophysicist Koryo Miura, lets a large sheet open or close in one smooth motion, and it was used for a solar panel array flown in space in 1995. Similar folding patterns guide the design of airbags, medical stents and telescopes that must travel folded up before opening to full size. In Japan, folding a thousand paper cranes, called senbazuru, is a traditional symbol of hope and good luck.",
+    "id": "b0-p5-13"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Earth's atmosphere is a thin blanket of gases, mostly nitrogen (about 78 percent) and oxygen (about 21 percent), with small amounts of argon, carbon dioxide and water vapour. Around three-quarters of its mass lies within about 11 kilometres of the ground, in the layer called the troposphere, where nearly all of our weather happens. Higher up, the stratosphere holds the ozone layer, which absorbs much of the Sun's harmful ultraviolet light; without it, life on land would face far more radiation. Above about 100 kilometres, a line often called the Karman line, the air is so thin that many people consider this the edge of space.",
+    "reference": "Earth's atmosphere is a thin blanket of gases, mostly nitrogen (about 78 percent) and oxygen (about 21 percent), with small amounts of argon, carbon dioxide and water vapour. Around three-quarters of its mass lies within about 11 kilometres of the ground, in the layer called the troposphere, where nearly all of our weather happens. Higher up, the stratosphere holds the ozone layer, which absorbs much of the Sun's harmful ultraviolet light; without it, life on land would face far more radiation. Above about 100 kilometres, a line often called the Karman line, the air is so thin that many people consider this the edge of space.",
+    "id": "b0-p5-14"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Shakespeare's plays introduced or popularised hundreds of English words and phrases that are still in use, from 'break the ice' to 'wild-goose chase'. Born in Stratford-upon-Avon in 1564, he wrote about 37 plays and 154 sonnets, many first performed at London's Globe Theatre, which opened in 1599. A modern reconstruction, Shakespeare's Globe, opened near the original site in 1997, and audiences can still stand in the open-air 'yard' just as theatregoers did more than 400 years ago. His plays have been translated into every major language and are performed more often than those of any other playwright.",
+    "reference": "Shakespeare's plays introduced or popularised hundreds of English words and phrases that are still in use, from 'break the ice' to 'wild-goose chase'. Born in Stratford-upon-Avon in 1564, he wrote about 37 plays and 154 sonnets, many first performed at London's Globe Theatre, which opened in 1599. A modern reconstruction, Shakespeare's Globe, opened near the original site in 1997, and audiences can still stand in the open-air 'yard' just as theatregoers did more than 400 years ago. His plays have been translated into every major language and are performed more often than those of any other playwright.",
+    "id": "b0-p5-15"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Monarch butterflies make one of the most impressive journeys in the insect world. Each autumn, millions of them fly from Canada and the United States to the mountain forests of central Mexico - a trip of up to about 4,800 kilometres. No single butterfly makes the round trip: it takes three or four generations to return north the next spring, yet their descendants find their way back to the same forests. Scientists believe they navigate using the Sun as a compass, helped by a clock in their antennae. Their bright orange wings warn birds that they taste bad, because the caterpillars feed on milkweed, a plant containing natural toxins.",
+    "reference": "Monarch butterflies make one of the most impressive journeys in the insect world. Each autumn, millions of them fly from Canada and the United States to the mountain forests of central Mexico - a trip of up to about 4,800 kilometres. No single butterfly makes the round trip: it takes three or four generations to return north the next spring, yet their descendants find their way back to the same forests. Scientists believe they navigate using the Sun as a compass, helped by a clock in their antennae. Their bright orange wings warn birds that they taste bad, because the caterpillars feed on milkweed, a plant containing natural toxins.",
+    "id": "b0-p5-16"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Indian mathematician Srinivasa Ramanujan, born in 1887, had almost no formal training in advanced mathematics, yet he produced nearly 3,900 results, many of them startlingly original. In 1913 he wrote to G. H. Hardy at Cambridge, enclosing pages of formulas; Hardy quickly recognised his genius and invited him to England. Ramanujan's work on numbers and infinite series still inspires research today, and the number 1729 is known as the 'Hardy-Ramanujan number' after a famous conversation between the two. His life inspired the 2015 film 'The Man Who Knew Infinity'.",
+    "reference": "The Indian mathematician Srinivasa Ramanujan, born in 1887, had almost no formal training in advanced mathematics, yet he produced nearly 3,900 results, many of them startlingly original. In 1913 he wrote to G. H. Hardy at Cambridge, enclosing pages of formulas; Hardy quickly recognised his genius and invited him to England. Ramanujan's work on numbers and infinite series still inspires research today, and the number 1729 is known as the 'Hardy-Ramanujan number' after a famous conversation between the two. His life inspired the 2015 film 'The Man Who Knew Infinity'.",
+    "id": "b0-p5-17"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The deepest known point in the ocean, the Challenger Deep in the Mariana Trench, lies about 10,900 metres below the surface of the western Pacific. If Mount Everest were placed at the bottom, its peak would still be more than 2 kilometres underwater. The pressure there is over 1,000 times that at sea level, yet scientists have found life, including tiny shrimp-like amphipods. The first people to reach it were Jacques Piccard and Don Walsh, in the bathyscaphe 'Trieste', in 1960. The second crewed dive did not happen until more than 50 years later, in 2012.",
+    "reference": "The deepest known point in the ocean, the Challenger Deep in the Mariana Trench, lies about 10,900 metres below the surface of the western Pacific. If Mount Everest were placed at the bottom, its peak would still be more than 2 kilometres underwater. The pressure there is over 1,000 times that at sea level, yet scientists have found life, including tiny shrimp-like amphipods. The first people to reach it were Jacques Piccard and Don Walsh, in the bathyscaphe 'Trieste', in 1960. The second crewed dive did not happen until more than 50 years later, in 2012.",
+    "id": "b0-p5-18"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "Bamboo is a grass, not a tree, and some kinds are among the fastest-growing plants on Earth, adding up to about 90 centimetres in a single day. Its strength comes from long fibres packed into hollow, jointed stems; for its weight, some bamboo is about as strong under tension as steel. In parts of Asia it has been used for thousands of years to build houses, scaffolding and bridges, and today it is also turned into flooring, bicycle frames and even clothing. Giant pandas in China eat almost nothing else, munching through about 12 to 38 kilograms of bamboo every day.",
+    "reference": "Bamboo is a grass, not a tree, and some kinds are among the fastest-growing plants on Earth, adding up to about 90 centimetres in a single day. Its strength comes from long fibres packed into hollow, jointed stems; for its weight, some bamboo is about as strong under tension as steel. In parts of Asia it has been used for thousands of years to build houses, scaffolding and bridges, and today it is also turned into flooring, bicycle frames and even clothing. Giant pandas in China eat almost nothing else, munching through about 12 to 38 kilograms of bamboo every day.",
+    "id": "b0-p5-19"
+   },
+   {
+    "prompt": "Type this sentence",
+    "answer": "The Mid-Atlantic Ridge is an underwater mountain range running for roughly 16,000 kilometres down the middle of the Atlantic Ocean. Here the North American and Eurasian plates (and, further south, the South American and African plates) are slowly pulling apart, at about 2 to 5 centimetres a year - roughly as fast as fingernails grow. Molten rock rises to fill the gap and forms new sea floor; in Iceland the ridge rises above the waves, so visitors can walk between two tectonic plates. The ridge also contains hydrothermal vents, where hot, mineral-rich water gushes from the sea floor and supports unusual communities of life.",
+    "reference": "The Mid-Atlantic Ridge is an underwater mountain range running for roughly 16,000 kilometres down the middle of the Atlantic Ocean. Here the North American and Eurasian plates (and, further south, the South American and African plates) are slowly pulling apart, at about 2 to 5 centimetres a year - roughly as fast as fingernails grow. Molten rock rises to fill the gap and forms new sea floor; in Iceland the ridge rises above the waves, so visitors can walk between two tectonic plates. The ridge also contains hydrothermal vents, where hot, mineral-rich water gushes from the sea floor and supports unusual communities of life.",
+    "id": "b0-p5-20"
+   }
+  ]
+ },
+ "math": {
+  "1": [
+   {
+    "prompt": "What is 626 − 307?",
+    "answer": "319",
+    "id": "b0-m1-01"
+   },
+   {
+    "prompt": "What is 585 + 566?",
+    "answer": "1151",
+    "id": "b0-m1-02"
+   },
+   {
+    "prompt": "What is 14 × 9?",
+    "answer": "126",
+    "id": "b0-m1-03"
+   },
+   {
+    "prompt": "What is 655 + 845?",
+    "answer": "1500",
+    "id": "b0-m1-04"
+   },
+   {
+    "prompt": "What is 871 − 137?",
+    "answer": "734",
+    "id": "b0-m1-05"
+   },
+   {
+    "prompt": "What is 731 − 448?",
+    "answer": "283",
+    "id": "b0-m1-06"
+   },
+   {
+    "prompt": "What is 46 × 4?",
+    "answer": "184",
+    "id": "b0-m1-07"
+   },
+   {
+    "prompt": "What is 77 × 7?",
+    "answer": "539",
+    "id": "b0-m1-08"
+   },
+   {
+    "prompt": "What is 94 × 6?",
+    "answer": "564",
+    "id": "b0-m1-09"
+   },
+   {
+    "prompt": "What is 72 × 6?",
+    "answer": "432",
+    "id": "b0-m1-10"
+   },
+   {
+    "prompt": "What is 291 + 359?",
+    "answer": "650",
+    "id": "b0-m1-11"
+   },
+   {
+    "prompt": "What is 56 × 5?",
+    "answer": "280",
+    "id": "b0-m1-12"
+   },
+   {
+    "prompt": "What is 514 − 146?",
+    "answer": "368",
+    "id": "b0-m1-13"
+   },
+   {
+    "prompt": "What is 872 + 438?",
+    "answer": "1310",
+    "id": "b0-m1-14"
+   },
+   {
+    "prompt": "What is 813 − 575?",
+    "answer": "238",
+    "id": "b0-m1-15"
+   },
+   {
+    "prompt": "What is 561 − 257?",
+    "answer": "304",
+    "id": "b0-m1-16"
+   },
+   {
+    "prompt": "What is 44 × 6?",
+    "answer": "264",
+    "id": "b0-m1-17"
+   },
+   {
+    "prompt": "What is 775 − 259?",
+    "answer": "516",
+    "id": "b0-m1-18"
+   },
+   {
+    "prompt": "What is 67 × 3?",
+    "answer": "201",
+    "id": "b0-m1-19"
+   },
+   {
+    "prompt": "What is 17 × 3?",
+    "answer": "51",
+    "id": "b0-m1-20"
+   }
+  ],
+  "2": [
+   {
+    "prompt": "What is 294 ÷ 6?",
+    "answer": "49",
+    "id": "b0-m2-01"
+   },
+   {
+    "prompt": "What is 68 × 51?",
+    "answer": "3468",
+    "id": "b0-m2-02"
+   },
+   {
+    "prompt": "What is 62 × 96?",
+    "answer": "5952",
+    "id": "b0-m2-03"
+   },
+   {
+    "prompt": "What is 91 × 96?",
+    "answer": "8736",
+    "id": "b0-m2-04"
+   },
+   {
+    "prompt": "What is 84 × 56?",
+    "answer": "4704",
+    "id": "b0-m2-05"
+   },
+   {
+    "prompt": "What is 519 ÷ 3?",
+    "answer": "173",
+    "id": "b0-m2-06"
+   },
+   {
+    "prompt": "What is 97 × 25?",
+    "answer": "2425",
+    "id": "b0-m2-07"
+   },
+   {
+    "prompt": "What is 248 ÷ 8?",
+    "answer": "31",
+    "id": "b0-m2-08"
+   },
+   {
+    "prompt": "What is 52 × 63?",
+    "answer": "3276",
+    "id": "b0-m2-09"
+   },
+   {
+    "prompt": "What is 138 ÷ 6?",
+    "answer": "23",
+    "id": "b0-m2-10"
+   },
+   {
+    "prompt": "What is 726 ÷ 6?",
+    "answer": "121",
+    "id": "b0-m2-11"
+   },
+   {
+    "prompt": "What is 39 × 29?",
+    "answer": "1131",
+    "id": "b0-m2-12"
+   },
+   {
+    "prompt": "What is 385 ÷ 7?",
+    "answer": "55",
+    "id": "b0-m2-13"
+   },
+   {
+    "prompt": "What is 568 ÷ 8?",
+    "answer": "71",
+    "id": "b0-m2-14"
+   },
+   {
+    "prompt": "What is 378 ÷ 3?",
+    "answer": "126",
+    "id": "b0-m2-15"
+   },
+   {
+    "prompt": "What is 86 × 78?",
+    "answer": "6708",
+    "id": "b0-m2-16"
+   },
+   {
+    "prompt": "What is 232 ÷ 8?",
+    "answer": "29",
+    "id": "b0-m2-17"
+   },
+   {
+    "prompt": "What is 72 × 49?",
+    "answer": "3528",
+    "id": "b0-m2-18"
+   },
+   {
+    "prompt": "What is 38 × 37?",
+    "answer": "1406",
+    "id": "b0-m2-19"
+   },
+   {
+    "prompt": "What is 336 ÷ 3?",
+    "answer": "112",
+    "id": "b0-m2-20"
+   }
+  ],
+  "3": [
+   {
+    "prompt": "What is 13 × 21 − 148?",
+    "answer": "125",
+    "id": "b0-m3-01"
+   },
+   {
+    "prompt": "What is 24 × 18 + 281?",
+    "answer": "713",
+    "id": "b0-m3-02"
+   },
+   {
+    "prompt": "What is 17 × 13 + 256?",
+    "answer": "477",
+    "id": "b0-m3-03"
+   },
+   {
+    "prompt": "What is 14 × 17 − 167?",
+    "answer": "71",
+    "id": "b0-m3-04"
+   },
+   {
+    "prompt": "What is 15 × 12 + 214?",
+    "answer": "394",
+    "id": "b0-m3-05"
+   },
+   {
+    "prompt": "What is 25 × 23 − 227?",
+    "answer": "348",
+    "id": "b0-m3-06"
+   },
+   {
+    "prompt": "What is 18 × 28 − 124?",
+    "answer": "380",
+    "id": "b0-m3-07"
+   },
+   {
+    "prompt": "What is (40 − 23) × 14?",
+    "answer": "238",
+    "id": "b0-m3-08"
+   },
+   {
+    "prompt": "What is (40 − 13) × 13?",
+    "answer": "351",
+    "id": "b0-m3-09"
+   },
+   {
+    "prompt": "What is 26 × 17 + 337?",
+    "answer": "779",
+    "id": "b0-m3-10"
+   },
+   {
+    "prompt": "What is 22 × 12 − 155?",
+    "answer": "109",
+    "id": "b0-m3-11"
+   },
+   {
+    "prompt": "What is 15 × 13 + 169?",
+    "answer": "364",
+    "id": "b0-m3-12"
+   },
+   {
+    "prompt": "What is 26 × 18 + 216?",
+    "answer": "684",
+    "id": "b0-m3-13"
+   },
+   {
+    "prompt": "What is 12 × 29 − 109?",
+    "answer": "239",
+    "id": "b0-m3-14"
+   },
+   {
+    "prompt": "What is 27 × 14 + 348?",
+    "answer": "726",
+    "id": "b0-m3-15"
+   },
+   {
+    "prompt": "What is 28 × 15 + 398?",
+    "answer": "818",
+    "id": "b0-m3-16"
+   },
+   {
+    "prompt": "What is (82 − 19) × 16?",
+    "answer": "1008",
+    "id": "b0-m3-17"
+   },
+   {
+    "prompt": "What is 23 × 28 − 545?",
+    "answer": "99",
+    "id": "b0-m3-18"
+   },
+   {
+    "prompt": "What is 29 × 21 − 268?",
+    "answer": "341",
+    "id": "b0-m3-19"
+   },
+   {
+    "prompt": "What is 16 × 15 + 339?",
+    "answer": "579",
+    "id": "b0-m3-20"
+   }
+  ],
+  "4": [
+   {
+    "prompt": "What is (27 + 35) × 4 − 12²?",
+    "answer": "104",
+    "id": "b0-m4-01"
+   },
+   {
+    "prompt": "What is 28² − 19 × 19?",
+    "answer": "423",
+    "id": "b0-m4-02"
+   },
+   {
+    "prompt": "What is 18² − 11 × 14?",
+    "answer": "170",
+    "id": "b0-m4-03"
+   },
+   {
+    "prompt": "What is (25% of 560) + 18 × 17?",
+    "answer": "446",
+    "id": "b0-m4-04"
+   },
+   {
+    "prompt": "What is 22² − 17 × 15?",
+    "answer": "229",
+    "id": "b0-m4-05"
+   },
+   {
+    "prompt": "What is (25% of 780) + 19 × 11?",
+    "answer": "404",
+    "id": "b0-m4-06"
+   },
+   {
+    "prompt": "What is 28² − 14 × 18?",
+    "answer": "532",
+    "id": "b0-m4-07"
+   },
+   {
+    "prompt": "What is (75% of 920) + 24 × 18?",
+    "answer": "1122",
+    "id": "b0-m4-08"
+   },
+   {
+    "prompt": "What is 28² − 19 × 11?",
+    "answer": "575",
+    "id": "b0-m4-09"
+   },
+   {
+    "prompt": "What is (45% of 580) + 23 × 16?",
+    "answer": "629",
+    "id": "b0-m4-10"
+   },
+   {
+    "prompt": "What is (75% of 980) + 19 × 18?",
+    "answer": "1077",
+    "id": "b0-m4-11"
+   },
+   {
+    "prompt": "What is (12 + 49) × 7 − 13²?",
+    "answer": "258",
+    "id": "b0-m4-12"
+   },
+   {
+    "prompt": "What is 26² − 17 × 11?",
+    "answer": "489",
+    "id": "b0-m4-13"
+   },
+   {
+    "prompt": "What is (29 + 36) × 4 − 15²?",
+    "answer": "35",
+    "id": "b0-m4-14"
+   },
+   {
+    "prompt": "What is 28² − 12 × 11?",
+    "answer": "652",
+    "id": "b0-m4-15"
+   },
+   {
+    "prompt": "What is 27² − 16 × 12?",
+    "answer": "537",
+    "id": "b0-m4-16"
+   },
+   {
+    "prompt": "What is (15% of 620) + 13 × 11?",
+    "answer": "236",
+    "id": "b0-m4-17"
+   },
+   {
+    "prompt": "What is (55% of 140) + 12 × 16?",
+    "answer": "269",
+    "id": "b0-m4-18"
+   },
+   {
+    "prompt": "What is 27² − 13 × 11?",
+    "answer": "586",
+    "id": "b0-m4-19"
+   },
+   {
+    "prompt": "What is 23² − 19 × 11?",
+    "answer": "320",
+    "id": "b0-m4-20"
+   }
+  ],
+  "5": [
+   {
+    "prompt": "What is 379 × 18?",
+    "answer": "6822",
+    "id": "b0-m5-01"
+   },
+   {
+    "prompt": "What is (12% of 1300) + 43 × 25 − 19²?",
+    "answer": "870",
+    "id": "b0-m5-02"
+   },
+   {
+    "prompt": "What is (32 × 51) ÷ 4 + 21²?",
+    "answer": "849",
+    "id": "b0-m5-03"
+   },
+   {
+    "prompt": "What is (18% of 1900) + 49 × 20 − 13²?",
+    "answer": "1153",
+    "id": "b0-m5-04"
+   },
+   {
+    "prompt": "What is (45% of 700) + 26 × 16 − 14²?",
+    "answer": "535",
+    "id": "b0-m5-05"
+   },
+   {
+    "prompt": "What is (25 × 35) ÷ 7 + 17²?",
+    "answer": "414",
+    "id": "b0-m5-06"
+   },
+   {
+    "prompt": "What is (38 × 21) ÷ 6 + 19²?",
+    "answer": "494",
+    "id": "b0-m5-07"
+   },
+   {
+    "prompt": "What is (28 × 83) ÷ 7 + 15²?",
+    "answer": "557",
+    "id": "b0-m5-08"
+   },
+   {
+    "prompt": "What is 282 × 33?",
+    "answer": "9306",
+    "id": "b0-m5-09"
+   },
+   {
+    "prompt": "What is 276 × 22?",
+    "answer": "6072",
+    "id": "b0-m5-10"
+   },
+   {
+    "prompt": "What is 294 × 37?",
+    "answer": "10878",
+    "id": "b0-m5-11"
+   },
+   {
+    "prompt": "What is 186 × 27?",
+    "answer": "5022",
+    "id": "b0-m5-12"
+   },
+   {
+    "prompt": "What is (63 × 26) ÷ 7 + 18²?",
+    "answer": "558",
+    "id": "b0-m5-13"
+   },
+   {
+    "prompt": "What is 227 × 28?",
+    "answer": "6356",
+    "id": "b0-m5-14"
+   },
+   {
+    "prompt": "What is (72 × 56) ÷ 12 + 15²?",
+    "answer": "561",
+    "id": "b0-m5-15"
+   },
+   {
+    "prompt": "What is 354 × 37?",
+    "answer": "13098",
+    "id": "b0-m5-16"
+   },
+   {
+    "prompt": "What is (18% of 2100) + 24 × 28 − 22²?",
+    "answer": "566",
+    "id": "b0-m5-17"
+   },
+   {
+    "prompt": "What is (12% of 2300) + 41 × 29 − 17²?",
+    "answer": "1176",
+    "id": "b0-m5-18"
+   },
+   {
+    "prompt": "What is (35 × 26) ÷ 5 + 23²?",
+    "answer": "711",
+    "id": "b0-m5-19"
+   },
+   {
+    "prompt": "What is 196 × 44?",
+    "answer": "8624",
+    "id": "b0-m5-20"
+   }
+  ]
+ }
+}

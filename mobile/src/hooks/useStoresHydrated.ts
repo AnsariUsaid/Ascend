@@ -1,9 +1,11 @@
 import { useSyncExternalStore } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { useFrictionStore } from '../store/useFrictionStore';
+import { useQuestionPackStore } from '../data/questionPacks';
 import { hydrationFailed, onHydrationFailureChange } from '../store/hydration';
 
-const stores = [useAppStore.persist, useFrictionStore.persist];
+// The question pack is included so a resumed question is looked up in the right pack.
+const stores = [useAppStore.persist, useFrictionStore.persist, useQuestionPackStore.persist];
 const hasFailed = (store: (typeof stores)[number]) => {
   const { name } = store.getOptions();
   return name !== undefined && hydrationFailed(name);
