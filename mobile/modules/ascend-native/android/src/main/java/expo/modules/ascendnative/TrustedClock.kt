@@ -67,7 +67,8 @@ object TrustedClock {
       .apply()
   }
 
-  private fun bootCount(context: Context): Int =
+  /** Android's boot counter (-1 if unavailable) — changes on every reboot. */
+  fun bootCount(context: Context): Int =
     try {
       Settings.Global.getInt(context.contentResolver, Settings.Global.BOOT_COUNT)
     } catch (e: Exception) {
