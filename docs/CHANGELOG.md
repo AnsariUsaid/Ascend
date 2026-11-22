@@ -377,6 +377,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   now re-checks both every 30s; if one is off it shows "Ascend needs a quick fix … Tap to turn it
   back on" (opens the app's permission screen) and resumes by itself once fixed. Checks moved to
   a shared `Permissions.kt`.
+- **Two watcher crash risks removed** (#19) — the notification used the adaptive launcher icon as its
+  small icon (shows as a blob; can crash on Android 8), now a flat white chevron `ic_stat_ascend`;
+  and `startForeground` is wrapped, so if Android refuses it (e.g. a sticky restart in the
+  background on 12+) the service stops quietly instead of crashing.
 
 ---
 

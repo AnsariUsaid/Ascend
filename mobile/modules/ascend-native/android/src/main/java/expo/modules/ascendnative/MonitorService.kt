@@ -55,7 +55,10 @@ class MonitorService : Service() {
   override fun onBind(intent: Intent?): IBinder? = null
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    startInForeground()
+    if (!startInForeground()) {
+      stopSelf()
+      return START_NOT_STICKY
+    }
     if (!running) {
       running = true
       screenOn = (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
@@ -156,13 +159,21 @@ class MonitorService : Service() {
     }
   }
 
-  private fun startInForeground() {
+  /**
+   * Promote to a foreground service. Android 12+ can refuse this (e.g. on a
+   * sticky restart while the app is in the background) — return false instead
+   * of crashing; the next time Ascend is opened, startWatching retries.
+   */
+  private fun startInForeground(): Boolean = try {
     val notification = buildNotification()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
       startForeground(NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
     } else {
       startForeground(NOTIF_ID, notification)
     }
+    true
+  } catch (e: Exception) {
+    false
   }
 
   /** Re-post the ongoing notification so its text matches the permission state. */
@@ -204,7 +215,7 @@ class MonitorService : Service() {
       .setContentTitle(title)
       .setContentText(text)
       .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-      .setSmallIcon(applicationInfo.icon)
+      .setSmallIcon(R.drawable.ic_stat_ascend)
       .setOngoing(true)
       .setPriority(NotificationCompat.PRIORITY_LOW)
       .setContentIntent(contentIntent)

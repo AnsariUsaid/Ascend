@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon for the watcher notification: Ascend's doubled up-chevron as
+     a flat white silhouette (Android tints it; the full-colour launcher icon
+     renders as a blob there and can crash on Android 8). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M3,12L12,3L21,12L18.5,14.5L12,8L5.5,14.5Z" />
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M3,19L12,10L21,19L18.5,21.5L12,15L5.5,21.5Z" />
+</vector>
