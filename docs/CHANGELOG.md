@@ -364,6 +364,9 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   the same level, so guessing never got harder. Now every 2nd miss in a row also climbs a level (cap
   L5), alongside the growing wait. One slip is forgiven; guessing reaches typed questions fast.
   Typing is unchanged (its passage stays, no wait — it can't be guessed).
+- **Watcher no longer switched off on every launch** (#19) — `useMonitorSync` ran before saved settings
+  loaded, saw the empty default selection and stopped the watcher, then restarted it. It now waits
+  for `useStoresHydrated()` to be `ready` (and leaves the watcher alone if loading failed).
 
 ---
 

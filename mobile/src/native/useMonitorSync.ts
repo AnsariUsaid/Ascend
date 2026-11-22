@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import AscendNative from '../../modules/ascend-native';
 import { useAppStore } from '../store/useAppStore';
 import { DEFAULT_LIMIT } from '../data/apps';
+import { useStoresHydrated } from '../hooks/useStoresHydrated';
 
 /**
  * Keeps the native background watcher (Phase D foreground service) in sync with
@@ -18,8 +19,13 @@ import { DEFAULT_LIMIT } from '../data/apps';
 export function useMonitorSync() {
   const selected = useAppStore((s) => s.selected);
   const limits = useAppStore((s) => s.limits);
+  // Until saved settings load, `selected` is the empty default — syncing then
+  // would switch the watcher off on every launch. If loading failed, leave the
+  // watcher as it is rather than act on defaults.
+  const { status } = useStoresHydrated();
 
   useEffect(() => {
+    if (status !== 'ready') return;
     const sync = () => {
       try {
         const hasPerms = AscendNative.hasUsageAccess() && AscendNative.hasOverlayPermission();
@@ -44,5 +50,5 @@ export function useMonitorSync() {
       if (state === 'active') sync();
     });
     return () => sub.remove();
-  }, [selected, limits]);
+  }, [selected, limits, status]);
 }
