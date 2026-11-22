@@ -410,8 +410,20 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   offline/404 keeps the last copy and retries next open. Clear all data also clears it. Privacy policy
   updated (`8e5ca89`) — **deploy the website before 1.0.2 goes live.**
   ⚠️ `CHECK_EVERY_MS` is **10 min for testing** — set back to 24h before release.
-  Card actions: a coral primary button (the item's `button`) + **"Maybe later"** (or **"Got it"** when there's no
-  link), replacing the ✕. Both dismiss for good — a waved-away card never comes back, so it can't nag.
+  **Redesigned as a pill** (user design): a full-width, collapsible teal pill under the streak —
+  collapsed it's one line (title · action button · chevron), the chevron expands the full message. Not
+  dismissible (the old ✕ / "Maybe later" + `dismissed` list are gone); retire a message by removing
+  it from the file. The battery nudge moved down to sit just above the "This week" chart.
+- **Keyboard no longer hides the answer box** (device test) — on Android 15+ (edge-to-edge) the window
+  doesn't shrink for the keyboard, so it covered the bottom of the challenge sheet where you type. While
+  it's open the sheet grows to near full height, pads its bottom by the keyboard height, and scrolls the
+  passage (typing) or question (typed answers) into view.
+- **Leaving a challenge closes it** (device test) — press Home on a WhatsApp challenge, open Ascend for
+  stats, and you were stuck on WhatsApp's challenge (Back is blocked). Now when Ascend goes to the
+  background the challenge closes (and Ascend steps behind the previous app, so a screen-off/unlock lands
+  back in WhatsApp). Not a bypass: the watcher re-shows it within ~2s whenever the blocked app is opened,
+  with the same saved question, level and wait. All exits go through one guarded `close()` so two can't
+  pop the screen underneath.
 - **version → 1.0.2 (versionCode 3).**
 
 ---

@@ -1,5 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, BackHandler } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  ScrollView,
+  BackHandler,
+  Keyboard,
+  AppState,
+  useWindowDimensions,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -62,6 +73,34 @@ export default function Friction() {
 function FrictionScreen({ appParam }: { appParam: string }) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { height: screenH } = useWindowDimensions();
+
+  // Keyboard handling. On Android 15+ apps draw edge-to-edge and the window no
+  // longer shrinks for the keyboard (adjustResize is a no-op), so it slid over the
+  // bottom of this sheet — right where the answer box is. While it's open we grow
+  // the sheet to near full height, pad its bottom by the keyboard's height, and
+  // scroll the passage/question into view so you can see what you're typing.
+  const [kbHeight, setKbHeight] = useState(0);
+  const scrollRef = useRef<ScrollView>(null);
+  const anchorY = useRef(0); // y of the passage (typing) or question (typed answer)
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      setKbHeight(e.endCoordinates.height);
+      setTimeout(
+        () => scrollRef.current?.scrollTo({ y: Math.max(0, anchorY.current - 8), animated: true }),
+        60,
+      );
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKbHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  const cardStyle =
+    kbHeight > 0
+      ? { height: screenH - insets.top - 8, paddingBottom: kbHeight + 12 }
+      : { paddingBottom: insets.bottom + 20 };
   const questionType = useAppStore((s) => s.questionType);
   const grace = useAppStore((s) => s.gracePeriod);
 
@@ -217,14 +256,43 @@ function FrictionScreen({ appParam }: { appParam: string }) {
     try {
       AscendNative.returnToPreviousApp();
     } catch {}
-    router.back();
+    close();
   };
+
+  // Leave the challenge exactly once — several paths can fire together (e.g.
+  // "Back to app" also sends Ascend to the background), and a second back()
+  // would pop the screen underneath.
+  const closed = useRef(false);
+  const close = () => {
+    if (closed.current) return;
+    closed.current = true;
+    if (router.canGoBack()) router.back();
+    else router.replace('/(tabs)/home');
+  };
+
+  // If the user walks away (Home / Recents) without solving, close the challenge
+  // so opening Ascend later shows the app, not a leftover WhatsApp challenge.
+  // Not a bypass: the watcher re-shows it within ~2s whenever the blocked app is
+  // opened again, and the question, level and wait are all saved.
+  // Also step Ascend behind the previous app: if the background was the screen
+  // turning off, unlocking then shows the blocked app (and the watcher walls it
+  // again) rather than Ascend's dashboard.
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'background' || closed.current) return;
+      try {
+        AscendNative.returnToPreviousApp();
+      } catch {}
+      close();
+    });
+    return () => sub.remove();
+  }, []);
 
   return (
     <View style={styles.scrim}>
-      <View style={[styles.card, { paddingBottom: insets.bottom + 20 }]}>
+      <View style={[styles.card, cardStyle]}>
         {phase === 'question' && (
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <View style={styles.topRow}>
               <Wordmark size={15} />
               <View style={styles.levelChip}>
@@ -252,7 +320,12 @@ function FrictionScreen({ appParam }: { appParam: string }) {
 
             {isTyping ? (
               <>
-                <Text style={styles.label}>Type this sentence to earn {grace} more minutes</Text>
+                <Text
+                  style={styles.label}
+                  onLayout={(e) => (anchorY.current = e.nativeEvent.layout.y)}
+                >
+                  Type this sentence to earn {grace} more minutes
+                </Text>
                 <View style={styles.refCard}>
                   <Text style={styles.refText}>{ref}</Text>
                 </View>
@@ -302,7 +375,12 @@ function FrictionScreen({ appParam }: { appParam: string }) {
               </>
             ) : (
               <>
-                <Text style={styles.question}>{current.q.prompt}</Text>
+                <Text
+                  style={styles.question}
+                  onLayout={(e) => (anchorY.current = e.nativeEvent.layout.y)}
+                >
+                  {current.q.prompt}
+                </Text>
                 <TextInput
                   value={input}
                   onChangeText={(t) => {
@@ -360,7 +438,7 @@ function FrictionScreen({ appParam }: { appParam: string }) {
             <Text style={styles.bigSub}>
               {app.name} is blocked for the rest of the day. Come back tomorrow with a fresh streak.
             </Text>
-            <Button label="Close" variant="google" onPress={() => router.back()} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+            <Button label="Close" variant="google" onPress={close} style={{ marginTop: 24, alignSelf: 'stretch' }} />
           </View>
         )}
 
@@ -377,7 +455,7 @@ function FrictionScreen({ appParam }: { appParam: string }) {
               variant="google"
               onPress={once(() => {
                 doneForToday(appKey);
-                router.back();
+                close();
               })}
               style={{ marginTop: 24, alignSelf: 'stretch' }}
             />
