@@ -390,6 +390,11 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 - **Portrait is no longer an install requirement** (closes #16) — `screenOrientation="portrait"` made
   Android imply a required `android.hardware.screen.portrait`, which Play flagged as restricting
   availability. Declared it `required="false"`; the app still opens in portrait on phones.
+- **R8 code shrinking on for release builds** (closes #15) — Play flagged DEX optimisation at 1% (fix by
+  Feb 2027). `android.enableMinifyInReleaseBuilds=true`; Expo's bundled rules cover Records/Modules and
+  `proguard-rules.pro` keeps `expo.modules.ascendnative.**` whole. Resource shrinking stays off (RN
+  looks some images up by name). Release APK 43.7 → 34.2 MB; the AAB now carries the mapping file, so
+  the "no deobfuscation file" warning goes too. **Needs a full on-device pass before shipping.**
 
 ---
 
