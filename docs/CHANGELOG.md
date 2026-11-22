@@ -414,6 +414,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   collapsed it's one line (title · action button · chevron), the chevron expands the full message. Not
   dismissible (the old ✕ / "Maybe later" + `dismissed` list are gone); retire a message by removing
   it from the file. The battery nudge moved down to sit just above the "This week" chart.
+- **Keyboard no longer hides the answer box** (device test) — on Android 15+ (edge-to-edge) the window
+  doesn't shrink for the keyboard, so it covered the bottom of the challenge sheet where you type. While
+  it's open the sheet grows to near full height, pads its bottom by the keyboard height, and scrolls the
+  passage (typing) or question (typed answers) into view.
 - **version → 1.0.2 (versionCode 3).**
 
 ---
