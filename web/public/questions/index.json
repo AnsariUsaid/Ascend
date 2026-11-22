@@ -1,0 +1,4 @@
+{
+  "_readme": "How many weekly question batches exist (batch-1.json .. batch-N.json). The app picks (week % batches) + 1, counting weeks from Monday 5 January 2026. Add a batch: upload batch-N.json, then raise this number.",
+  "batches": 3
+}

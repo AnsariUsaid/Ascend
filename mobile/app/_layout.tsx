@@ -15,6 +15,7 @@ import {
 } from '@expo-google-fonts/outfit';
 import { colors } from '../src/theme';
 import { useMonitorSync } from '../src/native/useMonitorSync';
+import { useQuestionPackSync } from '../src/data/questionPacks';
 
 // Anchor the stack to the splash so modal routes (friction) present over a base
 // screen instead of becoming the initial route. Documented Expo Router modal pattern.
@@ -34,6 +35,7 @@ export default function RootLayout() {
 
   // Arm/disarm the native background limit watcher based on perms + config.
   useMonitorSync();
+  useQuestionPackSync(); // this week's question batch, downloaded once a week
 
   // While fonts load, hold a coral full-bleed view (matches the splash).
   if (!loaded) return <View style={{ flex: 1, backgroundColor: colors.coral }} />;

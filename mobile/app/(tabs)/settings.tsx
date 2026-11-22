@@ -15,6 +15,7 @@ import { colors, fonts, radius, spacing } from '../../src/theme';
 import { useAppStore, QuestionType, GracePeriod } from '../../src/store/useAppStore';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
 import { useAnnouncementStore } from '../../src/data/announcements';
+import { useQuestionPackStore } from '../../src/data/questionPacks';
 import { useUsage } from '../../src/usage/useUsage';
 import AscendNative from '../../modules/ascend-native';
 
@@ -155,7 +156,8 @@ export default function Settings() {
           setConfirm(null);
           // v1 is fully local — this is a full local wipe / fresh start.
           useFrictionStore.getState().resetDay(); // clears friction + native grace/blocked
-          useAnnouncementStore.getState().reset(); // cached announcements + dismissed list
+          useAnnouncementStore.getState().reset(); // cached announcements
+          useQuestionPackStore.getState().reset(); // downloaded question pack (falls back to the built-in one)
           try { AscendNative.stopWatching(); } catch {} // disarm the background watcher
           s.reset(); // reset all config (onboarded → false → reopen lands on welcome)
           router.replace('/sign-in');

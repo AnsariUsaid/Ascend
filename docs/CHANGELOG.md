@@ -426,6 +426,27 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   pop the screen underneath.
 - **version → 1.0.2 (versionCode 3).**
 
+## Question bank rework (branch `feat/question-bank`, one commit)
+
+- **New question bank** — 1,600 questions in 4 batches of 400 (100 per type, 20 per level), written to
+  `docs/QUESTION_SPEC.md`: trivia/logic levels shifted up with a new harder level 5, a harder math
+  ladder, typing passages from ~100 to ~650 characters. Source + validator kept locally (gitignored `scripts/questions/`)
+  (logic puzzles carry brute-force solvers proving exactly one answer); each batch was checked by two
+  reviewers and fixed.
+- **Weekly rotation** — batch 0 ships inside the app (`mobile/src/data/questions/batch-0.json`) as the
+  offline fallback. Batches 1–3 live on the website (`web/public/questions/`); the app downloads
+  `(week % batches) + 1` once a week (weeks counted from Monday 5 Jan 2026, by the trusted date),
+  validates it, and keeps it. Offline / bad file → keeps the last pack or batch 0. Adding a batch =
+  upload `batch-N.json` + raise `batches` in `index.json`, no app update. Clear all data also clears it.
+- **Checker** — honours each question's `reject` list (e.g. "lactose" no longer passes "lactase");
+  numeric answers compare digits only, so "80 years" and "1,440" pass; mixed answers like CO2 must match
+  exactly. Short words and Roman numerals must be typed exactly (so "vitamin b" no longer
+  passes "Vitamin C", nor "Henry VII" for "Henry VIII"); the typo allowance still covers longer words.
+  Downloaded packs with malformed `options`/`accept`/`reject` lists are rejected, and a saved pack that
+  fails to load falls back to the built-in set instead of holding up the limit watcher.
+- `questionBank.ts` shrank from 288 KB to ~7.5 KB (the hard-coded lists are gone). Privacy policy now
+  mentions the weekly question download.
+
 ---
 
 ## Still to come
