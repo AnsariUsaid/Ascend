@@ -68,7 +68,7 @@ type FrictionStore = {
 
   /** Correct answer → grant grace + climb one level. */
   answerCorrect: (key: string, graceMinutes: number) => void;
-  /** Wrong answer → bump the miss streak and start a lockout (no grace, no level change). */
+  /** Wrong answer → bump the miss streak and start a lockout; every 2nd miss in a row also climbs a level. */
   answerWrong: (key: string) => void;
   /** Remember the question currently shown for this app. */
   setCurrentQ: (key: string, q: AppFriction['currentQ']) => void;
@@ -140,7 +140,16 @@ export const useFrictionStore = create<FrictionStore>()(
         answerWrong: (key) =>
           update(key, (a) => {
             const wrongStreak = a.wrongStreak + 1;
-            return { ...a, wrongStreak, lockedUntil: Date.now() + lockMsFor(wrongStreak) };
+            // Every 2nd miss in a row climbs a level: one slip is forgiven, but
+            // guessing quickly reaches typed questions that can't be guessed.
+            const level = wrongStreak % 2 === 0 ? Math.min(MAX_LEVEL, a.level + 1) : a.level;
+            return {
+              ...a,
+              level,
+              maxLevel: Math.max(a.maxLevel, level),
+              wrongStreak,
+              lockedUntil: Date.now() + lockMsFor(wrongStreak),
+            };
           }),
 
         setCurrentQ: (key, q) => update(key, (a) => ({ ...a, currentQ: q })),

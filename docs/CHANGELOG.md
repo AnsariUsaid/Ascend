@@ -358,6 +358,62 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 
 ---
 
+## v1.0.2 — watcher reliability + Play housekeeping (branch `release/1.0.2`)
+
+- **Two misses in a row climb a level** (#18) — since 1.0.1 a wrong answer served a new question at
+  the same level, so guessing never got harder. Now every 2nd miss in a row also climbs a level (cap
+  L5), alongside the growing wait. One slip is forgiven; guessing reaches typed questions fast.
+  Typing is unchanged (its passage stays, no wait — it can't be guessed).
+- **Watcher no longer switched off on every launch** (#19) — `useMonitorSync` ran before saved settings
+  loaded, saw the empty default selection and stopped the watcher, then restarted it. It now waits
+  for `useStoresHydrated()` to be `ready` (and leaves the watcher alone if loading failed).
+- **Watcher sees the app already open after a restart** (#19) — on a fresh process
+  `currentForegroundApp()` only looked back 10s, so an app opened before the restart went unnoticed
+  (and its limit passed silently) until the user switched apps. The first read now replays the last 24h.
+- **Watcher re-arms after an app update** (#19) — `BootReceiver` now also handles
+  `MY_PACKAGE_REPLACED`; before, an update left the watcher off until Ascend was opened.
+- **Notification says when a permission is off** (#19) — revoking Usage access or Display-over-apps
+  silently ended enforcement while the notification still said "guarding your limits". The watcher
+  now re-checks both every 30s; if one is off it shows "Ascend needs a quick fix … Tap to turn it
+  back on" (opens the app's permission screen) and resumes by itself once fixed. Checks moved to
+  a shared `Permissions.kt`.
+- **Two watcher crash risks removed** (#19) — the notification used the adaptive launcher icon as its
+  small icon (shows as a blob; can crash on Android 8), now a flat white chevron `ic_stat_ascend`;
+  and `startForeground` is wrapped, so if Android refuses it (e.g. a sticky restart in the
+  background on 12+) the service stops quietly instead of crashing.
+- **Changing the date/clock no longer resets limits or stretches grace** (#19) — new `TrustedClock.kt`
+  anchors "wall clock W at time-since-boot E" and trusts W + elapsed afterwards (Settings can't
+  change time-since-boot). Drift ≤ 2 min follows the wall clock; bigger jumps are ignored until the
+  next reboot. Native grace is stored on time-since-boot (see follow-up below); "done for today" and the JS midnight reset use
+  the trusted day (`AscendNative.getTrustedDay()`, used by `todayKey()` with a phone-clock fallback).
+  Time-zone changes still apply (travel). Known gap: reboot + date change still works (costs a reboot).
+  Follow-up (CodeRabbit on #20): the watcher's own timers — the 30s permission re-check and the 1.5s
+  relaunch cooldown — now use time-since-boot too; with the wall clock, setting it back stalled them
+  (the cooldown could block every challenge for the size of the jump).
+  Follow-up (CodeRabbit on #20): **grace now ends on reboot.** It was stored on trusted time, which
+  re-anchors to the wall clock after a reboot — so "set the date back, earn grace, reboot" gave grace
+  for days. Grace is now kept on time-since-boot, tagged with the boot it was earned in; a reboot
+  ends it (it's at most 15 min). Old-format entries are treated as ended.
+- **Portrait is no longer an install requirement** (closes #16) — `screenOrientation="portrait"` made
+  Android imply a required `android.hardware.screen.portrait`, which Play flagged as restricting
+  availability. Declared it `required="false"`; the app still opens in portrait on phones.
+- **R8 code shrinking on for release builds** (closes #15) — Play flagged DEX optimisation at 1% (fix by
+  Feb 2027). `android.enableMinifyInReleaseBuilds=true`; Expo's bundled rules cover Records/Modules and
+  `proguard-rules.pro` keeps `expo.modules.ascendnative.**` whole. Resource shrinking stays off (RN
+  looks some images up by name). Release APK 43.7 → 34.2 MB; the AAB now carries the mapping file, so
+  the "no deobfuscation file" warning goes too. **Needs a full on-device pass before shipping.**
+- **Announcements card on Home** — a once-a-day download of the public `web/public/announcements.json`
+  (`src/data/announcements.ts`, persisted as `ascend-announcements`) shows one small dismissible card
+  (`AnnouncementCard`) for feedback forms or "a new version is ready". Items can target older versions
+  (`onlyBelow` / `onlyFrom`, both optional per item — none = everyone; via the new native `getAppVersion()`) and expire (`expires`). Links open in the browser /
+  Play Store, never in-app, so Data safety stays "no data collected". Malformed items are dropped;
+  offline/404 keeps the last copy and retries next open. Clear all data also clears it. Privacy policy
+  updated (`8e5ca89`) — **deploy the website before 1.0.2 goes live.**
+  ⚠️ `CHECK_EVERY_MS` is **10 min for testing** — set back to 24h before release.
+- **version → 1.0.2 (versionCode 3).**
+
+---
+
 ## Still to come
 
 - **Battery efficiency (option B, deferred)** — adaptive poll rate (skipped on purpose; only

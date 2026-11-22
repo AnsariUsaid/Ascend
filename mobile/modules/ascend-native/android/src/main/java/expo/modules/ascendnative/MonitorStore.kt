@@ -1,9 +1,8 @@
 package expo.modules.ascendnative
 
 import android.content.Context
+import android.os.SystemClock
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /**
  * The shared brain-state between JS and the background service, persisted in
@@ -11,7 +10,7 @@ import java.util.Locale
  * running (e.g. after a reboot, or while it's swiped away).
  *
  * Why timestamps/dates instead of booleans for grace/blocked: they SELF-EXPIRE.
- * grace[pkg] is the epoch ms the grace ends; blocked[pkg] is the day string it
+ * grace[pkg] holds when grace ends (time-since-boot + boot id); blocked[pkg] is the day string it
  * applies to. The service can decide "in grace?" / "blocked today?" purely from
  * the clock, with no JS round-trip — and blocked naturally lapses at midnight.
  */
@@ -19,7 +18,7 @@ object MonitorStore {
   private const val PREFS = "ascend_monitor"
   private const val KEY_ENABLED = "enabled"
   private const val KEY_CONFIG = "config"   // JSON { pkg: limitMinutes }
-  private const val KEY_GRACE = "grace"     // JSON { pkg: epochMs }
+  private const val KEY_GRACE = "grace"     // JSON { pkg: { until, setAt, boot } }
   private const val KEY_BLOCKED = "blocked" // JSON { pkg: "YYYY-MM-DD" }
 
   private fun prefs(context: Context) =
@@ -47,29 +46,50 @@ object MonitorStore {
     return if (json.has(packageName)) json.getInt(packageName) else null
   }
 
-  // --- grace (pkg → epoch ms it ends) ------------------------------------
+  // --- grace (pkg → { until, boot }) --------------------------------------
 
+  /**
+   * `untilMs` is wall-clock epoch ms from JS. We keep only the remaining time,
+   * measured on time-since-boot (SystemClock.elapsedRealtime), which Settings
+   * can't change — so winding the clock back can't stretch grace.
+   *
+   * Time-since-boot restarts on reboot, so each entry is tagged with the boot it
+   * was earned in, and a reboot ends it. Grace is at most a few minutes, so
+   * losing the rest of it to a restart is fair — and it closes the "set the date
+   * back, earn grace, reboot → grace for days" hole.
+   */
   fun setGrace(context: Context, packageName: String, untilMs: Long) {
+    val remaining = (untilMs - System.currentTimeMillis()).coerceAtLeast(0L)
+    val now = SystemClock.elapsedRealtime()
+    val entry = JSONObject()
+      .put("until", now + remaining)
+      .put("setAt", now)
+      .put("boot", TrustedClock.bootCount(context))
     val json = readJson(context, KEY_GRACE)
-    json.put(packageName, untilMs)
+    json.put(packageName, entry)
     prefs(context).edit().putString(KEY_GRACE, json.toString()).apply()
   }
 
   fun isInGrace(context: Context, packageName: String): Boolean {
-    val until = readJson(context, KEY_GRACE).optLong(packageName, 0L)
-    return until > System.currentTimeMillis()
+    // Entries from older versions (plain numbers) aren't objects → treated as ended.
+    val entry = readJson(context, KEY_GRACE).optJSONObject(packageName) ?: return false
+    val now = SystemClock.elapsedRealtime()
+    val sameBoot = entry.optInt("boot", Int.MIN_VALUE) == TrustedClock.bootCount(context) &&
+      now >= entry.optLong("setAt", Long.MAX_VALUE) // time-since-boot went backwards → rebooted
+    return sameBoot && now < entry.optLong("until", 0L)
   }
 
   // --- blocked (pkg → day string) ----------------------------------------
 
+  // "Today" comes from the trusted clock, so changing the date doesn't lift a block.
   fun setBlockedToday(context: Context, packageName: String) {
     val json = readJson(context, KEY_BLOCKED)
-    json.put(packageName, today())
+    json.put(packageName, TrustedClock.today(context))
     prefs(context).edit().putString(KEY_BLOCKED, json.toString()).apply()
   }
 
   fun isBlockedToday(context: Context, packageName: String): Boolean =
-    readJson(context, KEY_BLOCKED).optString(packageName, "") == today()
+    readJson(context, KEY_BLOCKED).optString(packageName, "") == TrustedClock.today(context)
 
   // --- clearing (midnight reset / dev reset / answered) ------------------
 
@@ -94,8 +114,4 @@ object MonitorStore {
     } catch (e: Exception) {
       JSONObject()
     }
-
-  /** Local "YYYY-MM-DD" — matches the JS todayKey() format. */
-  private fun today(): String =
-    SimpleDateFormat("yyyy-MM-dd", Locale.US).format(System.currentTimeMillis())
 }

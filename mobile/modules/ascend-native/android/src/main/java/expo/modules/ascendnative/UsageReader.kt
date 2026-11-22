@@ -20,6 +20,7 @@ import java.util.Calendar
  */
 object UsageReader {
   private const val DAY_MS = 24L * 60L * 60L * 1000L
+  private const val FIRST_LOOKBACK_MS = DAY_MS
 
   /**
    * Foreground minutes per package for the last `days` calendar days.
@@ -90,7 +91,10 @@ object UsageReader {
   fun currentForegroundApp(context: Context): String? {
     val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     val now = System.currentTimeMillis()
-    val from = if (lastQueryTs == 0L) now - 10_000L else lastQueryTs
+    // First read in this process: replay the last day of events, so an app that
+    // was already open before the watcher (re)started is found. Only looking back
+    // a few seconds missed it until the user next switched apps.
+    val from = if (lastQueryTs == 0L) now - FIRST_LOOKBACK_MS else lastQueryTs
     val events = usm.queryEvents(from, now)
     val event = UsageEvents.Event()
     while (events.hasNextEvent()) {

@@ -12,3 +12,9 @@
 -keep class com.facebook.react.turbomodule.** { *; }
 
 # Add any project specific keep options here:
+
+# Ascend's own native module (watcher service, boot receiver, Expo module).
+# Expo's bundled rules already cover Records/Modules and the manifest keeps the
+# service/receiver; keep the whole small package anyway so nothing it reaches
+# by reflection gets renamed or stripped.
+-keep class expo.modules.ascendnative.** { *; }
