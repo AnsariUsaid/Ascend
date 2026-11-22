@@ -91,23 +91,26 @@ export default function PrivacyPolicy() {
         </P>
         <P>
           In one line: Ascend reads your Android screen-time data <em>on your device</em> to know when you&apos;ve
-          passed a daily limit you set for an app, then shows a challenge over that app. All of it happens locally.
+          passed a daily limit you set for an app (or opened an app you left behind during a focus session), then
+          shows a screen over that app. All of it happens locally.
         </P>
 
         <H2>What Ascend accesses on your device — and why</H2>
-        <P>Ascend asks only for what it needs to enforce the limits you set. Each permission is used solely for the purpose below, and nothing it reads is uploaded.</P>
+        <P>Ascend asks only for what it needs to enforce the limits and focus sessions you set. Each permission is used solely for the purpose below, and nothing it reads is uploaded.</P>
         <ul style={{ paddingLeft: 20, marginTop: 6 }}>
           <Item label="Usage access (screen time)">
-            Ascend reads how long you spend in each app using Android&apos;s usage statistics. This is how it knows
-            when you&apos;ve hit a limit and how it shows your stats. Read and processed on your device.
+            Ascend reads which app is open and how long you spend in each app using Android&apos;s usage statistics.
+            This is how it knows when you&apos;ve hit a limit or opened an app you left behind for a focus session, and
+            how it shows your stats. Read and processed on your device.
           </Item>
           <Item label="Display over other apps">
             Lets Ascend show the full-screen challenge (or, during a focus session, the focus screen) on top of the app
             you&apos;re using, and lets its background checker bring that screen up. No data is collected through this.
           </Item>
           <Item label="Background service & restart-on-boot">
-            A lightweight background service watches for the moment you cross a limit, and restarts itself after a
-            reboot so protection keeps working. It only processes usage on-device.
+            A lightweight background service watches for the moment you cross a limit or open an app you left behind
+            during a focus session, and restarts itself after a reboot or an app update so protection keeps working. It
+            only processes usage on-device.
           </Item>
           <Item label="Notifications">
             Android requires an ongoing notification for that background service. Ascend uses it only to show that the
@@ -116,7 +119,7 @@ export default function PrivacyPolicy() {
           <Item label="Your installed apps">
             To build the app picker, Ascend asks Android for the list of apps that have a launcher icon. It does{" "}
             <em>not</em> use the broad &quot;query all packages&quot; access, and the list is used only to let you choose which
-            apps to limit.
+            apps to limit or leave behind during focus.
           </Item>
           <Item label="Vibration">Short haptic feedback inside the app.</Item>
           <Item label="Internet">
