@@ -50,13 +50,14 @@
           android:value="Enforces user-configured per-app screen-time limits by prompting in-app when a limit is exceeded." />
     </service>
 
-    <!-- Restart the watcher on boot. exported=true is required to receive the
-         system BOOT_COMPLETED broadcast. -->
+    <!-- Restart the watcher on boot and after an app update. exported=true is
+         required to receive the system BOOT_COMPLETED broadcast. -->
     <receiver
         android:name="expo.modules.ascendnative.BootReceiver"
         android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
       </intent-filter>
     </receiver>
   </application>

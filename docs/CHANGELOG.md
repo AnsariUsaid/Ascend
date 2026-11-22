@@ -367,6 +367,11 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 - **Watcher no longer switched off on every launch** (#19) — `useMonitorSync` ran before saved settings
   loaded, saw the empty default selection and stopped the watcher, then restarted it. It now waits
   for `useStoresHydrated()` to be `ready` (and leaves the watcher alone if loading failed).
+- **Watcher sees the app already open after a restart** (#19) — on a fresh process
+  `currentForegroundApp()` only looked back 10s, so an app opened before the restart went unnoticed
+  (and its limit passed silently) until the user switched apps. The first read now replays the last 24h.
+- **Watcher re-arms after an app update** (#19) — `BootReceiver` now also handles
+  `MY_PACKAGE_REPLACED`; before, an update left the watcher off until Ascend was opened.
 
 ---
 
