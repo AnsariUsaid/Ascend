@@ -403,6 +403,7 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   offline/404 keeps the last copy and retries next open. Clear all data also clears it. Privacy policy
   updated (`8e5ca89`) — **deploy the website before 1.0.2 goes live.**
   ⚠️ `CHECK_EVERY_MS` is **10 min for testing** — set back to 24h before release.
+- **version → 1.0.2 (versionCode 3).**
 
 ---
 
