@@ -8,6 +8,7 @@ import {
   ScrollView,
   BackHandler,
   Keyboard,
+  AppState,
   useWindowDimensions,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -255,8 +256,37 @@ function FrictionScreen({ appParam }: { appParam: string }) {
     try {
       AscendNative.returnToPreviousApp();
     } catch {}
-    router.back();
+    close();
   };
+
+  // Leave the challenge exactly once — several paths can fire together (e.g.
+  // "Back to app" also sends Ascend to the background), and a second back()
+  // would pop the screen underneath.
+  const closed = useRef(false);
+  const close = () => {
+    if (closed.current) return;
+    closed.current = true;
+    if (router.canGoBack()) router.back();
+    else router.replace('/(tabs)/home');
+  };
+
+  // If the user walks away (Home / Recents) without solving, close the challenge
+  // so opening Ascend later shows the app, not a leftover WhatsApp challenge.
+  // Not a bypass: the watcher re-shows it within ~2s whenever the blocked app is
+  // opened again, and the question, level and wait are all saved.
+  // Also step Ascend behind the previous app: if the background was the screen
+  // turning off, unlocking then shows the blocked app (and the watcher walls it
+  // again) rather than Ascend's dashboard.
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'background' || closed.current) return;
+      try {
+        AscendNative.returnToPreviousApp();
+      } catch {}
+      close();
+    });
+    return () => sub.remove();
+  }, []);
 
   return (
     <View style={styles.scrim}>
@@ -408,7 +438,7 @@ function FrictionScreen({ appParam }: { appParam: string }) {
             <Text style={styles.bigSub}>
               {app.name} is blocked for the rest of the day. Come back tomorrow with a fresh streak.
             </Text>
-            <Button label="Close" variant="google" onPress={() => router.back()} style={{ marginTop: 24, alignSelf: 'stretch' }} />
+            <Button label="Close" variant="google" onPress={close} style={{ marginTop: 24, alignSelf: 'stretch' }} />
           </View>
         )}
 
@@ -425,7 +455,7 @@ function FrictionScreen({ appParam }: { appParam: string }) {
               variant="google"
               onPress={once(() => {
                 doneForToday(appKey);
-                router.back();
+                close();
               })}
               style={{ marginTop: 24, alignSelf: 'stretch' }}
             />

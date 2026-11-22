@@ -418,6 +418,12 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   doesn't shrink for the keyboard, so it covered the bottom of the challenge sheet where you type. While
   it's open the sheet grows to near full height, pads its bottom by the keyboard height, and scrolls the
   passage (typing) or question (typed answers) into view.
+- **Leaving a challenge closes it** (device test) — press Home on a WhatsApp challenge, open Ascend for
+  stats, and you were stuck on WhatsApp's challenge (Back is blocked). Now when Ascend goes to the
+  background the challenge closes (and Ascend steps behind the previous app, so a screen-off/unlock lands
+  back in WhatsApp). Not a bypass: the watcher re-shows it within ~2s whenever the blocked app is opened,
+  with the same saved question, level and wait. All exits go through one guarded `close()` so two can't
+  pop the screen underneath.
 - **version → 1.0.2 (versionCode 3).**
 
 ---
