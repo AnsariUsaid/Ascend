@@ -16,6 +16,7 @@ import {
 import { colors } from '../src/theme';
 import { useMonitorSync } from '../src/native/useMonitorSync';
 import { useQuestionPackSync } from '../src/data/questionPacks';
+import { useFocusSync } from '../src/store/useFocusStore';
 
 // Anchor the stack to the splash so modal routes (friction) present over a base
 // screen instead of becoming the initial route. Documented Expo Router modal pattern.
@@ -36,6 +37,7 @@ export default function RootLayout() {
   // Arm/disarm the native background limit watcher based on perms + config.
   useMonitorSync();
   useQuestionPackSync(); // this week's question batch, downloaded once a week
+  useFocusSync(); // finish a Focus session that ended while closed; re-send a running one
 
   // While fonts load, hold a coral full-bleed view (matches the splash).
   if (!loaded) return <View style={{ flex: 1, backgroundColor: colors.coral }} />;
@@ -53,6 +55,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen
           name="friction"
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="focus-block"
           options={{ presentation: 'transparentModal', animation: 'fade' }}
         />
       </Stack>

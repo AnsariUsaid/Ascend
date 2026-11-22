@@ -16,6 +16,7 @@ import { useAppStore, QuestionType, GracePeriod } from '../../src/store/useAppSt
 import { useFrictionStore } from '../../src/store/useFrictionStore';
 import { useAnnouncementStore } from '../../src/data/announcements';
 import { useQuestionPackStore } from '../../src/data/questionPacks';
+import { useFocusStore } from '../../src/store/useFocusStore';
 import { useUsage } from '../../src/usage/useUsage';
 import AscendNative from '../../modules/ascend-native';
 
@@ -158,6 +159,7 @@ export default function Settings() {
           useFrictionStore.getState().resetDay(); // clears friction + native grace/blocked
           useAnnouncementStore.getState().reset(); // cached announcements
           useQuestionPackStore.getState().reset(); // downloaded question pack (falls back to the built-in one)
+          useFocusStore.getState().reset(); // focus session + 7-day focus history
           try { AscendNative.stopWatching(); } catch {} // disarm the background watcher
           s.reset(); // reset all config (onboarded → false → reopen lands on welcome)
           router.replace('/sign-in');

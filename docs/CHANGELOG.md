@@ -449,6 +449,30 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 
 ---
 
+## Focus — "the climb" (branch `feat/focus`)
+
+- **New Focus tab** (Home · Focus · Stats · Settings): pick a length (15/25/45/60/90 min or custom
+  5–240) and the apps to leave behind (any installed app; last time's choice, else your monitored
+  apps), then start. The screen fades from day to night and a glowing climber walks a switchback trail
+  up the mountain as time passes, with a slow ~5s "breathing" glow. **Pause** = resting at camp (a tent;
+  apps open again, paused time doesn't count). **Stop** asks first, then saves what you climbed to
+  today. Reaching the end plants the flag with a small star burst ("Summit reached").
+- **Your week as a mountain range** — each day's peak is as tall as that day's focus time; tap a peak
+  for that day. Focus minutes are kept for the last 7 days only (older days are dropped).
+- **Apps left behind stay closed**: Android can't close another app, so the watcher does what friction
+  does — within ~2s of opening one, a calm night screen ("Instagram can wait", time left) covers it.
+  No questions; "Back to focus" opens the Focus tab. Focus wins over limits and grace. No new
+  permissions.
+- **Native**: `MonitorStore` keeps the session (apps + end on time-since-boot, so the clock can't end
+  it early; a reboot drops it and JS re-sends it on open). The ongoing notification shows "You're in
+  focus" with a system-ticked countdown, and a "Summit reached" notification fires if the timer ends
+  while Ascend is closed. The watcher now also runs while Focus is on with no daily limits set.
+- **JS**: `useFocusStore` (`ascend-focus`) keeps time as timestamps, so it survives Android killing
+  Ascend; `useFocusSync` ends a session whose time ran out while closed and re-sends a running one.
+  Clear all data also clears Focus. Privacy policy lists focus sessions as on-device data.
+
+---
+
 ## Still to come
 
 - **Battery efficiency (option B, deferred)** — adaptive poll rate (skipped on purpose; only

@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, usePathname } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { useStatusBarStyle } from '../../src/hooks/useStatusBarStyle';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const pathname = usePathname();
   useStatusBarStyle('dark'); // cream tab screens → dark icons
   return (
     <View style={{ flex: 1 }}>
@@ -37,6 +38,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="focus"
+        options={{
+          title: 'Focus',
+          tabBarIcon: ({ color }) => <Feather name="triangle" size={sizes.navIcon} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="stats"
         options={{
           title: 'Stats',
@@ -56,7 +64,9 @@ export default function TabsLayout() {
       />
       </Tabs>
       {/* Fixed cream bar behind the translucent status bar so dark cards scrolling
-          up pass under cream (not under the icons), keeping the dark icons legible. */}
+          up pass under cream (not under the icons), keeping the dark icons legible.
+          Focus draws its own, since its sky turns to night. */}
+      {pathname !== '/focus' && (
       <View
         pointerEvents="none"
         style={{
@@ -68,6 +78,7 @@ export default function TabsLayout() {
           backgroundColor: colors.cream,
         }}
       />
+      )}
       <PermissionGate />
     </View>
   );

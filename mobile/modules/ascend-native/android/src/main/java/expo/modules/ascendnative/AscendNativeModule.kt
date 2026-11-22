@@ -65,6 +65,13 @@ class AscendNativeModule : Module() {
       MonitorStore.clearFriction(context, packageName)
     }
     Function("clearAllFriction") { MonitorStore.clearAllFriction(context) }
+
+    // Focus: keep these apps closed until untilMs (epoch ms). Pausing or stopping
+    // calls clearFocus. The watcher must be running (startWatching) to enforce it.
+    Function("setFocus") { apps: List<String>, untilMs: Double, totalMinutes: Int ->
+      MonitorStore.setFocus(context, apps, untilMs.toLong(), totalMinutes)
+    }
+    Function("clearFocus") { MonitorStore.clearFocus(context) }
     // Today's date from the tamper-proof clock, so JS's midnight reset can't be
     // triggered by changing the date in Settings.
     Function("getTrustedDay") { TrustedClock.today(context) }

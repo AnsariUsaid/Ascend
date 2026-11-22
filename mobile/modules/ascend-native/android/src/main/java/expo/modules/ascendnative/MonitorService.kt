@@ -41,6 +41,8 @@ class MonitorService : Service() {
   // elapsedRealtime of the last check; starts "due" so the first tick checks at once,
   // even if the service starts within 30s of boot.
   private var lastPermCheck = -PERM_CHECK_MS
+  // Last Focus state the notification was built for (worker thread only).
+  private var lastFocusSig = ""
 
   // Whether the screen is on. When it's off, nobody can be using an app, so the
   // poll loop idles to save battery; SCREEN_ON wakes it immediately.
@@ -118,6 +120,7 @@ class MonitorService : Service() {
       stopSelf()
       return
     }
+    checkFocus()
     // If a permission was revoked, limits can't be enforced. Say so in the
     // notification (instead of claiming we're still guarding) and keep running,
     // so enforcement resumes by itself once it's turned back on.
@@ -136,6 +139,14 @@ class MonitorService : Service() {
 
     val fg = UsageReader.currentForegroundApp(this) ?: return
     if (fg == packageName) return // our own friction screen is showing
+
+    // A running Focus session wins over limits and grace: the app stays closed
+    // until the timer ends (or the user pauses / stops it in Ascend).
+    if (MonitorStore.isFocusBlocked(this, fg)) {
+      if (cooledDown(fg)) launch("ascend://focus-block?app=$fg")
+      return
+    }
+
     val limit = MonitorStore.limitFor(this, fg) ?: return // not a monitored app
 
     // "Done for today" is a hard block → re-show the wall every time the app is
@@ -147,16 +158,80 @@ class MonitorService : Service() {
       UsageReader.todayMinutes(this, fg) >= limit && !MonitorStore.isInGrace(this, fg)
     }
     if (!shouldWall) return
-
-    val now = SystemClock.elapsedRealtime()
-    val last = lastLaunch[fg]
-    if (last != null && now - last < LAUNCH_COOLDOWN_MS) return
-    lastLaunch[fg] = now
-    launchFriction(fg)
+    if (cooledDown(fg)) launch("ascend://friction?app=$fg")
   }
 
-  private fun launchFriction(packageName: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("ascend://friction?app=$packageName"))
+  /** Debounce: true (and stamps the time) if we haven't launched a screen for `pkg` just now. */
+  private fun cooledDown(pkg: String): Boolean {
+    val now = SystemClock.elapsedRealtime()
+    val last = lastLaunch[pkg]
+    if (last != null && now - last < LAUNCH_COOLDOWN_MS) return false
+    lastLaunch[pkg] = now
+    return true
+  }
+
+  /**
+   * Keep the notification in step with Focus: a live countdown while a session
+   * runs, back to normal when it pauses or stops, and a "summit reached" note
+   * when the timer runs out (even if Ascend itself isn't open).
+   */
+  private fun checkFocus() {
+    if (MonitorStore.isFocusFinished(this)) {
+      val total = MonitorStore.focusTotalMinutes(this)
+      MonitorStore.clearFocus(this)
+      postFocusDone(total)
+    }
+    val sig = MonitorStore.focusSignature(this)
+    if (sig != lastFocusSig) {
+      lastFocusSig = sig
+      refreshNotification()
+    }
+  }
+
+  private fun postFocusDone(totalMinutes: Int) {
+    try {
+      val manager = getSystemService(NotificationManager::class.java)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+        manager.getNotificationChannel(FOCUS_CHANNEL_ID) == null
+      ) {
+        manager.createNotificationChannel(
+          NotificationChannel(FOCUS_CHANNEL_ID, "Focus sessions", NotificationManager.IMPORTANCE_DEFAULT)
+            .apply { description = "Lets you know when a focus session is done." },
+        )
+      }
+      val text = if (totalMinutes > 0) {
+        "Your $totalMinutes min climb is done, and your apps are open again."
+      } else {
+        "Your climb is done, and your apps are open again."
+      }
+      val notification = NotificationCompat.Builder(this, FOCUS_CHANNEL_ID)
+        .setContentTitle("Summit reached")
+        .setContentText(text)
+        .setSmallIcon(R.drawable.ic_stat_ascend)
+        .setAutoCancel(true)
+        .setContentIntent(openAppIntent())
+        .build()
+      manager.notify(FOCUS_DONE_NOTIF_ID, notification)
+    } catch (e: Exception) {
+      // notifications blocked — Ascend shows the summit when it's next opened
+    }
+  }
+
+  private fun openAppIntent(): PendingIntent = PendingIntent.getActivity(
+    this,
+    0,
+    packageManager.getLaunchIntentForPackage(packageName),
+    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+  )
+
+  private fun appLabel(pkg: String): String = try {
+    packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0)).toString()
+  } catch (e: Exception) {
+    pkg
+  }
+
+  private fun launch(uri: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
       .setPackage(getPackageName())
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     try {
@@ -206,33 +281,46 @@ class MonitorService : Service() {
       }
     }
 
-    val launch = packageManager.getLaunchIntentForPackage(packageName)
-    val contentIntent = PendingIntent.getActivity(
-      this,
-      0,
-      launch,
-      PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-    )
-
-    val (title, text) = if (permsOk) {
-      "Ascend is guarding your limits" to "Watching your monitored apps."
-    } else {
-      "Ascend needs a quick fix" to "A permission was turned off, so your limits are paused. Tap to turn it back on."
+    val focusing = permsOk && MonitorStore.isFocusActive(this)
+    val (title, text) = when {
+      !permsOk ->
+        "Ascend needs a quick fix" to "A permission was turned off, so your limits are paused. Tap to turn it back on."
+      focusing -> {
+        val names = MonitorStore.focusApps(this).map { appLabel(it) }
+        val waiting = when (names.size) {
+          0 -> "Your apps are"
+          1 -> "${names[0]} is"
+          2 -> "${names[0]} and ${names[1]} are"
+          else -> "${names[0]}, ${names[1]} and ${names.size - 2} more are"
+        }
+        "You're in focus" to "$waiting waiting at base camp."
+      }
+      else -> "Ascend is guarding your limits" to "Watching your monitored apps."
     }
-    return NotificationCompat.Builder(this, CHANNEL_ID)
+    val builder = NotificationCompat.Builder(this, CHANNEL_ID)
       .setContentTitle(title)
       .setContentText(text)
       .setStyle(NotificationCompat.BigTextStyle().bigText(text))
       .setSmallIcon(R.drawable.ic_stat_ascend)
       .setOngoing(true)
       .setPriority(NotificationCompat.PRIORITY_LOW)
-      .setContentIntent(contentIntent)
-      .build()
+      .setContentIntent(openAppIntent())
+    if (focusing) {
+      // The system ticks this countdown itself — no need to re-post every second.
+      builder
+        .setWhen(System.currentTimeMillis() + MonitorStore.focusRemainingMs(this))
+        .setShowWhen(true)
+        .setUsesChronometer(true)
+        .setChronometerCountDown(true)
+    }
+    return builder.build()
   }
 
   companion object {
     private const val NOTIF_ID = 4201
+    private const val FOCUS_DONE_NOTIF_ID = 4202
     private const val CHANNEL_ID = "ascend_monitor"
+    private const val FOCUS_CHANNEL_ID = "ascend_focus"
     private const val POLL_MS = 2_000L // screen-on poll (screen-off idles at IDLE_MS)
     private const val IDLE_MS = 60_000L // screen-off idle between safety re-checks
     private const val LAUNCH_COOLDOWN_MS = 1_500L // < POLL_MS so it never adds delay on re-block

@@ -20,6 +20,7 @@ object MonitorStore {
   private const val KEY_CONFIG = "config"   // JSON { pkg: limitMinutes }
   private const val KEY_GRACE = "grace"     // JSON { pkg: { until, setAt, boot } }
   private const val KEY_BLOCKED = "blocked" // JSON { pkg: "YYYY-MM-DD" }
+  private const val KEY_FOCUS = "focus"     // JSON { apps: [pkg], until, setAt, boot, total }
 
   private fun prefs(context: Context) =
     context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -90,6 +91,73 @@ object MonitorStore {
 
   fun isBlockedToday(context: Context, packageName: String): Boolean =
     readJson(context, KEY_BLOCKED).optString(packageName, "") == TrustedClock.today(context)
+
+  // --- focus session (apps + end time) -------------------------------------
+
+  /**
+   * A running Focus session: these apps stay closed until `untilMs` (wall epoch ms
+   * from JS). Like grace, only the remaining time is kept, on time-since-boot, so
+   * changing the clock can't end it early. A reboot drops it; JS re-sends the
+   * session the next time Ascend opens. Paused or stopped → JS calls clearFocus.
+   */
+  fun setFocus(context: Context, apps: List<String>, untilMs: Long, totalMinutes: Int) {
+    val remaining = (untilMs - System.currentTimeMillis()).coerceAtLeast(0L)
+    val now = SystemClock.elapsedRealtime()
+    val entry = JSONObject()
+      .put("apps", org.json.JSONArray(apps))
+      .put("until", now + remaining)
+      .put("setAt", now)
+      .put("boot", TrustedClock.bootCount(context))
+      .put("total", totalMinutes)
+    prefs(context).edit().putString(KEY_FOCUS, entry.toString()).apply()
+  }
+
+  fun clearFocus(context: Context) {
+    prefs(context).edit().remove(KEY_FOCUS).apply()
+  }
+
+  /** The saved session if it belongs to this boot, else null. */
+  private fun focusEntry(context: Context): JSONObject? {
+    val raw = prefs(context).getString(KEY_FOCUS, null) ?: return null
+    val entry = try { JSONObject(raw) } catch (e: Exception) { return null }
+    val now = SystemClock.elapsedRealtime()
+    val sameBoot = entry.optInt("boot", Int.MIN_VALUE) == TrustedClock.bootCount(context) &&
+      now >= entry.optLong("setAt", Long.MAX_VALUE)
+    return if (sameBoot) entry else null
+  }
+
+  fun isFocusActive(context: Context): Boolean {
+    val entry = focusEntry(context) ?: return false
+    return SystemClock.elapsedRealtime() < entry.optLong("until", 0L)
+  }
+
+  /** True if a session ran to its end (this boot) and hasn't been cleared yet. */
+  fun isFocusFinished(context: Context): Boolean {
+    val entry = focusEntry(context) ?: return false
+    return SystemClock.elapsedRealtime() >= entry.optLong("until", Long.MAX_VALUE)
+  }
+
+  fun isFocusBlocked(context: Context, packageName: String): Boolean {
+    if (!isFocusActive(context)) return false
+    val apps = focusEntry(context)?.optJSONArray("apps") ?: return false
+    return (0 until apps.length()).any { apps.optString(it) == packageName }
+  }
+
+  fun focusApps(context: Context): List<String> {
+    val apps = focusEntry(context)?.optJSONArray("apps") ?: return emptyList()
+    return (0 until apps.length()).map { apps.optString(it) }
+  }
+
+  fun focusRemainingMs(context: Context): Long {
+    val entry = focusEntry(context) ?: return 0L
+    return (entry.optLong("until", 0L) - SystemClock.elapsedRealtime()).coerceAtLeast(0L)
+  }
+
+  fun focusTotalMinutes(context: Context): Int = focusEntry(context)?.optInt("total", 0) ?: 0
+
+  /** Changes whenever a session starts, resumes, pauses or ends — for refreshing the notification. */
+  fun focusSignature(context: Context): String =
+    focusEntry(context)?.let { "${it.optLong("until")}:${isFocusActive(context)}" } ?: ""
 
   // --- clearing (midnight reset / dev reset / answered) ------------------
 

@@ -102,8 +102,8 @@ export default function PrivacyPolicy() {
             when you&apos;ve hit a limit and how it shows your stats. Read and processed on your device.
           </Item>
           <Item label="Display over other apps">
-            Lets Ascend show the full-screen challenge on top of the app you&apos;re using, and lets its background
-            checker bring that screen up. No data is collected through this.
+            Lets Ascend show the full-screen challenge (or, during a focus session, the focus screen) on top of the app
+            you&apos;re using, and lets its background checker bring that screen up. No data is collected through this.
           </Item>
           <Item label="Background service & restart-on-boot">
             A lightweight background service watches for the moment you cross a limit, and restarts itself after a
@@ -111,7 +111,7 @@ export default function PrivacyPolicy() {
           </Item>
           <Item label="Notifications">
             Android requires an ongoing notification for that background service. Ascend uses it only to show that the
-            limit checker is running.
+            limit checker is running or how long a focus session has left, and to tell you when a focus session ends.
           </Item>
           <Item label="Your installed apps">
             To build the app picker, Ascend asks Android for the list of apps that have a launcher icon. It does{" "}
@@ -138,6 +138,10 @@ export default function PrivacyPolicy() {
           <Item label="Your day-to-day progress">
             The current challenge difficulty, any active grace period, whether you&apos;ve chosen to stop an app for the
             day, and simple counts of answers and skips. This resets each day.
+          </Item>
+          <Item label="Your focus sessions">
+            A running focus session (its length and the apps you chose to leave behind) and how many minutes you
+            focused on each of the last 7 days. Older days are deleted automatically.
           </Item>
           <Item label="Announcements">
             The latest copy of the announcements file and when it was last checked.
