@@ -398,10 +398,11 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 - **Announcements card on Home** — a once-a-day download of the public `web/public/announcements.json`
   (`src/data/announcements.ts`, persisted as `ascend-announcements`) shows one small dismissible card
   (`AnnouncementCard`) for feedback forms or "a new version is ready". Items can target older versions
-  (`onlyBelow`, via the new native `getAppVersion()`) and expire (`expires`). Links open in the browser /
+  (`onlyBelow` / `onlyFrom`, both optional per item — none = everyone; via the new native `getAppVersion()`) and expire (`expires`). Links open in the browser /
   Play Store, never in-app, so Data safety stays "no data collected". Malformed items are dropped;
   offline/404 keeps the last copy and retries next open. Clear all data also clears it. Privacy policy
   updated (`8e5ca89`) — **deploy the website before 1.0.2 goes live.**
+  ⚠️ `CHECK_EVERY_MS` is **10 min for testing** — set back to 24h before release.
 
 ---
 

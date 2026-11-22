@@ -13,7 +13,8 @@ import { todayKey } from '../lib/date';
  * Edit web/public/announcements.json to publish.
  */
 const SOURCE_URL = 'https://ascend.ansariusaid.me/announcements.json';
-const CHECK_EVERY_MS = 24 * 60 * 60 * 1000;
+// TESTING VALUE: 10 minutes. Set back to 24 * 60 * 60 * 1000 (once a day) before release.
+const CHECK_EVERY_MS = 10 * 60 * 1000;
 const TIMEOUT_MS = 8000;
 const PLAY_LISTING = 'https://play.google.com/store/apps/details?id=me.ansariusaid.ascend';
 
@@ -23,8 +24,11 @@ export type Announcement = {
   body: string;
   button?: string;
   url?: string;
+  // Version rules are optional and per item — leave both out to show it to everyone.
   /** Only show to app versions older than this, e.g. "1.0.3". */
   onlyBelow?: string;
+  /** Only show to this app version or newer, e.g. "1.0.2". */
+  onlyFrom?: string;
   /** "YYYY-MM-DD" — hidden from this day on. */
   expires?: string;
 };
@@ -77,6 +81,7 @@ function sanitize(data: unknown): Announcement[] {
       button: okUrl ? str(r?.button, 30) || 'Open' : undefined,
       url: okUrl ? url : undefined,
       onlyBelow: str(r?.onlyBelow, 20) || undefined,
+      onlyFrom: str(r?.onlyFrom, 20) || undefined,
       expires: /^\d{4}-\d{2}-\d{2}$/.test(str(r?.expires, 10)) ? str(r?.expires, 10) : undefined,
     });
   }
@@ -149,8 +154,9 @@ export function useAnnouncement(): Announcement | null {
       (a) =>
         !dismissed.includes(a.id) &&
         !(a.expires && today >= a.expires) &&
-        // Version-targeted notes (e.g. "update available") need a known version.
-        (!a.onlyBelow || (!!version && compareVersions(version, a.onlyBelow) < 0)),
+        // Version rules only apply to items that set them; they need a known version.
+        (!a.onlyBelow || (!!version && compareVersions(version, a.onlyBelow) < 0)) &&
+        (!a.onlyFrom || (!!version && compareVersions(version, a.onlyFrom) >= 0)),
     ) ?? null
   );
 }
