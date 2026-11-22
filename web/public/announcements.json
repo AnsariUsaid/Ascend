@@ -1,0 +1,4 @@
+{
+  "_readme": "Shown as a small card on Ascend's Home screen (app 1.0.2+). Checked once a day. One card at a time, in order; users can dismiss each by id. Fields: id (unique, never reuse), title, body, optional button + url (https:// or market://, opens in the browser/Play Store), optional onlyBelow (e.g. \"1.0.3\" = only show to versions older than that), optional expires (\"YYYY-MM-DD\", hidden from that day).",
+  "items": []
+}

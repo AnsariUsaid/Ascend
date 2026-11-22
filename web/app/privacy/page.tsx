@@ -13,7 +13,7 @@ const INK = "#2A211A";
 const COR = "#C35A41";
 const MUT = "#6B5C50";
 
-const LAST_UPDATED = "2 July 2026";
+const LAST_UPDATED = "22 November 2026";
 const CONTACT = "usaidanzer@gmail.com";
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -120,8 +120,9 @@ export default function PrivacyPolicy() {
           </Item>
           <Item label="Vibration">Short haptic feedback inside the app.</Item>
           <Item label="Internet">
-            Ascend includes the standard Android internet permission that nearly all apps declare, but it does not use
-            it to send your data anywhere — the app works fully offline.
+            Used for one thing only: about once a day, Ascend downloads a short announcements file from this website
+            (see &quot;Announcements&quot; below). It never uses the internet to send your data anywhere, and everything else
+            works fully offline.
           </Item>
         </ul>
 
@@ -138,14 +139,35 @@ export default function PrivacyPolicy() {
             The current challenge difficulty, any active grace period, whether you&apos;ve chosen to stop an app for the
             day, and simple counts of answers and skips. This resets each day.
           </Item>
+          <Item label="Announcements">
+            The latest copy of the announcements file, when it was last checked, and which announcements you&apos;ve
+            dismissed.
+          </Item>
         </ul>
+
+        <H2>Announcements</H2>
+        <P>
+          About once a day, when you open Ascend, it downloads a small public file from{" "}
+          <span style={{ fontFamily: POP, fontWeight: 600, color: INK }}>ascend.ansariusaid.me</span> containing short
+          notes from us, such as a new version being available or an optional feedback form. The request carries
+          nothing about you: no account, no device ID, no usage data. Like any website, our hosting provider may
+          briefly log the request&apos;s IP address as part of normal operation; we don&apos;t store or use it.
+        </P>
+        <P>
+          Links in an announcement open in your phone&apos;s browser, outside Ascend. If you choose to fill in a feedback
+          form there, that form&apos;s provider (for example Google Forms) handles what you type, under its own privacy
+          policy. Filling it in is always optional.
+        </P>
 
         <H2>What Ascend does not do</H2>
         <ul style={{ paddingLeft: 20, marginTop: 6 }}>
           <Item label="No account or sign-up">
             You never give Ascend an email, phone number, password, or any name beyond the display name you type.
           </Item>
-          <Item label="No servers">Ascend has no backend. Your information has nowhere external to go.</Item>
+          <Item label="No servers that receive your data">
+            Ascend has no backend or database. Apart from downloading the public announcements file, it never talks to
+            the internet, and your information has nowhere external to go.
+          </Item>
           <Item label="No analytics or tracking">
             There are no analytics tools, advertising IDs, crash-reporting services, or third-party trackers in the app.
           </Item>
