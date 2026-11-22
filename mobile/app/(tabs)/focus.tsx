@@ -48,7 +48,8 @@ export default function Focus() {
   const session = useFocusStore((s) => s.session);
   const history = useFocusStore((s) => s.history);
   const result = useFocusStore((s) => s.result);
-  const { start, pause, resume, stop, finishIfDone, clearResult } = useFocusStore.getState();
+  const introSeen = useFocusStore((s) => s.introSeen);
+  const { start, pause, resume, stop, finishIfDone, clearResult, markIntroSeen } = useFocusStore.getState();
   const monitored = useAppStore((s) => s.selected);
 
   // The plan: last time's length and apps, else 25 min and your monitored apps.
@@ -58,9 +59,11 @@ export default function Focus() {
   };
   const [durationMin, setDurationMin] = useState(() => mins(useFocusStore.getState().lastDurationMs));
   const [apps, setApps] = useState<string[]>(defaultApps);
+  const [hydrated, setHydrated] = useState(() => useFocusStore.persist.hasHydrated());
   useEffect(
     () =>
       useFocusStore.persist.onFinishHydration((s) => {
+        setHydrated(true);
         setDurationMin(mins(s.lastDurationMs));
         setApps(s.lastApps ?? Object.keys(useAppStore.getState().selected).filter((k) => useAppStore.getState().selected[k]));
       }),
@@ -130,6 +133,16 @@ export default function Focus() {
   const [pickerDraft, setPickerDraft] = useState<string[]>([]);
   const [noApps, setNoApps] = useState(false);
 
+  // "How the climb works": opens by itself the first time, then only from the ⓘ.
+  const [intro, setIntro] = useState<'first' | 'again' | null>(null);
+  useEffect(() => {
+    if (hydrated && !introSeen && mode === 'plan') setIntro('first');
+  }, [hydrated, introSeen, mode]);
+  const closeIntro = () => {
+    setIntro(null);
+    markIntroSeen();
+  };
+
   const allApps = useMemo(() => {
     const all = getInstalledApps();
     return [
@@ -162,8 +175,13 @@ export default function Focus() {
       >
         {mode === 'plan' && (
           <>
-            <Text style={styles.title}>Focus</Text>
-            <Text style={styles.sub}>Pick a climb. Leave the noise at base camp.</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>Focus</Text>
+              <Pressable onPress={() => setIntro('again')} hitSlop={12} accessibilityLabel="How Focus works">
+                <Feather name="info" size={20} color={colors.muted3} />
+              </Pressable>
+            </View>
+            <Text style={styles.sub}>Set a timer. The apps you pick stay closed until it's done.</Text>
 
             {result?.kind === 'stopped' && (
               <Pressable onPress={clearResult} style={styles.note}>
@@ -298,6 +316,24 @@ export default function Focus() {
       {/* Our own status-bar backing, fading with the sky (the tabs' cream cap is off here). */}
       <Animated.View pointerEvents="none" style={[styles.cap, { height: insets.top, backgroundColor: bg }]} />
 
+      <Sheet visible={intro !== null} title="How the climb works" onClose={closeIntro}>
+        {(
+          [
+            ['triangle', 'Pick how long you want to focus.'],
+            ['lock', 'Choose apps to leave behind. They stay closed while you climb.'],
+            ['pause', 'Pause for a break (your apps open again), or stop anytime. Your time is still saved.'],
+          ] as const
+        ).map(([icon, line]) => (
+          <View key={icon} style={styles.introRow}>
+            <View style={styles.introIcon}>
+              <Feather name={icon} size={16} color={colors.coral} />
+            </View>
+            <Text style={styles.introText}>{line}</Text>
+          </View>
+        ))}
+        <Button label={intro === 'first' ? 'Start exploring' : 'Got it'} onPress={closeIntro} style={{ marginTop: 22 }} />
+      </Sheet>
+
       <Sheet visible={confirmStop} title="End this climb?" onClose={() => setConfirmStop(false)}>
         <Text style={styles.sheetText}>
           {climbedMin >= 1
@@ -376,6 +412,17 @@ export default function Focus() {
 
 const styles = StyleSheet.create({
   title: { ...text.screenTitle, color: colors.ink },
+  titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  introRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 14 },
+  introIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.track,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  introText: { flex: 1, fontFamily: fonts.regular, fontSize: 15, lineHeight: 21, color: colors.muted },
   sub: { fontFamily: fonts.regular, fontSize: 14.5, color: colors.muted2, marginTop: 4 },
   note: {
     flexDirection: 'row',

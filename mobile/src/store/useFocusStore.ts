@@ -73,6 +73,7 @@ type FocusState = {
   lastDurationMs: number; // remembered for next time
   lastApps: string[] | null; // remembered for next time (null = use monitored apps)
   result: FocusResult | null;
+  introSeen: boolean; // the one-time "How the climb works" sheet
   start: (apps: string[], durationMs: number) => void;
   pause: () => void;
   resume: () => void;
@@ -80,6 +81,7 @@ type FocusState = {
   /** End the session if its time is up (called by the ticking UI and on app open). */
   finishIfDone: () => void;
   clearResult: () => void;
+  markIntroSeen: () => void;
   reset: () => void;
 };
 
@@ -89,6 +91,7 @@ const initial = {
   lastDurationMs: 25 * 60000,
   lastApps: null,
   result: null,
+  introSeen: false,
 };
 
 export const useFocusStore = create<FocusState>()(
@@ -133,6 +136,7 @@ export const useFocusStore = create<FocusState>()(
           if (s && remainingMs(s) <= 0) end('summit');
         },
         clearResult: () => set({ result: null }),
+        markIntroSeen: () => set({ introSeen: true }),
         reset: () => {
           set({ ...initial });
           pushNative(null);
@@ -149,6 +153,7 @@ export const useFocusStore = create<FocusState>()(
         lastDurationMs: s.lastDurationMs,
         lastApps: s.lastApps,
         result: s.result,
+        introSeen: s.introSeen,
       }),
     },
   ),
