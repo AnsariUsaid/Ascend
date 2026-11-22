@@ -69,6 +69,11 @@ class AscendNativeModule : Module() {
     // triggered by changing the date in Settings.
     Function("getTrustedDay") { TrustedClock.today(context) }
 
+    // The installed versionName (e.g. "1.0.2"), so announcements can target older versions.
+    Function("getAppVersion") {
+      context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
+    }
+
     // --- Phase E: keep-alive / reliability --------------------------------
     // Battery-optimization exemption keeps the watcher from being killed; the
     // notification permission lets its foreground notification show.

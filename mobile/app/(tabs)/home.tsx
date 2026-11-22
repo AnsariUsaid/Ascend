@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
+import { AnnouncementCard, AppChip, Card, ChevronMark, ProgressBar } from '../../src/components';
+import { useAnnouncement } from '../../src/data/announcements';
 import { colors, fonts, radius, spacing } from '../../src/theme';
 import { formatDuration } from '../../src/data/mock';
 import { useFrictionStore } from '../../src/store/useFrictionStore';
@@ -127,6 +128,7 @@ export default function Dashboard() {
 
   const usage = useUsage();
   const { granted: batteryExempt } = usePermissionStatus(AscendNative.isIgnoringBatteryOptimizations);
+  const announcement = useAnnouncement();
 
   // Apply the midnight reset + refresh usage whenever the dashboard opens.
   useEffect(() => {
@@ -152,6 +154,9 @@ export default function Dashboard() {
         </View>
         <Avatar initials={displayName.slice(0, 2).toUpperCase()} />
       </View>
+
+      {/* A short note from us (feedback form, "new version ready"), checked once a day. */}
+      {announcement && <AnnouncementCard item={announcement} />}
 
       {/* Usage-access prompt when the permission isn't granted */}
       {!usage.hasAccess && (

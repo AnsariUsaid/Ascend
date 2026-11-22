@@ -395,6 +395,13 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   `proguard-rules.pro` keeps `expo.modules.ascendnative.**` whole. Resource shrinking stays off (RN
   looks some images up by name). Release APK 43.7 → 34.2 MB; the AAB now carries the mapping file, so
   the "no deobfuscation file" warning goes too. **Needs a full on-device pass before shipping.**
+- **Announcements card on Home** — a once-a-day download of the public `web/public/announcements.json`
+  (`src/data/announcements.ts`, persisted as `ascend-announcements`) shows one small dismissible card
+  (`AnnouncementCard`) for feedback forms or "a new version is ready". Items can target older versions
+  (`onlyBelow`, via the new native `getAppVersion()`) and expire (`expires`). Links open in the browser /
+  Play Store, never in-app, so Data safety stays "no data collected". Malformed items are dropped;
+  offline/404 keeps the last copy and retries next open. Clear all data also clears it. Privacy policy
+  updated (`8e5ca89`) — **deploy the website before 1.0.2 goes live.**
 
 ---
 

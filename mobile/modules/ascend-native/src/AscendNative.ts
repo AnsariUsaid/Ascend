@@ -47,6 +47,8 @@ export interface AscendNativeModule {
   clearAllFriction(): void;
   /** Today's local "YYYY-MM-DD" from the tamper-proof clock (ignores manual date changes). */
   getTrustedDay(): string;
+  /** The installed app version name, e.g. "1.0.2". */
+  getAppVersion(): string;
 
   // --- Phase E: keep-alive / reliability ---
 
