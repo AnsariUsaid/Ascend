@@ -2,8 +2,6 @@ package expo.modules.ascendnative
 
 import android.content.Context
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /**
  * The shared brain-state between JS and the background service, persisted in
@@ -49,27 +47,34 @@ object MonitorStore {
 
   // --- grace (pkg → epoch ms it ends) ------------------------------------
 
+  /**
+   * `untilMs` is wall-clock epoch ms from JS. Store it on the trusted clock
+   * (same remaining time, measured from trusted "now"), so winding the phone's
+   * clock back can't stretch the grace window.
+   */
   fun setGrace(context: Context, packageName: String, untilMs: Long) {
+    val remaining = untilMs - System.currentTimeMillis()
     val json = readJson(context, KEY_GRACE)
-    json.put(packageName, untilMs)
+    json.put(packageName, TrustedClock.now(context) + remaining)
     prefs(context).edit().putString(KEY_GRACE, json.toString()).apply()
   }
 
   fun isInGrace(context: Context, packageName: String): Boolean {
     val until = readJson(context, KEY_GRACE).optLong(packageName, 0L)
-    return until > System.currentTimeMillis()
+    return until > TrustedClock.now(context)
   }
 
   // --- blocked (pkg → day string) ----------------------------------------
 
+  // "Today" comes from the trusted clock, so changing the date doesn't lift a block.
   fun setBlockedToday(context: Context, packageName: String) {
     val json = readJson(context, KEY_BLOCKED)
-    json.put(packageName, today())
+    json.put(packageName, TrustedClock.today(context))
     prefs(context).edit().putString(KEY_BLOCKED, json.toString()).apply()
   }
 
   fun isBlockedToday(context: Context, packageName: String): Boolean =
-    readJson(context, KEY_BLOCKED).optString(packageName, "") == today()
+    readJson(context, KEY_BLOCKED).optString(packageName, "") == TrustedClock.today(context)
 
   // --- clearing (midnight reset / dev reset / answered) ------------------
 
@@ -94,8 +99,4 @@ object MonitorStore {
     } catch (e: Exception) {
       JSONObject()
     }
-
-  /** Local "YYYY-MM-DD" — matches the JS todayKey() format. */
-  private fun today(): String =
-    SimpleDateFormat("yyyy-MM-dd", Locale.US).format(System.currentTimeMillis())
 }

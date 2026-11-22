@@ -381,6 +381,12 @@ cleared by tapping each option in turn. An audit found more holes; all are close
   small icon (shows as a blob; can crash on Android 8), now a flat white chevron `ic_stat_ascend`;
   and `startForeground` is wrapped, so if Android refuses it (e.g. a sticky restart in the
   background on 12+) the service stops quietly instead of crashing.
+- **Changing the date/clock no longer resets limits or stretches grace** (#19) — new `TrustedClock.kt`
+  anchors "wall clock W at time-since-boot E" and trusts W + elapsed afterwards (Settings can't
+  change time-since-boot). Drift ≤ 2 min follows the wall clock; bigger jumps are ignored until the
+  next reboot. Native grace is stored on trusted time; "done for today" and the JS midnight reset use
+  the trusted day (`AscendNative.getTrustedDay()`, used by `todayKey()` with a phone-clock fallback).
+  Time-zone changes still apply (travel). Known gap: reboot + date change still works (costs a reboot).
 
 ---
 

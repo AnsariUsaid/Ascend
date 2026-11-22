@@ -65,6 +65,9 @@ class AscendNativeModule : Module() {
       MonitorStore.clearFriction(context, packageName)
     }
     Function("clearAllFriction") { MonitorStore.clearAllFriction(context) }
+    // Today's date from the tamper-proof clock, so JS's midnight reset can't be
+    // triggered by changing the date in Settings.
+    Function("getTrustedDay") { TrustedClock.today(context) }
 
     // --- Phase E: keep-alive / reliability --------------------------------
     // Battery-optimization exemption keeps the watcher from being killed; the

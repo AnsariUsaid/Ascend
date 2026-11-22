@@ -45,6 +45,8 @@ export interface AscendNativeModule {
   clearFriction(packageName: string): void;
   /** Clear all grace + blocked state (midnight reset / dev reset). */
   clearAllFriction(): void;
+  /** Today's local "YYYY-MM-DD" from the tamper-proof clock (ignores manual date changes). */
+  getTrustedDay(): string;
 
   // --- Phase E: keep-alive / reliability ---
 
