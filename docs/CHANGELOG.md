@@ -358,6 +358,15 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 
 ---
 
+## v1.0.2 — watcher reliability + Play housekeeping (branch `release/1.0.2`)
+
+- **Two misses in a row climb a level** (#18) — since 1.0.1 a wrong answer served a new question at
+  the same level, so guessing never got harder. Now every 2nd miss in a row also climbs a level (cap
+  L5), alongside the growing wait. One slip is forgiven; guessing reaches typed questions fast.
+  Typing is unchanged (its passage stays, no wait — it can't be guessed).
+
+---
+
 ## Still to come
 
 - **Battery efficiency (option B, deferred)** — adaptive poll rate (skipped on purpose; only

@@ -176,12 +176,15 @@ function FrictionScreen({ appParam }: { appParam: string }) {
       // No retrying the same question (that let you tap through every option).
       // Serve a fresh one at the same level, behind a lockout that grows per miss.
       answerWrong(appKey);
-      setLockedUntil(useFrictionStore.getState().getApp(appKey).lockedUntil);
+      const after = useFrictionStore.getState().getApp(appKey);
+      setLockedUntil(after.lockedUntil);
       setNow(Date.now());
-      setCurrent({ ...current, q: getQuestion(current.type, current.level, current.q.id) });
+      // Every 2nd miss in a row climbs a level (see store) — serve the next one there.
+      const nextLevel = Math.min(MAX_LEVEL, after.level);
+      setCurrent({ ...current, q: getQuestion(current.type, nextLevel, current.q.id), level: nextLevel });
       setInput('');
       setSelected(null);
-      setEscalated(false);
+      setEscalated(nextLevel > current.level);
       setWrong(true);
       setMissed(true);
     }
