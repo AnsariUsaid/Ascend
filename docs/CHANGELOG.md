@@ -470,6 +470,10 @@ cleared by tapping each option in turn. An audit found more holes; all are close
 - **JS**: `useFocusStore` (`ascend-focus`) keeps time as timestamps, so it survives Android killing
   Ascend; `useFocusSync` ends a session whose time ran out while closed and re-sends a running one.
   Clear all data also clears Focus. Privacy policy lists focus sessions as on-device data.
+- **First-time help** — plain subtitle ("Set a timer. The apps you pick stay closed until it's done.") and a
+  one-time "How the climb works" sheet (3 lines); the ⓘ next to the title reopens it.
+- **Release 1.0.3 (versionCode 4)** — new question bank + weekly packs, Focus, and the announcement check
+  back to once a day (it was 10 min for testing).
 
 ---
 

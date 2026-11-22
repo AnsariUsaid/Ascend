@@ -13,8 +13,7 @@ import { todayKey } from '../lib/date';
  * Edit web/public/announcements.json to publish.
  */
 const SOURCE_URL = 'https://ascend.ansariusaid.me/announcements.json';
-// TESTING VALUE: 10 minutes. Set back to 24 * 60 * 60 * 1000 (once a day) before release.
-const CHECK_EVERY_MS = 10 * 60 * 1000;
+const CHECK_EVERY_MS = 24 * 60 * 60 * 1000; // once a day
 const TIMEOUT_MS = 8000;
 const PLAY_LISTING = 'https://play.google.com/store/apps/details?id=me.ansariusaid.ascend';
 
