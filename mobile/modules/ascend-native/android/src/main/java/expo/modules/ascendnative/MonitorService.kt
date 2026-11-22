@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
@@ -31,11 +32,15 @@ class MonitorService : Service() {
   private var worker: Thread? = null
   // pkg → last time we launched friction for it (debounce while the friction
   // activity is coming to the foreground).
+  // Timed with SystemClock.elapsedRealtime() (time since boot), not the wall clock,
+  // so setting the phone's clock back can't stall the cooldown.
   private val lastLaunch = HashMap<String, Long>()
 
   // Last known state of the two permissions the watcher needs (worker thread only).
   private var permsOk = true
-  private var lastPermCheck = 0L
+  // elapsedRealtime of the last check; starts "due" so the first tick checks at once,
+  // even if the service starts within 30s of boot.
+  private var lastPermCheck = -PERM_CHECK_MS
 
   // Whether the screen is on. When it's off, nobody can be using an app, so the
   // poll loop idles to save battery; SCREEN_ON wakes it immediately.
@@ -116,7 +121,9 @@ class MonitorService : Service() {
     // If a permission was revoked, limits can't be enforced. Say so in the
     // notification (instead of claiming we're still guarding) and keep running,
     // so enforcement resumes by itself once it's turned back on.
-    val nowMs = System.currentTimeMillis()
+    // Interval timing uses time-since-boot: a wall clock set back would otherwise
+    // pause this check for as long as the jump.
+    val nowMs = SystemClock.elapsedRealtime()
     if (nowMs - lastPermCheck >= PERM_CHECK_MS) {
       lastPermCheck = nowMs
       val ok = Permissions.hasUsageAccess(this) && Permissions.hasOverlay(this)
@@ -141,8 +148,9 @@ class MonitorService : Service() {
     }
     if (!shouldWall) return
 
-    val now = System.currentTimeMillis()
-    if (now - (lastLaunch[fg] ?: 0L) < LAUNCH_COOLDOWN_MS) return
+    val now = SystemClock.elapsedRealtime()
+    val last = lastLaunch[fg]
+    if (last != null && now - last < LAUNCH_COOLDOWN_MS) return
     lastLaunch[fg] = now
     launchFriction(fg)
   }
